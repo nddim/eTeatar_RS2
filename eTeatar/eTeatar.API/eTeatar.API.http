@@ -1,0 +1,6 @@
+@eTeatar.API_HostAddress = http://localhost:5016
+
+GET {{eTeatar.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
