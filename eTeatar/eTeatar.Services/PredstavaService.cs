@@ -3,29 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using eTeatar.Model;
+using eTeatar.Services.Database;
+using Predstava = eTeatar.Model.Predstava;
 
 namespace eTeatar.Services
 {
     public class PredstavaService : IPredstavaService
     {
-        public List<Predstava> List = new()
+        private ETeatarContext eTeatarContext;
+        public PredstavaService(ETeatarContext _eTeatarContext)
         {
-            new Predstava()
+            eTeatarContext = _eTeatarContext;
+        } 
+        public virtual List<Predstava> GetList()
+        {
+            var list = eTeatarContext.Predstavas.ToList();
+            var result = new List<Predstava>();
+            list.ForEach(item =>
             {
-                PredstavaId = 1,
-                Naziv = "Jezeva kucica"
-            },
-            new Predstava()
-            {
-                PredstavaId = 2,
-                Naziv = "Terminator"
-            }
-        };
+                result.Add(new Predstava()
+                {
+                    Naziv = item.Naziv,
+                    PredstavaId = item.PredstavaId
+                });
+            });
 
-        public List<Predstava> GetList()
-        {
-            return List;
+            return result;
         }
     }
 }
