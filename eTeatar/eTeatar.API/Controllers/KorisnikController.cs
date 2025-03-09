@@ -1,5 +1,6 @@
 using eTeatar.Model;
 using eTeatar.Model.Requests;
+using eTeatar.Model.SearchObjects;
 using eTeatar.Services;
 using eTeatar.Services.Database;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,9 @@ public class KorisnikController : ControllerBase
         _service = service;
     }
     [HttpGet]
-    public List<Korisnik> getList()
+    public PagedResult<Korisnik> getList([FromQuery]KorisnikSearchObject searchObject)
     {
-        return _service.GetList();
+        return _service.GetList(searchObject);
     }
     [HttpPost]
     public Korisnik Insert(KorisnikInsertRequest request)

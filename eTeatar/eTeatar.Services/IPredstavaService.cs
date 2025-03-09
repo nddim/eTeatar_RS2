@@ -1,7 +1,8 @@
 ﻿using eTeatar.Model;
+using eTeatar.Model.SearchObjects;
 namespace eTeatar.Services;
 
-public interface IPredstavaService
+public interface IPredstavaService : IService<Predstava, PredstavaSearchObject>
 {
-    List<Predstava> GetList();
+
 }

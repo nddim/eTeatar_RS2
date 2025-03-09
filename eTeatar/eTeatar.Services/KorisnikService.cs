@@ -5,9 +5,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using eTeatar.Model.Requests;
+using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Korisnik = eTeatar.Model.Korisnik;
+using System.Linq.Dynamic.Core;
 
 namespace eTeatar.Services
 {
@@ -20,15 +23,55 @@ namespace eTeatar.Services
             eTeatarContext = _eTeatarContext;
             mapper = _mapper;
         } 
-        public virtual List<Korisnik> GetList()
+        public virtual Model.PagedResult<Korisnik> GetList(KorisnikSearchObject searchObject)
         {
 
             List<Korisnik> result = new List<Korisnik>();
-            var list = eTeatarContext.Korisniks.ToList();
+
+            var query = eTeatarContext.Korisniks.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchObject?.ImeGTE))
+            {
+                query = query.Where(x => x.Ime.StartsWith(searchObject.ImeGTE));
+            }
+            if (!string.IsNullOrWhiteSpace(searchObject?.PrezimeGTE))
+            {
+                query = query.Where(x => x.Prezime.StartsWith(searchObject.PrezimeGTE));
+            }
+            if (!string.IsNullOrWhiteSpace(searchObject?.Email))
+            {
+                query = query.Where(x => x.Email == searchObject.Email);
+            }
+            if (!string.IsNullOrWhiteSpace(searchObject?.KorisnickoIme))
+            {
+                query = query.Where(x => x.KorisnickoIme == searchObject.KorisnickoIme);
+            }
+            if (searchObject?.IsKorisnikUlogaIncluded == true)
+            {
+                query = query.Include(x => x.KorisnikUlogas).ThenInclude(x => x.Uloga);
+            }
+            if (!string.IsNullOrWhiteSpace(searchObject?.OrderBy))
+            {
+                query = query.OrderBy(searchObject.OrderBy);
+            }
+            int count = query.Count();
+            if (searchObject?.Page.HasValue == true && searchObject?.PageSize.HasValue == true)
+            {
+                query = query.Skip(searchObject.Page.Value * searchObject.PageSize.Value).Take(searchObject.PageSize.Value);
+            }
+           
+            
+
+            var list = query.ToList();
 
             result = mapper.Map(list, result);
 
-            return result;
+            Model.PagedResult<Korisnik> pagedResult = new Model.PagedResult<Korisnik>();
+
+            pagedResult.ResultList = result;
+            pagedResult.Count = count;
+
+            return pagedResult;
         }
 
         public Korisnik Insert(KorisnikInsertRequest request)

@@ -14,5 +14,6 @@ namespace eTeatar.Model
         public string Telefon { get; set; }
         public byte[]? Slika { get; set; }
         public DateTime DatumRodenja { get; set; }
+        public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; set; } = new List<KorisnikUloga>();
     }
 }
