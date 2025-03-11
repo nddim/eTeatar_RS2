@@ -10,26 +10,10 @@ namespace eTeatar.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class KorisnikController : ControllerBase
+public class KorisnikController : BaseCRUDController<Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>
 {   
-    private IKorisnikService _service;
-    public KorisnikController(IKorisnikService service)
+    public KorisnikController(IKorisnikService service) : base(service)
     {
-        _service = service;
     }
-    [HttpGet]
-    public PagedResult<Korisnik> getList([FromQuery]KorisnikSearchObject searchObject)
-    {
-        return _service.GetList(searchObject);
-    }
-    [HttpPost]
-    public Korisnik Insert(KorisnikInsertRequest request)
-    {
-        return _service.Insert(request);
-    }
-    [HttpPut("{id}")]
-    public Korisnik Update(int id, KorisnikUpdateRequest request)
-    {
-        return _service.Update(id, request);
-    }
+
 }

@@ -11,95 +11,68 @@ using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Korisnik = eTeatar.Model.Korisnik;
 using System.Linq.Dynamic.Core;
+using System.Text.RegularExpressions;
 
 namespace eTeatar.Services
 {
-    public class KorisnikService : IKorisnikService
+    public class KorisnikService : BaseCRUDService<Korisnik, KorisnikSearchObject, Database.Korisnik, KorisnikInsertRequest, KorisnikUpdateRequest>, IKorisnikService
     {
-        private ETeatarContext eTeatarContext;
-        private IMapper mapper;
-        public KorisnikService(ETeatarContext _eTeatarContext, IMapper _mapper)
+        public KorisnikService(ETeatarContext _eTeatarContext, IMapper _mapper) : base(_eTeatarContext, _mapper)
         {
-            eTeatarContext = _eTeatarContext;
-            mapper = _mapper;
-        } 
-        public virtual Model.PagedResult<Korisnik> GetList(KorisnikSearchObject searchObject)
+  
+        }
+
+        public override IQueryable<Database.Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Database.Korisnik> query)
         {
-
-            List<Korisnik> result = new List<Korisnik>();
-
-            var query = eTeatarContext.Korisniks.AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(searchObject?.ImeGTE))
+            query = base.AddFilter(search, query);
+            if (!string.IsNullOrWhiteSpace(search?.ImeGTE))
             {
-                query = query.Where(x => x.Ime.StartsWith(searchObject.ImeGTE));
+                query = query.Where(x => x.Ime.StartsWith(search.ImeGTE));
             }
-            if (!string.IsNullOrWhiteSpace(searchObject?.PrezimeGTE))
+            if (!string.IsNullOrWhiteSpace(search?.PrezimeGTE))
             {
-                query = query.Where(x => x.Prezime.StartsWith(searchObject.PrezimeGTE));
+                query = query.Where(x => x.Prezime.StartsWith(search.PrezimeGTE));
             }
-            if (!string.IsNullOrWhiteSpace(searchObject?.Email))
+            if (!string.IsNullOrWhiteSpace(search?.Email))
             {
-                query = query.Where(x => x.Email == searchObject.Email);
+                query = query.Where(x => x.Email == search.Email);
             }
-            if (!string.IsNullOrWhiteSpace(searchObject?.KorisnickoIme))
+            if (!string.IsNullOrWhiteSpace(search?.KorisnickoIme))
             {
-                query = query.Where(x => x.KorisnickoIme == searchObject.KorisnickoIme);
+                query = query.Where(x => x.KorisnickoIme == search.KorisnickoIme);
             }
-            if (searchObject?.IsKorisnikUlogaIncluded == true)
+            if (search?.IsKorisnikUlogaIncluded == true)
             {
                 query = query.Include(x => x.KorisnikUlogas).ThenInclude(x => x.Uloga);
             }
-            if (!string.IsNullOrWhiteSpace(searchObject?.OrderBy))
+            if (!string.IsNullOrWhiteSpace(search?.OrderBy))
             {
-                query = query.OrderBy(searchObject.OrderBy);
+                query = query.OrderBy(search.OrderBy);
             }
             int count = query.Count();
-            if (searchObject?.Page.HasValue == true && searchObject?.PageSize.HasValue == true)
+            if (search?.Page.HasValue == true && search?.PageSize.HasValue == true)
             {
-                query = query.Skip(searchObject.Page.Value * searchObject.PageSize.Value).Take(searchObject.PageSize.Value);
+                query = query.Skip(search.Page.Value * search.PageSize.Value).Take(search.PageSize.Value);
             }
-           
-            
 
-            var list = query.ToList();
-
-            result = mapper.Map(list, result);
-
-            Model.PagedResult<Korisnik> pagedResult = new Model.PagedResult<Korisnik>();
-
-            pagedResult.ResultList = result;
-            pagedResult.Count = count;
-
-            return pagedResult;
+            return query;
         }
 
-        public Korisnik Insert(KorisnikInsertRequest request)
+        public override void BeforeInsert(KorisnikInsertRequest request, Database.Korisnik entity)
         {
             if (request.Lozinka != request.LozinkaPotvrda)
             {
                 throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste!");
             }
 
-            Database.Korisnik entity = new Database.Korisnik();
-            mapper.Map(request, entity);
-
-            entity.DatumRegistracije = DateTime.Now;
-
             entity.LozinkaSalt = GenerateSalt();
             entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
 
-            eTeatarContext.Add(entity);
-            eTeatarContext.SaveChanges();
-
-            return mapper.Map<Korisnik>(entity);
+            base.BeforeInsert(request, entity);
         }
 
-        public Korisnik Update(int id, KorisnikUpdateRequest request)
+        public override void BeforeUpdate(KorisnikUpdateRequest request, Database.Korisnik entity)
         {
-            var entity = eTeatarContext.Korisniks.Find(id);
-
-            mapper.Map(request, entity);
 
             if (request.Lozinka != null)
             {
@@ -112,8 +85,7 @@ namespace eTeatar.Services
                 entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
             }
 
-            eTeatarContext.SaveChanges();
-            return mapper.Map<Korisnik>(entity);
+            base.BeforeUpdate(request, entity);
         }
 
         public static string GenerateSalt()

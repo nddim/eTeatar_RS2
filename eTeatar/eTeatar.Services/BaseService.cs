@@ -10,7 +10,7 @@ using eTeatar.Model.SearchObjects;
 
 namespace eTeatar.Services
 {
-    public class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
+    public abstract class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
     {
         private ETeatarContext eTeatarContext;
         private IMapper mapper;
@@ -55,7 +55,7 @@ namespace eTeatar.Services
             return null;
         }
 
-        public IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query)
+        public virtual IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query)
         {
             return query;
         }
