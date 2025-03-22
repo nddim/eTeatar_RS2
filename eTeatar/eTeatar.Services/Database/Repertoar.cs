@@ -5,7 +5,7 @@ namespace eTeatar.Services.Database;
 
 public partial class Repertoar
 {
-    public int ReperatoarId { get; set; }
+    public int RepertoarId { get; set; }
 
     public string Naziv { get; set; } = null!;
 
@@ -17,9 +17,7 @@ public partial class Repertoar
 
     public bool IsDeleted { get; set; }
 
-    public int? VrijemeBrisanja { get; set; }
+    public DateTime? VrijemeBrisanja { get; set; }
 
-    public int PredstavaId { get; set; }
-
-    public virtual Predstava Predstava { get; set; } = null!;
+    public virtual ICollection<PredstavaRepertoar> PredstavaRepertoars { get; set; } = new List<PredstavaRepertoar>();
 }

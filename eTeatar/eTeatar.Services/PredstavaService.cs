@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using eTeatar.Model.Requests;
+﻿using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;

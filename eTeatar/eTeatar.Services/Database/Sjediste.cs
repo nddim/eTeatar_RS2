@@ -11,7 +11,7 @@ public partial class Sjediste
 
     public string Kolona { get; set; } = null!;
 
-    public byte Status { get; set; }
+    public string Status { get; set; }
 
     public bool IsDeleted { get; set; }
 
@@ -19,11 +19,9 @@ public partial class Sjediste
 
     public int DvoranaId { get; set; }
 
-    public int RezervacijaId { get; set; }
-
     public virtual Dvorana Dvorana { get; set; } = null!;
 
     public virtual ICollection<Kartum> Karta { get; set; } = new List<Kartum>();
 
-    public virtual Rezervacija Rezervacija { get; set; } = null!;
+    public virtual ICollection<RezervacijaSjediste> RezervacijaSjedistes { get; set; } = new List<RezervacijaSjediste>();
 }

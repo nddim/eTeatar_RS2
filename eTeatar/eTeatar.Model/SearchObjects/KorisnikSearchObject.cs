@@ -9,7 +9,7 @@ namespace eTeatar.Model.SearchObjects
         public string? ImeGTE { get; set; }
         public string? PrezimeGTE { get; set; }
         public string? Email { get; set; }
-        public string? KorisnickoIme { get; set; }
+        public string? KorisnickoImeGTE { get; set; }
         public bool? IsKorisnikUlogaIncluded { get; set; }
         public string? OrderBy { get; set; }
 

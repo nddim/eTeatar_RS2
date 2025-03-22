@@ -15,12 +15,12 @@ namespace eTeatar.API.Controllers
             _service = service;
         }
         [HttpGet]
-        public PagedResult<TModel> GetPaged([FromQuery] TSearch searchObject)
+        public virtual PagedResult<TModel> GetPaged([FromQuery] TSearch searchObject)
         {
             return _service.GetPaged(searchObject);
         }
         [HttpGet("{id}")]
-        public TModel GetById(int id)
+        public virtual TModel GetById(int id)
         {
             return _service.GetById(id);
         }

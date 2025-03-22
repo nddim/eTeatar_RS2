@@ -25,9 +25,7 @@ public partial class Predstava
 
     public DateTime? VrijemeBrisanja { get; set; }
 
-    public float Cijena { get; set; }
-
-    public int RepertoarId { get; set; }
+    public decimal Cijena { get; set; }
 
     public byte[]? Slika { get; set; }
 
@@ -37,7 +35,7 @@ public partial class Predstava
 
     public virtual ICollection<PredstavaZanr> PredstavaZanrs { get; set; } = new List<PredstavaZanr>();
 
-    public virtual ICollection<Repertoar> Repertoars { get; set; } = new List<Repertoar>();
+    public virtual ICollection<PredstavaRepertoar> PredstavaRepertoars { get; set; } = new List<PredstavaRepertoar>();
 
     public virtual ICollection<Termin> Termins { get; set; } = new List<Termin>();
 }

@@ -7,7 +7,7 @@ public partial class Uplatum
 {
     public int UplataId { get; set; }
 
-    public float Iznos { get; set; }
+    public decimal Iznos { get; set; }
 
     public DateTime Datum { get; set; }
 

@@ -37,9 +37,9 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.Email == search.Email);
             }
-            if (!string.IsNullOrWhiteSpace(search?.KorisnickoIme))
+            if (!string.IsNullOrWhiteSpace(search?.KorisnickoImeGTE))
             {
-                query = query.Where(x => x.KorisnickoIme == search.KorisnickoIme);
+                query = query.Where(x => x.KorisnickoIme == search.KorisnickoImeGTE || x.KorisnickoIme.Contains(search.KorisnickoImeGTE) );
             }
             if (search?.IsKorisnikUlogaIncluded == true)
             {

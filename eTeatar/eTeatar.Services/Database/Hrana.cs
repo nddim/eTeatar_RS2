@@ -9,7 +9,7 @@ public partial class Hrana
 
     public string Naziv { get; set; } = null!;
 
-    public float Cijena { get; set; }
+    public decimal Cijena { get; set; }
 
     public bool IsDeleted { get; set; }
 

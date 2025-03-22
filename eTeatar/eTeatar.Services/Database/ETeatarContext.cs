@@ -53,6 +53,10 @@ public partial class ETeatarContext : DbContext
 
     public virtual DbSet<Zanr> Zanrs { get; set; }
 
+    public virtual DbSet<PredstavaRepertoar> PredstavaRepertoars { get; set; }
+
+    public virtual DbSet<RezervacijaSjediste> RezervacijaSjedistes { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=localhost,1433;Initial Catalog=eTeatar;User=sa;Password=ASDqwe123!;TrustServerCertificate=True");
@@ -114,6 +118,7 @@ public partial class ETeatarContext : DbContext
 
             entity.HasOne(d => d.Rezervacija).WithMany(p => p.Karta)
                 .HasForeignKey(d => d.RezervacijaId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKKarta75020");
 
@@ -190,7 +195,7 @@ public partial class ETeatarContext : DbContext
             entity.Property(e => e.Komentar)
                 .HasMaxLength(500)
                 .IsUnicode(false);
-            entity.Property(e => e.Ocjena1).HasColumnName("Ocjena");
+            entity.Property(e => e.Vrijednost).HasColumnName("Vrijednost");
             entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
 
             entity.HasOne(d => d.Korisnik).WithMany(p => p.Ocjenas)
@@ -229,6 +234,7 @@ public partial class ETeatarContext : DbContext
             entity.Property(e => e.TrajanjeKraj).HasColumnType("datetime");
             entity.Property(e => e.TrajanjePocetak).HasColumnType("datetime");
             entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
+            entity.HasMany(e=> e.PredstavaRepertoars).WithOne(pr=> pr.Predstava).HasForeignKey(pr => pr.PredstavaId);
         });
 
         modelBuilder.Entity<PredstavaGlumac>(entity =>
@@ -248,6 +254,23 @@ public partial class ETeatarContext : DbContext
                 .HasForeignKey(d => d.PredstavaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKPredstavaG242172");
+        });
+
+        modelBuilder.Entity<PredstavaRepertoar>(entity =>
+        {
+            entity.HasKey(e => e.PredstavaRepertoarId);
+
+            entity.ToTable("PredstavaRepertoar");
+
+            entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Repertoar).WithMany(p => p.PredstavaRepertoars)
+                .HasForeignKey(d => d.RepertoarId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.Predstava).WithMany(p => p.PredstavaRepertoars)
+                .HasForeignKey(d => d.PredstavaId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<PredstavaZanr>(entity =>
@@ -271,7 +294,7 @@ public partial class ETeatarContext : DbContext
 
         modelBuilder.Entity<Repertoar>(entity =>
         {
-            entity.HasKey(e => e.ReperatoarId).HasName("PK__Repertoa__1018CC45DC2374D2");
+            entity.HasKey(e => e.RepertoarId).HasName("PK__Repertoa__1018CC45DC2374D2");
 
             entity.ToTable("Repertoar");
 
@@ -284,10 +307,9 @@ public partial class ETeatarContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.Predstava).WithMany(p => p.Repertoars)
-                .HasForeignKey(d => d.PredstavaId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKRepertoar158564");
+            entity.HasMany(d => d.PredstavaRepertoars).WithOne(p => p.Repertoar)
+                .HasForeignKey(d => d.RepertoarId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<Rezervacija>(entity =>
@@ -305,6 +327,10 @@ public partial class ETeatarContext : DbContext
                 .HasForeignKey(d => d.KorisnikId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKRezervacij849203");
+
+            entity.HasOne(d => d.Termin).WithMany(p => p.Rezervacijas)
+                .HasForeignKey(d => d.RezervacijaId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<Sjediste>(entity =>
@@ -326,10 +352,29 @@ public partial class ETeatarContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKSjediste19417");
 
-            entity.HasOne(d => d.Rezervacija).WithMany(p => p.Sjedistes)
-                .HasForeignKey(d => d.RezervacijaId)
+            entity.HasMany(d => d.RezervacijaSjedistes).WithOne(p => p.Sjediste)
+                .HasForeignKey(d => d.SjedisteId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKSjediste277089");
+
+            entity.HasMany(d => d.Karta).WithOne(p => p.Sjediste)
+                .HasForeignKey(d => d.SjedisteId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+        });
+
+        modelBuilder.Entity<RezervacijaSjediste>(entity =>
+        {
+            entity.HasKey(e => e.RezervacijaSjedisteId);
+
+            entity.ToTable("RezervacijaSjediste");
+
+            entity.HasOne(d => d.Rezervacija).WithMany(p => p.RezervacijaSjedistes)
+                .HasForeignKey(d => d.RezervacijaSjedisteId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.Sjediste).WithMany(p => p.RezervacijaSjedistes)
+                .HasForeignKey(d => d.RezervacijaSjedisteId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<StavkaUplate>(entity =>
@@ -370,10 +415,9 @@ public partial class ETeatarContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKTermin545750");
 
-            entity.HasOne(d => d.Rezervacija).WithMany(p => p.Termins)
-                .HasForeignKey(d => d.RezervacijaId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKTermin288953");
+            entity.HasMany(d => d.Rezervacijas).WithOne(p => p.Termin)
+                .HasForeignKey(d => d.TerminId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<Uloga>(entity =>
@@ -434,7 +478,7 @@ public partial class ETeatarContext : DbContext
             entity.Property(e => e.Naziv)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.VrijemeBriisanja).HasColumnType("datetime");
+            entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -12,18 +12,18 @@ namespace eTeatar.Services
 {
     public abstract class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
     {
-        private ETeatarContext eTeatarContext;
-        private IMapper mapper;
+        public ETeatarContext Context;
+        public IMapper Mapper;
         public BaseService(ETeatarContext _eTeatarContext, IMapper _mapper)
         {
-            eTeatarContext = _eTeatarContext;
-            mapper = _mapper;
+            Context = _eTeatarContext;
+            Mapper = _mapper;
         }
         public PagedResult<TModel> GetPaged(TSearch search)
         {
             List<TModel> result = new List<TModel>();
 
-            var query = eTeatarContext.Set<TDbEntity>().AsQueryable();
+            var query = Context.Set<TDbEntity>().AsQueryable();
 
             query = AddFilter(search, query);
 
@@ -36,7 +36,7 @@ namespace eTeatar.Services
 
             var list = query.ToList();
 
-            result = mapper.Map(list, result);
+            result = Mapper.Map(list, result);
             PagedResult<TModel> pagedResult = new PagedResult<TModel>();
             pagedResult.Count = count;
             pagedResult.ResultList = result;
@@ -46,10 +46,10 @@ namespace eTeatar.Services
 
         public TModel GetById(int id)
         {
-            var entity = eTeatarContext.Set<TDbEntity>().Find(id);
+            var entity = Context.Set<TDbEntity>().Find(id);
             if (entity != null)
             {
-                return mapper.Map<TModel>(entity);
+                return Mapper.Map<TModel>(entity);
             }
 
             return null;

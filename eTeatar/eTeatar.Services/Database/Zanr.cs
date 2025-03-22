@@ -11,7 +11,7 @@ public partial class Zanr
 
     public bool IsDeleted { get; set; }
 
-    public DateTime? VrijemeBriisanja { get; set; }
+    public DateTime? VrijemeBrisanja { get; set; }
 
     public virtual ICollection<PredstavaZanr> PredstavaZanrs { get; set; } = new List<PredstavaZanr>();
 }

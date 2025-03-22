@@ -9,7 +9,7 @@ public partial class StavkaUplate
 
     public int Kolicina { get; set; }
 
-    public float Cijena { get; set; }
+    public decimal Cijena { get; set; }
 
     public bool IsDeleted { get; set; }
 
