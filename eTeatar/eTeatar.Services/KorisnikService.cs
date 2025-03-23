@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Korisnik = eTeatar.Model.Korisnik;
 using System.Linq.Dynamic.Core;
 using System.Text.RegularExpressions;
+using eTeatar.Model;
 
 namespace eTeatar.Services
 {
@@ -62,7 +63,7 @@ namespace eTeatar.Services
         {
             if (request.Lozinka != request.LozinkaPotvrda)
             {
-                throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste!");
+                throw new UserException("Lozinke se ne podudaraju!");
             }
 
             entity.LozinkaSalt = GenerateSalt();

@@ -1,3 +1,4 @@
+using eTeatar.API.Filters;
 using eTeatar.Services;
 using eTeatar.Services.Database;
 using Mapster;
@@ -25,7 +26,10 @@ builder.Services.AddTransient<IUlogaService, UlogaService>();
 builder.Services.AddTransient<IUplataService, UplataService>();
 builder.Services.AddTransient<IVijestService, VijestService>();
 builder.Services.AddTransient<IZanrService, ZanrService>();
-builder.Services.AddControllers();
+builder.Services.AddControllers(x =>
+{
+    x.Filters.Add<ExceptionFilter>();
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
