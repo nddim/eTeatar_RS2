@@ -3,6 +3,7 @@ using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services;
 using eTeatar.Services.Database;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Korisnik = eTeatar.Model.Korisnik;
 
@@ -14,6 +15,13 @@ public class KorisnikController : BaseCRUDController<Korisnik, KorisnikSearchObj
 {   
     public KorisnikController(IKorisnikService service) : base(service)
     {
+    }
+
+    [AllowAnonymous]
+    [HttpPost("login")]
+    public Model.Korisnik Login(string username, string password)
+    {
+        return (_service as IKorisnikService).Login(username, password);
     }
 
 }

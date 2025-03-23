@@ -68,6 +68,7 @@ namespace eTeatar.Services
 
             entity.LozinkaSalt = GenerateSalt();
             entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
+            entity.DatumRegistracije = DateTime.Now;
 
             base.BeforeInsert(request, entity);
         }
@@ -107,6 +108,30 @@ namespace eTeatar.Services
 
             byte[] inArray = algorithm.ComputeHash(dst);
             return Convert.ToBase64String(inArray);
+        }
+
+        public Korisnik Login(string username, string password)
+        {
+            var entity = Context
+                .Korisniks
+                .Include(x => x.KorisnikUlogas)
+                .ThenInclude(y => y.Uloga)
+                .FirstOrDefault(x => x.KorisnickoIme == username);
+
+            if (entity == null)
+            {
+                return null;
+            }
+
+            var hash = GenerateHash(entity.LozinkaSalt, password);
+
+            if (hash != entity.LozinkaHash)
+            {
+                return null;
+            }
+
+            return this.Mapper.Map<Korisnik>(entity);
+
         }
     }
 }
