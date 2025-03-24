@@ -11,5 +11,24 @@ namespace eTeatar.Services
         {
 
         }
+
+        public override IQueryable<Hrana> AddFilter(HranaSearchObject search, IQueryable<Hrana> query)
+        {
+            query = base.AddFilter(search, query);
+            if(!string.IsNullOrEmpty(search?.NazivGTE))
+            {
+                query = query.Where(x => x.Naziv.StartsWith(search.NazivGTE));
+            }
+            if (search?.CijenaGTE != null)
+            {
+                query = query.Where(x => x.Cijena > search.CijenaGTE);
+            }
+            if (search?.CijenaLTE != null)
+            {
+                query = query.Where(x => x.Cijena < search.CijenaLTE);
+            }
+
+            return query;
+        }
     }
 }

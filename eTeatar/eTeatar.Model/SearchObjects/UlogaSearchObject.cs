@@ -6,6 +6,6 @@ namespace eTeatar.Model.SearchObjects
 {
     public class UlogaSearchObject : BaseSearchObject
     {
-        public string? NazivGTE { get; set; }
+        public string? Naziv { get; set; }
     }
 }

@@ -11,5 +11,32 @@ namespace eTeatar.Services
         {
 
         }
+
+        public override IQueryable<StavkaUplate> AddFilter(StavkaUplateSearchObject search, IQueryable<StavkaUplate> query)
+        {
+            query = base.AddFilter(search, query);
+            if (search?.KolicinaGTE != null)
+            {
+                query = query.Where(x => x.Kolicina > search.KolicinaGTE);
+            }
+            if (search?.KolicinaLTE != null)
+            {
+                query = query.Where(x => x.Kolicina < search.KolicinaLTE);
+            }
+            if (search?.CijenaGTE != null)
+            {
+                query = query.Where(x => x.Cijena > search.CijenaGTE);
+            }
+            if (search?.CijenaLTE != null)
+            {
+                query = query.Where(x => x.Cijena < search.CijenaLTE);
+            }
+            if (search?.UplataId != null)
+            {
+                query = query.Where(x => x.UplataId == search.UplataId);
+            }
+
+            return query;
+        }
     }
 }

@@ -11,5 +11,16 @@ namespace eTeatar.Services
         {
 
         }
+
+        public override IQueryable<Zanr> AddFilter(ZanrSearchObject search, IQueryable<Zanr> query)
+        {
+            query = base.AddFilter(search, query);
+            if (!string.IsNullOrEmpty(search?.NazivGTE))
+            {
+                query = query.Where(x => x.Naziv.StartsWith(search.NazivGTE));
+            }
+
+            return query;
+        }
     }
 }

@@ -11,5 +11,32 @@ namespace eTeatar.Services
         {
 
         }
+
+        public override IQueryable<Uplatum> AddFilter(UplataSearchObject search, IQueryable<Uplatum> query)
+        {
+            query = base.AddFilter(search, query);
+            if (search?.IznosGTE != null)
+            {
+                query = query.Where(x => x.Iznos > search.IznosGTE);
+            }
+            if (search?.IznosLTE != null)
+            {
+                query = query.Where(x => x.Iznos < search.IznosLTE);
+            }
+            if (search?.DatumGTE != null)
+            {
+                query = query.Where(x => x.Datum > search.DatumGTE);
+            }
+            if (search?.DatumLTE != null)
+            {
+                query = query.Where(x => x.Datum < search.DatumLTE);
+            }
+            if (search?.KorisnikId != null)
+            {
+                query = query.Where(x => x.KorisnikId == search.KorisnikId);
+            }
+
+            return query;
+        }
     }
 }

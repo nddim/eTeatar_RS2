@@ -11,7 +11,57 @@ namespace eTeatar.Services
         public PredstavaService(ETeatarContext _eTeatarContext, IMapper _mapper) : base (_eTeatarContext, _mapper)
         {
 
-        } 
-        
+        }
+
+        public override IQueryable<Database.Predstava> AddFilter(PredstavaSearchObject search, IQueryable<Database.Predstava> query)
+        {
+            query = base.AddFilter(search, query);
+            if (!string.IsNullOrEmpty(search?.NazivGTE))
+            {
+                query = query.Where(x => x.Naziv.StartsWith(search.NazivGTE));
+            }
+            if (search?.TrajanjePocetakGTE != null)
+            {
+                query = query.Where(x => x.TrajanjePocetak > search.TrajanjePocetakGTE);
+            }
+            if(search?.TrajanjePocetakLTE != null)
+            {
+                query = query.Where(x => x.TrajanjePocetak < search.TrajanjePocetakLTE);
+            }
+            if (search?.TrajanjeKrajGTE != null)
+            {
+                query = query.Where(x => x.TrajanjeKraj > search.TrajanjeKrajGTE);
+            }
+            if (search?.TrajanjeKrajLTE != null)
+            {
+                query = query.Where(x => x.TrajanjeKraj < search.TrajanjeKrajLTE);
+            }
+            if (!string.IsNullOrEmpty(search?.ProdukcijaGTE))
+            {
+                query = query.Where(x => x.Naziv.StartsWith(search.ProdukcijaGTE));
+            }
+            if (!string.IsNullOrEmpty(search?.KoreografijaGTE))
+            {
+                query = query.Where(x => x.Naziv.StartsWith(search.KoreografijaGTE));
+            }
+            if (!string.IsNullOrEmpty(search?.ScenografijaGTE))
+            {
+                query = query.Where(x => x.Naziv.StartsWith(search.ScenografijaGTE));
+            }
+            if( search?.CijenaGTE != null)
+            {
+                query = query.Where(x => x.Cijena > search.CijenaGTE);
+            }
+            if (search?.CijenaLTE != null)
+            {
+                query = query.Where(x => x.Cijena < search.CijenaLTE);
+            }
+            if (search?.RepertoarId != null)
+            {
+                query = query.Where(x => x.PredstavaRepertoars.Any(pr => pr.RepertoarId == search.RepertoarId));
+            }
+
+            return query;
+        }
     }
 }

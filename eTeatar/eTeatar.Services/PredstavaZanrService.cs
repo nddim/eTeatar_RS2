@@ -11,5 +11,20 @@ namespace eTeatar.Services
         {
 
         }
+
+        public override IQueryable<PredstavaZanr> AddFilter(PredstavaZanrSearchObject search, IQueryable<PredstavaZanr> query)
+        {
+            query = base.AddFilter(search, query);
+            if (search?.PredstavaId != null)
+            {
+                query = query.Where(x => x.PredstavaId == search.PredstavaId);
+            }
+            if (search?.ZanrId != null)
+            {
+                query = query.Where(x => x.ZanrId == search.ZanrId);
+            }
+
+            return query;
+        }
     }
 }

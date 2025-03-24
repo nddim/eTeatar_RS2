@@ -8,10 +8,12 @@ namespace eTeatar.Model.SearchObjects
     {
         public string? ImeGTE { get; set; }
         public string? PrezimeGTE { get; set; }
-        public string? Email { get; set; }
+        public string? EmailGTE { get; set; }
         public string? KorisnickoImeGTE { get; set; }
-        public bool? IsKorisnikUlogaIncluded { get; set; }
-        public string? OrderBy { get; set; }
+        public string? Telefon { get; set; }
+        public DateTime? DatumRodenjaGTE { get; set; }
+        public DateTime? DatumRodenjaLTE { get; set; }
+        public int? UlogaId { get; set; }
 
     }
 }

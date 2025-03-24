@@ -11,5 +11,19 @@ namespace eTeatar.Services
         {
 
         }
+
+        public override IQueryable<PredstavaGlumac> AddFilter(PredstavaGlumacSearchObject search, IQueryable<PredstavaGlumac> query)
+        {
+            query = base.AddFilter(search, query);
+            if (search?.PredstavaId != null)
+            {
+                query = query.Where(x => x.PredstavaId == search.PredstavaId);
+            }
+            if (search?.GlumacId != null)
+            {
+                query = query.Where(x => x.GlumacId == search.GlumacId);
+            }
+            return query;
+        }
     }
 }

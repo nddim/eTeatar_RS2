@@ -8,6 +8,8 @@ namespace eTeatar.Model.SearchObjects
     {
         public string? NazivGTE { get; set; }
         public DateTime? TrajanjePocetakGTE { get; set; }
+        public DateTime? TrajanjePocetakLTE { get; set; }
+        public DateTime? TrajanjeKrajGTE { get; set; }
         public DateTime? TrajanjeKrajLTE { get; set; }
         public string? ProdukcijaGTE { get; set; }
         public string? KoreografijaGTE { get; set; }

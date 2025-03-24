@@ -26,6 +26,7 @@ namespace eTeatar.Services
         public override IQueryable<Database.Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Database.Korisnik> query)
         {
             query = base.AddFilter(search, query);
+
             if (!string.IsNullOrWhiteSpace(search?.ImeGTE))
             {
                 query = query.Where(x => x.Ime.StartsWith(search.ImeGTE));
@@ -34,21 +35,25 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.Prezime.StartsWith(search.PrezimeGTE));
             }
-            if (!string.IsNullOrWhiteSpace(search?.Email))
+            if (!string.IsNullOrWhiteSpace(search?.EmailGTE))
             {
-                query = query.Where(x => x.Email == search.Email);
+                query = query.Where(x => x.Prezime.StartsWith(search.EmailGTE));
             }
-            if (!string.IsNullOrWhiteSpace(search?.KorisnickoImeGTE))
+            if (!string.IsNullOrWhiteSpace(search?.Telefon))
             {
-                query = query.Where(x => x.KorisnickoIme == search.KorisnickoImeGTE || x.KorisnickoIme.Contains(search.KorisnickoImeGTE) );
+                query = query.Where(x => x.Telefon == search.Telefon);
             }
-            if (search?.IsKorisnikUlogaIncluded == true)
+            if (search?.DatumRodenjaGTE != null)
             {
-                query = query.Include(x => x.KorisnikUlogas).ThenInclude(x => x.Uloga);
+                query = query.Where(x => x.DatumRodenja > search.DatumRodenjaGTE);
             }
-            if (!string.IsNullOrWhiteSpace(search?.OrderBy))
+            if (search?.DatumRodenjaLTE != null)
             {
-                query = query.OrderBy(search.OrderBy);
+                query = query.Where(x => x.DatumRodenja < search.DatumRodenjaLTE);
+            }
+            if (search?.UlogaId != null )
+            {
+                query = query.Include(x => x.KorisnikUlogas).ThenInclude(x => x.Uloga).Where(x=>x.KorisnikUlogas.Any(ku=>ku.UlogaId==search.UlogaId));
             }
             int count = query.Count();
             if (search?.Page.HasValue == true && search?.PageSize.HasValue == true)

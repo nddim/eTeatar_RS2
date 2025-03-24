@@ -11,6 +11,16 @@ namespace eTeatar.Services
         {
 
         }
+
+        public override IQueryable<Uloga> AddFilter(UlogaSearchObject search, IQueryable<Uloga> query)
+        {
+            query = base.AddFilter(search, query);
+            if (!string.IsNullOrEmpty(search?.Naziv))
+            {
+                query = query.Where(x => x.Naziv == search.Naziv);
+            }
+            return query;
+        }
     }
         
 }
