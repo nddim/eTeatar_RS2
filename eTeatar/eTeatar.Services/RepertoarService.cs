@@ -1,7 +1,11 @@
-﻿using eTeatar.Model.Requests;
+﻿using eTeatar.Model;
+using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
+using PredstavaRepertoar = eTeatar.Services.Database.PredstavaRepertoar;
+using Repertoar = eTeatar.Services.Database.Repertoar;
+
 namespace eTeatar.Services
 {
     public class RepertoarService : BaseCRUDService<Model.Repertoar, RepertoarSearchObject, Database.Repertoar, RepertoarInsertRequest, RepertoarUpdateRequest>, IRepertoarService
@@ -39,6 +43,33 @@ namespace eTeatar.Services
                 query = query.Where(x => x.PredstavaRepertoars.Any(pr => pr.PredstavaId == search.PredstavaId));
             }
             return query;
+        }
+
+        public override void BeforeInsert(RepertoarInsertRequest request, Repertoar entity)
+        {
+            if(request.DatumKraja > request.DatumPocetka)
+            {
+                throw new UserException("Datum kraja ne smije biti veći od datuma početka!");
+            }
+            base.BeforeInsert(request, entity);
+        }
+
+        public override void AfterInsert(RepertoarInsertRequest request, Repertoar entity)
+        {
+            if (request?.Predstave != null)
+            {
+                foreach (var predstavaId in request.Predstave)
+                {
+                    Context.PredstavaRepertoars.Add(new PredstavaRepertoar
+                    {
+                        PredstavaId = predstavaId,
+                        RepertoarId = entity.RepertoarId,
+                    });
+                }
+
+                Context.SaveChanges();
+            }
+            base.AfterInsert(request, entity);
         }
     }
 }

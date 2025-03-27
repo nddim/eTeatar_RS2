@@ -24,6 +24,7 @@ builder.Services.AddTransient<IRepertoarService, RepertoarService>();
 builder.Services.AddTransient<IRezervacijaService, RezervacijaService>();
 builder.Services.AddTransient<IRezervacijaSjedisteService, RezervacijaSjedisteService>();
 builder.Services.AddTransient<ISjedisteService, SjedisteService>();
+builder.Services.AddTransient<IStavkaUplateService, StavkaUplateService>();
 builder.Services.AddTransient<ITerminService, TerminService>();
 builder.Services.AddTransient<IUlogaService, UlogaService>();
 builder.Services.AddTransient<IUplataService, UplataService>();

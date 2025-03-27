@@ -8,7 +8,7 @@ namespace eTeatar.Model
     {
         public int OcjenaId { get; set; }
 
-        public int Ocjena1 { get; set; }
+        public int Vrijednost { get; set; }
 
         public string Komentar { get; set; }
 

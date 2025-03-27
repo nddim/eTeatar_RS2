@@ -1,7 +1,9 @@
-﻿using eTeatar.Model.Requests;
+﻿using eTeatar.Model;
+using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
+using Ocjena = eTeatar.Services.Database.Ocjena;
 
 namespace eTeatar.Services
 {
@@ -40,6 +42,35 @@ namespace eTeatar.Services
                 query = query.Where(x => x.KorisnikId == search.KorisnikId);
             }
             return query;
+        }
+
+        public override void BeforeInsert(OcjenaInsertRequest request, Ocjena entity)
+        {
+            var ocjena = Context.Ocjenas.Where(x =>
+                x.KorisnikId == request.KorisnikId && x.PredstavaId == request.PredstavaId).FirstOrDefault();
+            if (ocjena != null)
+            {
+                throw new UserException("Već postoji recenzija korisnika za predstavu!");
+            }
+
+            if (request.Vrijednost < 1 || request.Vrijednost > 5)
+            {
+                throw new UserException("Vrijednost ocjene treba biti izmedu 1 i 5!")
+            }
+            
+            entity.DatumKreiranja = DateTime.Now;
+            base.BeforeInsert(request, entity);
+        }
+
+        public double getProsjekOcjena(int predstavaId)
+        {
+            var ocjene = Context.Ocjenas.Where(x => x.PredstavaId == predstavaId).ToList();
+            if (ocjene.Count == 0)
+            {
+                throw new UserException("Nema ocjena za datu predstavu!");
+            }
+
+            return ocjene.Average(x => x.Vrijednost);
         }
     }
 }

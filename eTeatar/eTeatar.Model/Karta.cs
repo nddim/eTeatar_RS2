@@ -8,19 +8,19 @@ namespace eTeatar.Model
     {
         public int KartaId { get; set; }
 
-        public float Cijena { get; set; }
+        public decimal Cijena { get; set; }
 
         public int SjedisteId { get; set; }
 
         public int TerminId { get; set; }
 
-        public int RezervacijaId { get; set; }
+        public int? RezervacijaId { get; set; }
 
         public int KorisnikId { get; set; }
 
         public virtual Korisnik Korisnik { get; set; }
 
-        public virtual Rezervacija Rezervacija { get; set; } 
+        public virtual Rezervacija? Rezervacija { get; set; } 
 
         public virtual Sjediste Sjediste { get; set; } 
 

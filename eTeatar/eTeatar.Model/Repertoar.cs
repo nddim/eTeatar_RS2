@@ -16,8 +16,6 @@ namespace eTeatar.Model
 
         public DateTime DatumKraja { get; set; }
 
-        public int PredstavaId { get; set; }
-
-        public virtual Predstava Predstava { get; set; }
+        public virtual ICollection<PredstavaRepertoar> PredstavaRepertoars { get; set; } = new List<PredstavaRepertoar>();
     }
 }

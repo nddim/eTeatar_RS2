@@ -10,18 +10,18 @@ namespace eTeatar.Model
 
         public string Status { get; set; }
 
-        public int SjedisteId { get; set; }
-
         public int TerminId { get; set; }
 
         public int KorisnikId { get; set; }
 
-        public virtual ICollection<Karta> Karta { get; set; } = new List<Karta>();
+        public virtual Termin Termin { get; set; } = null!;
 
         public virtual Korisnik Korisnik { get; set; }
 
-        public virtual ICollection<Sjediste> Sjedistes { get; set; } = new List<Sjediste>();
+        public virtual ICollection<Karta> Karta { get; set; } = new List<Karta>();
 
-        public virtual ICollection<Termin> Termins { get; set; } = new List<Termin>();
+        public virtual ICollection<RezervacijaSjediste> RezervacijaSjedistes { get; set; } = new List<RezervacijaSjediste>();
+
+
     }
 }

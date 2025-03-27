@@ -6,13 +6,13 @@ namespace eTeatar.Model.Requests
 {
     public class RepertoarUpdateRequest
     {
-        public string Naziv { get; set; }
+        public string? Naziv { get; set; }
 
-        public string Opis { get; set; }
+        public string? Opis { get; set; }
 
-        public DateTime DatumPocetka { get; set; }
+        public DateTime? DatumPocetka { get; set; }
 
-        public DateTime DatumKraja { get; set; }
+        public DateTime? DatumKraja { get; set; }
 
         public List <int>? PredstavaId { get; set; }
     }

@@ -1,7 +1,9 @@
-﻿using eTeatar.Model.Requests;
+﻿using eTeatar.Model;
+using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
+using PredstavaZanr = eTeatar.Services.Database.PredstavaZanr;
 
 namespace eTeatar.Services
 {
@@ -26,5 +28,25 @@ namespace eTeatar.Services
 
             return query;
         }
+        public override void BeforeInsert(PredstavaZanrUpsertRequest request, PredstavaZanr entity)
+        {
+            var predstavaZanr = Context.PredstavaZanrs.Where(x => x.PredstavaId == request.PredstavaId && x.ZanrId == request.ZanrId).FirstOrDefault();
+            if (predstavaZanr != null)
+            {
+                throw new UserException("Žanr je već dodjeljen predstavi!");
+            }
+            base.BeforeInsert(request, entity);
+        }
+        public override void BeforeUpdate(PredstavaZanrUpsertRequest request, PredstavaZanr entity)
+        {
+            var predstavaZanr = Context.PredstavaZanrs.Where(x => x.PredstavaId == request.PredstavaId && x.ZanrId == request.ZanrId).FirstOrDefault();
+            if (predstavaZanr != null)
+            {
+                throw new UserException("Žanr je već dodjeljen predstavi!");
+            }
+            base.BeforeUpdate(request, entity);
+        }
+
+        
     }
 }

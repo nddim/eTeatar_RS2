@@ -85,7 +85,7 @@ namespace eTeatar.Services
             {
                 if (request.Lozinka != request.LozinkaPotvrda)
                 {
-                    throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste!");
+                    throw new UserException("Lozinke se ne podudaraju!");
                 }
 
                 entity.LozinkaSalt = GenerateSalt();

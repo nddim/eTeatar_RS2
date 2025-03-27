@@ -20,34 +20,38 @@ namespace eTeatar.Services
         public virtual TModel Insert(TInsert request)
         {
             TDbEntity entity = Mapper.Map<TDbEntity>(request);
+
             BeforeInsert(request, entity);
+
             Context.Add(entity);
+
             Context.SaveChanges();
+
+            AfterInsert(request, entity);
 
             return Mapper.Map<TModel>(entity);
         }
 
-        public virtual void BeforeInsert(TInsert request, TDbEntity entity)
-        {
+        public virtual void BeforeInsert(TInsert request, TDbEntity entity) { }
+        public virtual void AfterInsert(TInsert request, TDbEntity entity) { }
 
-        }
         public virtual TModel Update (int id, TUpdate request)
         {
             var set = Context.Set<TDbEntity>();
 
             var entity = set.Find(id);
 
-            Mapper.Map(entity, request); 
+            Mapper.Map(request, entity);
 
             BeforeUpdate(request, entity);
 
             Context.SaveChanges();
 
+            AfterUpdate(request, entity);
+
             return Mapper.Map<TModel>(entity);
         }
-        public virtual void BeforeUpdate(TUpdate request, TDbEntity entity)
-        {
-
-        }
+        public virtual void BeforeUpdate(TUpdate request, TDbEntity entity) { }
+        public virtual void AfterUpdate(TUpdate request, TDbEntity entity) { }
     }
 }

@@ -1,7 +1,9 @@
-﻿using eTeatar.Model.Requests;
+﻿using eTeatar.Model;
+using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
+using Sjediste = eTeatar.Services.Database.Sjediste;
 
 namespace eTeatar.Services
 {
@@ -22,7 +24,7 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.Kolona == search.Kolona);
             }
-            if (!string.IsNullOrEmpty(search?.Status))
+            if (search?.Status != null)
             {
                 query = query.Where(x => x.Status == search.Status);
             }
@@ -32,6 +34,26 @@ namespace eTeatar.Services
             }
 
             return query;
+        }
+
+        public override void BeforeInsert(SjedisteUpsertRequest request, Sjediste entity)
+        {
+            var sjediste = Context.Sjedistes.Where(x => x.Red == request.Red && x.Kolona == request.Kolona && x.DvoranaId == request.DvoranaId)?.FirstOrDefault();
+            if (sjediste != null)
+            {
+                throw new UserException("Već postoji sjediste s tim redom i kolonom u dvorani!");
+            }
+            base.BeforeInsert(request, entity);
+        }
+
+        public override void BeforeUpdate(SjedisteUpsertRequest request, Sjediste entity)
+        {
+            var sjediste = Context.Sjedistes.Where(x => x.Red == request.Red && x.Kolona == request.Kolona && x.DvoranaId == request.DvoranaId)?.FirstOrDefault(); ;
+            if (sjediste != null)
+            {
+                throw new UserException("Već postoji sjediste s tim redom i kolonom u dvorani!");
+            }
+            base.BeforeUpdate(request, entity);
         }
     }
 }

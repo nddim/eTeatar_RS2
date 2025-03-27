@@ -1,8 +1,11 @@
-﻿using eTeatar.Model.Requests;
+﻿using eTeatar.Model;
+using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
 using Predstava = eTeatar.Model.Predstava;
+using PredstavaGlumac = eTeatar.Services.Database.PredstavaGlumac;
+using PredstavaZanr = eTeatar.Services.Database.PredstavaZanr;
 
 namespace eTeatar.Services
 {
@@ -62,6 +65,51 @@ namespace eTeatar.Services
             }
 
             return query;
+        }
+
+        public override void BeforeInsert(PredstavaInsertRequest request, Database.Predstava entity)
+        {
+            var predstavaNaziv = Context.Predstavas.Where(x => x.Naziv == request.Naziv).FirstOrDefault();
+            if (predstavaNaziv != null)
+            {
+                throw new UserException("Već postoji predstava s tim imenom!");
+            }
+
+            if (request.TrajanjeKraj < request.TrajanjePocetak)
+            {
+                throw new UserException("Vrijeme kraja ne smije biti veći od vremena početka!");
+            }
+        }
+
+        public override void AfterInsert(PredstavaInsertRequest request, Database.Predstava entity)
+        {
+            if (request?.Zanrovi != null)
+            {
+                foreach (var zanrId in request.Zanrovi)
+                {
+                    Context.PredstavaZanrs.Add(new PredstavaZanr
+                    {
+                        ZanrId = zanrId,
+                        PredstavaId = entity.PredstavaId,
+                    });
+                }
+
+                Context.SaveChanges();
+            }
+
+            if (request?.Glumci != null)
+            {
+                foreach (var glumacId in request.Glumci)
+                {
+                    Context.PredstavaGlumacs.Add(new PredstavaGlumac
+                    {
+                        GlumacId = glumacId,
+                        PredstavaId = entity.PredstavaId,
+                    });
+                }
+
+                Context.SaveChanges();
+            }
         }
     }
 }

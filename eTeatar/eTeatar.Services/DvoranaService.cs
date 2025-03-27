@@ -1,7 +1,9 @@
-﻿using eTeatar.Model.Requests;
+﻿using eTeatar.Model;
+using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
+using Dvorana = eTeatar.Services.Database.Dvorana;
 
 namespace eTeatar.Services
 {
@@ -28,6 +30,33 @@ namespace eTeatar.Services
             }
 
             return query;
+        }
+
+        public override void BeforeInsert(DvoranaUpsertRequest request, Dvorana entity)
+        {
+            var dvorana = Context.Dvoranas.Where(x => x.Naziv == request.Naziv).FirstOrDefault();
+            if (dvorana != null)
+            {
+                throw new UserException("Već postoji dvorana s tim imenom!");
+            }
+            if (request.Kapacitet <= 10)
+            {
+                throw new UserException("Kapacitet ne smije biti manji od 10");
+            }
+        }
+
+        public override void BeforeUpdate(DvoranaUpsertRequest request, Dvorana entity)
+        {
+            
+            var dvoranaNaziv = Context.Dvoranas.Where(x => x.Naziv == request.Naziv).FirstOrDefault();
+            if (dvoranaNaziv != null)
+            {
+                throw new UserException("Već postoji dvorana s tim imenom!");
+            }
+            if (request.Kapacitet <= 10)
+            {
+                throw new UserException("Kapacitet ne smije biti manji od 10");
+            }
         }
     }
 }

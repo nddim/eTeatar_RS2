@@ -12,16 +12,14 @@ namespace eTeatar.Model
 
         public string Kolona { get; set; } 
 
-        public bool Status { get; set; }
+        public string Status { get; set; }
 
         public int DvoranaId { get; set; }
-
-        public int RezervacijaId { get; set; }
 
         public virtual Dvorana Dvorana { get; set; }
 
         public virtual ICollection<Karta> Karta { get; set; } = new List<Karta>();
 
-        public virtual Rezervacija Rezervacija { get; set; } 
+        public virtual ICollection<RezervacijaSjediste> RezervacijaSjedistes { get; set; } = new List<RezervacijaSjediste>();
     }
 }

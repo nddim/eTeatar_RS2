@@ -31,7 +31,6 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.KorisnikId == search.KorisnikId);
             }
-
             if (search?.TerminId != null)
             {
                 query = query.Where(x => x.TerminId == search.TerminId);
@@ -39,5 +38,32 @@ namespace eTeatar.Services
 
             return query;
         }
+
+        public override void BeforeInsert(KartaInsertRequest request, Kartum entity)
+        {
+            var termin = Context.Termins.Find(request.TerminId);
+            if(termin.Status != "Aktivan")
+            {
+                throw new Exception("Termin nije aktivan!");
+            }
+
+            var predstava = Context.Predstavas.FirstOrDefault(x => x.PredstavaId == termin.PredstavaId);
+            if (predstava == null)
+            {
+                throw new UserException("Predstava nije pronađena!");
+            }
+
+            bool jeLiSjedisteZauzeto = Context.Karta.Any(x => x.TerminId == request.TerminId && x.SjedisteId == request.SjedisteId);
+            if (jeLiSjedisteZauzeto)
+            {
+                throw new Exception("Sjedište je već zauzeto!");
+            }
+
+            entity.Cijena = predstava.Cijena;
+            entity.RezervacijaId = null;
+
+            base.BeforeInsert(request, entity);
+        }
+
     }
 }

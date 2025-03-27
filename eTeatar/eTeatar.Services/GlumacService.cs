@@ -1,8 +1,10 @@
-﻿using eTeatar.Model.Requests;
+﻿using eTeatar.Model;
+using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using Glumac = eTeatar.Services.Database.Glumac;
 
 namespace eTeatar.Services
 {
@@ -30,6 +32,27 @@ namespace eTeatar.Services
             }
 
             return query;
+        }
+
+        public override void BeforeInsert(GlumacInsertRequest request, Glumac entity)
+        {
+            var glumacImePrezime = Context.Glumacs.Where(x => x.Ime == request.Ime && x.Prezime == request.Prezime).FirstOrDefault();
+            if (glumacImePrezime != null)
+            {
+                throw new UserException("Već postoji glumac s tim imenom i prezimenom!");
+            }
+
+            base.BeforeInsert(request, entity);
+        }
+
+        public override void BeforeUpdate(GlumacUpdateRequest request, Glumac entity)
+        {
+            var glumacImePrezime = Context.Glumacs.Where(x => x.Ime == request.Ime && x.Prezime == request.Prezime).FirstOrDefault();
+            if (glumacImePrezime != null)
+            {
+                throw new UserException("Već postoji glumac s tim imenom i prezimenom!");
+            }
+            base.BeforeUpdate(request, entity);
         }
     }
 }

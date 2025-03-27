@@ -6,5 +6,6 @@ namespace eTeatar.Services
 {
     public interface IOcjenaService : ICRUDService<Ocjena, OcjenaSearchObject, OcjenaInsertRequest, OcjenaUpdateRequest>
     {
+        double getProsjekOcjena(int predstavaId);
     }
 }

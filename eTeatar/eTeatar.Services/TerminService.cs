@@ -1,8 +1,10 @@
-﻿using eTeatar.Model.Requests;
+﻿using eTeatar.Model;
+using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using Termin = eTeatar.Services.Database.Termin;
 
 namespace eTeatar.Services
 {
@@ -41,6 +43,30 @@ namespace eTeatar.Services
             }
 
             return query;
+        }
+
+        public override void BeforeInsert(TerminUpsertRequest request, Termin entity)
+        {
+            var terminPredstave = Context.Termins.Where(x => x.Datum == request.Datum && x.PredstavaId == request.PredstavaId).FirstOrDefault();
+            if (terminPredstave != null)
+            {
+                throw new UserException("Već postoji termin predstave u to vrijeme!");
+            }
+            base.BeforeInsert(request, entity);
+        }
+
+        public override void BeforeUpdate(TerminUpsertRequest request, Termin entity)
+        {
+            if (provjeriKonflikte(request.Datum, request.PredstavaId))
+            {
+                throw new UserException("Već postoji termin predstave u to vrijeme!");
+            }
+            base.BeforeUpdate(request, entity);
+        }
+        public bool provjeriKonflikte(DateTime datum, int predstavaId)
+        {
+            bool termini = Context.Termins.Any(x => x.Datum == datum && x.PredstavaId == predstavaId);
+            return termini;
         }
     }
 }

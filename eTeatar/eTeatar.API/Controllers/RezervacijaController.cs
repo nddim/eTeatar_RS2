@@ -13,5 +13,16 @@ namespace eTeatar.API.Controllers
         public RezervacijaController(IRezervacijaService service) : base(service)
         {
         }
+
+        [HttpPut("potvrdi")]
+        public Rezervacija PotvrdiRezervaciju(int rezervacijaId)
+        {
+            return (_service as IRezervacijaService).potvrdiRezervaciju(rezervacijaId);
+        }
+        [HttpPut("otkazi")]
+        public Rezervacija OtkaziRezrvaciju(int rezervacijaId)
+        {
+            return (_service as IRezervacijaService).otkaziRezervaciju(rezervacijaId);
+        }
     }
 }
