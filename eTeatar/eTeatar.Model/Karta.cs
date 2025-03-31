@@ -17,13 +17,5 @@ namespace eTeatar.Model
         public int? RezervacijaId { get; set; }
 
         public int KorisnikId { get; set; }
-
-        public virtual Korisnik Korisnik { get; set; }
-
-        public virtual Rezervacija? Rezervacija { get; set; } 
-
-        public virtual Sjediste Sjediste { get; set; } 
-
-        public virtual Termin Termin { get; set; }
     }
 }

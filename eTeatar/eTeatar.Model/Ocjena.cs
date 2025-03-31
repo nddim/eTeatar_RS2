@@ -17,9 +17,5 @@ namespace eTeatar.Model
         public int PredstavaId { get; set; }
 
         public int KorisnikId { get; set; }
-
-        public virtual Korisnik Korisnik { get; set; }
-
-        public virtual Predstava Predstava { get; set; }
     }
 }

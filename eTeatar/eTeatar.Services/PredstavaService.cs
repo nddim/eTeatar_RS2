@@ -77,7 +77,7 @@ namespace eTeatar.Services
 
             if (request.TrajanjeKraj < request.TrajanjePocetak)
             {
-                throw new UserException("Vrijeme kraja ne smije biti veći od vremena početka!");
+                throw new UserException("Datum kraja ne smije biti manji od datuma početka!");
             }
         }
 

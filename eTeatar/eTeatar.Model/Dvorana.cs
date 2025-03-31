@@ -13,7 +13,5 @@ namespace eTeatar.Model
         public int Kapacitet { get; set; }
 
         public virtual ICollection<Sjediste> Sjedistes { get; set; } = new List<Sjediste>();
-
-        public virtual ICollection<Termin> Termins { get; set; } = new List<Termin>();
     }
 }

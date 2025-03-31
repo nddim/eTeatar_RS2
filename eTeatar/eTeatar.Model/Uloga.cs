@@ -14,5 +14,3 @@ namespace eTeatar.Model
         public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; set; } = new List<KorisnikUloga>();
     }
 }
-
-

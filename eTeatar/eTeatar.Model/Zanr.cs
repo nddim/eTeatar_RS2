@@ -9,7 +9,5 @@ namespace eTeatar.Model
         public int ZanrId { get; set; }
 
         public string Naziv { get; set; } 
-
-        public virtual ICollection<PredstavaZanr> PredstavaZanrs { get; set; } = new List<PredstavaZanr>();
     }
 }

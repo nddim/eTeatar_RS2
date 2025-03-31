@@ -55,7 +55,7 @@ namespace eTeatar.Services
 
             if (request.Vrijednost < 1 || request.Vrijednost > 5)
             {
-                throw new UserException("Vrijednost ocjene treba biti izmedu 1 i 5!")
+                throw new UserException("Vrijednost ocjene treba biti izmedu 1 i 5!");
             }
             
             entity.DatumKreiranja = DateTime.Now;

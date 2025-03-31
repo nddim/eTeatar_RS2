@@ -15,7 +15,5 @@ namespace eTeatar.Model
         public DateTime Datum { get; set; }
 
         public int KorisnikId { get; set; }
-
-        public virtual Korisnik Korisnik { get; set; }
     }
 }

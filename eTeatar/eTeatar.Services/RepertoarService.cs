@@ -47,9 +47,9 @@ namespace eTeatar.Services
 
         public override void BeforeInsert(RepertoarInsertRequest request, Repertoar entity)
         {
-            if(request.DatumKraja > request.DatumPocetka)
+            if(request.DatumKraja < request.DatumPocetka)
             {
-                throw new UserException("Datum kraja ne smije biti veći od datuma početka!");
+                throw new UserException("Datum kraja ne smije biti manji od datuma početka!");
             }
             base.BeforeInsert(request, entity);
         }

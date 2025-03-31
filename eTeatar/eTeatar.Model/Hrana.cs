@@ -11,7 +11,5 @@ namespace eTeatar.Model
         public string Naziv { get; set; }
 
         public decimal Cijena { get; set; }
-
-        public virtual ICollection<StavkaUplate> StavkaUplates { get; set; } = new List<StavkaUplate>();
     }
 }

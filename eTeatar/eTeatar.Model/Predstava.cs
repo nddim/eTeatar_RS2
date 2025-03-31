@@ -25,15 +25,5 @@ namespace eTeatar.Model
         public decimal Cijena { get; set; }
 
         public byte[]? Slika { get; set; }
-
-        public virtual ICollection<Ocjena> Ocjenas { get; set; } = new List<Ocjena>();
-
-        public virtual ICollection<PredstavaGlumac> PredstavaGlumacs { get; set; } = new List<PredstavaGlumac>();
-
-        public virtual ICollection<PredstavaZanr> PredstavaZanrs { get; set; } = new List<PredstavaZanr>();
-
-        public virtual ICollection<PredstavaRepertoar> PredstavaRepertoars { get; set; } = new List<PredstavaRepertoar>();
-
-        public virtual ICollection<Termin> Termins { get; set; } = new List<Termin>();
     }
 }

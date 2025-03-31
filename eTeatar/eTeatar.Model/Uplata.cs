@@ -8,13 +8,11 @@ namespace eTeatar.Model
     {
         public int UplataId { get; set; }
 
-        public float Iznos { get; set; }
+        public decimal Iznos { get; set; }
 
         public DateTime Datum { get; set; }
 
         public int KorisnikId { get; set; }
-
-        public virtual Korisnik Korisnik { get; set; }
 
         public virtual ICollection<StavkaUplate> StavkaUplates { get; set; } = new List<StavkaUplate>();
     }

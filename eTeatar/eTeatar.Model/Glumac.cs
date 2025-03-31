@@ -13,7 +13,5 @@ namespace eTeatar.Model
         public string Prezime { get; set; } 
 
         public string Biografija { get; set; }
-
-        public virtual ICollection<PredstavaGlumac> PredstavaGlumacs { get; set; } = new List<PredstavaGlumac>();
     }
 }

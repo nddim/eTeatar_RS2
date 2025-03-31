@@ -16,10 +16,6 @@ namespace eTeatar.Model
 
         public int DvoranaId { get; set; }
 
-        public virtual Dvorana Dvorana { get; set; }
-
-        public virtual ICollection<Karta> Karta { get; set; } = new List<Karta>();
-
         public virtual ICollection<RezervacijaSjediste> RezervacijaSjedistes { get; set; } = new List<RezervacijaSjediste>();
     }
 }

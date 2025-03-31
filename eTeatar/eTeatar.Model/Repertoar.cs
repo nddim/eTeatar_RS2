@@ -6,7 +6,7 @@ namespace eTeatar.Model
 {
     public class Repertoar
     {
-        public int ReperatoarId { get; set; }
+        public int RepertoarId { get; set; }
 
         public string Naziv { get; set; }
 
@@ -15,7 +15,5 @@ namespace eTeatar.Model
         public DateTime DatumPocetka { get; set; }
 
         public DateTime DatumKraja { get; set; }
-
-        public virtual ICollection<PredstavaRepertoar> PredstavaRepertoars { get; set; } = new List<PredstavaRepertoar>();
     }
 }
