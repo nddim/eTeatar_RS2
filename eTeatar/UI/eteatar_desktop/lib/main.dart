@@ -1,3 +1,6 @@
+import 'package:eteatar_desktop/providers/auth_provider.dart';
+import 'package:eteatar_desktop/providers/predstava_provider.dart';
+import 'package:eteatar_desktop/screens/predstava_list_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -28,10 +31,55 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue, primary: Colors.red),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: LoginPage(),
+    );
+  }
+}
+
+class LoginPage extends StatelessWidget {
+  LoginPage({super.key});
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  @override Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar( title: const Text('Login'),),
+      body:  Center(
+        child: Center(
+          child:Container(constraints: BoxConstraints(maxHeight: 400, maxWidth: 400),
+          child:Card(
+            child:Column(
+              children: [
+                Image.asset("assets/images/logo.png", height: 100, width: 100,),
+                SizedBox(height: 10,),
+                TextField(controller: _usernameController,decoration: InputDecoration(labelText: "Username", prefixIcon: Icon(Icons.person)),),
+                SizedBox(height: 10,),
+                TextField(controller : _passwordController, decoration: InputDecoration(labelText: "Password", prefixIcon: Icon(Icons.lock)),),
+                SizedBox(height: 20,),
+                ElevatedButton(onPressed: () async {
+                  print("credentials: ${_usernameController.text} ${_passwordController.text}");
+                  PredstavaProvider predstavaProvider = PredstavaProvider();
+                  // predstavaProvider.get();
+                  AuthProvider.username = _usernameController.text;
+                  AuthProvider.password = _passwordController.text;
+                  try{
+                    var data = await predstavaProvider.get();
+                    Navigator.of(context).push(MaterialPageRoute(builder: (builder) => const PredstavaListScreen()));
+
+                  } on Exception catch (e) {
+                    showDialog(context: context, builder: (context) => AlertDialog(title: const Text("Error"), 
+                      actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text("Ok"))], content: Text(e.toString()),));
+                  }
+                }, child: const Text("Login"),),
+                ],
+              )
+          ),
+          ),
+        ),
+        ),
     );
   }
 }
