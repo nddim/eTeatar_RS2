@@ -1,6 +1,17 @@
 import 'package:eteatar_desktop/providers/auth_provider.dart';
+import 'package:eteatar_desktop/providers/dvorana_provider.dart';
 import 'package:eteatar_desktop/providers/glumac_provider.dart';
+import 'package:eteatar_desktop/providers/hrana_provider.dart';
+import 'package:eteatar_desktop/providers/ocjena_provider.dart';
 import 'package:eteatar_desktop/providers/predstava_provider.dart';
+import 'package:eteatar_desktop/providers/repertoar_provider.dart';
+import 'package:eteatar_desktop/providers/rezervacija_provider.dart';
+import 'package:eteatar_desktop/providers/sjediste_provider.dart';
+import 'package:eteatar_desktop/providers/stavka_uplate_provider.dart';
+import 'package:eteatar_desktop/providers/termin_provider.dart';
+import 'package:eteatar_desktop/providers/uloga_provider.dart';
+import 'package:eteatar_desktop/providers/uplata_provider.dart';
+import 'package:eteatar_desktop/providers/vijest_provider.dart';
 import 'package:eteatar_desktop/providers/zanr_provider.dart';
 import 'package:eteatar_desktop/screens/predstava_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +19,20 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => PredstavaProvider()),
+    ChangeNotifierProvider(create: (_) => DvoranaProvider()),
     ChangeNotifierProvider(create: (_) => GlumacProvider()),
+    ChangeNotifierProvider(create: (_) => HranaProvider()),
+    ChangeNotifierProvider(create: (_) => OcjenaProvider()),
+    ChangeNotifierProvider(create: (_) => PredstavaProvider()),
+    ChangeNotifierProvider(create: (_) => RepertoarProvider()),
+    ChangeNotifierProvider(create: (_) => RezervacijaProvider()),
+    ChangeNotifierProvider(create: (_) => SjedisteProvider()),
+    ChangeNotifierProvider(create: (_) => StavkaUplateProvider()),
+    ChangeNotifierProvider(create: (_) => TerminProvider()),
+    ChangeNotifierProvider(create: (_) => UlogaProvider()),
+    ChangeNotifierProvider(create: (_) => UplataProvider()),
+    ChangeNotifierProvider(create: (_) => VijestProvider()),
     ChangeNotifierProvider(create: (_) => ZanrProvider()),
-
-
   ], child: const MyApp(),));
 }
 
