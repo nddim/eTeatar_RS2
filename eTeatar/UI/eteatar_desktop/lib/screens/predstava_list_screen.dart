@@ -3,6 +3,7 @@ import 'package:eteatar_desktop/models/predstava.dart';
 import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/providers/predstava_provider.dart';
 import 'package:eteatar_desktop/providers/utils.dart';
+import 'package:eteatar_desktop/screens/predstava_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -60,7 +61,7 @@ class _PredstavaListScreenState extends State<PredstavaListScreen> {
 
         SizedBox(width: 10,),
         ElevatedButton(onPressed: () async{
-          
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => PredstavaDetailsScreen()));
         }, child: Text("Dodaj"))
         ],
       ),
@@ -69,22 +70,31 @@ class _PredstavaListScreenState extends State<PredstavaListScreen> {
 
   Widget _buildResultView(){
     return Expanded(
-      child: SingleChildScrollView(
+      child: Container(
+        width: double.infinity,
+        child: SingleChildScrollView(
         child: DataTable(
         columns: [
           DataColumn(label: Text("Id"), numeric:true),
           DataColumn(label: Text("Naziv")),
           DataColumn(label: Text("Cijena")),
-          //DataColumn(label: Text("Slika")),
+          DataColumn(label: Text("Slika")),
         ],
           rows: result?.resultList.map((e) => 
-          DataRow(cells: [
+          DataRow(
+            onSelectChanged: (selected) => {
+              if(selected == true){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => PredstavaDetailsScreen(predstava: e,)))
+              }
+            },
+            cells: [
             DataCell(Text(e.predstavaId.toString())),
             DataCell(Text(e.naziv ?? "")),
             DataCell(Text(formatNumber(e.cijena))),
-            //DataCell(e.slika != null ? Container(width: 100, height: 100, child: imageFromString(e.slika!),): Text(""))
+            DataCell(e.slika != null ? Container(width: 100, height: 100, child: imageFromString(e.slika!),): Text(""))
           ])).toList().cast<DataRow>() ?? [],
           ),
+      )
       )
     );
   }

@@ -8,6 +8,13 @@ class Predstava {
   String? naziv;
   double? cijena;
   String? slika;
+  String? opis;
+  String? produkcija;
+  String? koreografija;
+  String? scenografija;
+  DateTime? trajanjePocetak;
+  DateTime? trajanjeKraj;
+
   Predstava(
     this.predstavaId,
     this.naziv

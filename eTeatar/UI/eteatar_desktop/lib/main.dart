@@ -1,5 +1,7 @@
 import 'package:eteatar_desktop/providers/auth_provider.dart';
+import 'package:eteatar_desktop/providers/glumac_provider.dart';
 import 'package:eteatar_desktop/providers/predstava_provider.dart';
+import 'package:eteatar_desktop/providers/zanr_provider.dart';
 import 'package:eteatar_desktop/screens/predstava_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +9,9 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => PredstavaProvider()),
+    ChangeNotifierProvider(create: (_) => GlumacProvider()),
+    ChangeNotifierProvider(create: (_) => ZanrProvider()),
+
 
   ], child: const MyApp(),));
 }
