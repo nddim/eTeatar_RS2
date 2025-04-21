@@ -1,5 +1,9 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
+import 'package:eteatar_desktop/models/search_result.dart';
+import 'package:eteatar_desktop/models/uplata.dart';
+import 'package:eteatar_desktop/providers/uplata_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class UplataListScreen extends StatefulWidget {
   const UplataListScreen({super.key});
@@ -9,16 +13,77 @@ class UplataListScreen extends StatefulWidget {
 }
 
 class _UplataListScreenState extends State<UplataListScreen> {
+
+  late UplataProvider _uplataProvider;
+  SearchResult<Uplata>? result = null;
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _uplataProvider = context.read<UplataProvider>();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista uplata", Column(
-      children: [
-        Text("Lista uplata placeholder"),
-        SizedBox(height: 10,),
-        ElevatedButton(onPressed: () {
-          Navigator.of(context).pop();
-        }, child: const Text("Nazad"),),
-      ],
-    ),);
+    return MasterScreen("Lista uplata", 
+    Container(
+      child: Column(
+        children: [
+          _buildSearch(),
+          _buildResultView(),
+        ],
+      )
+    )); 
   }
+
+  TextEditingController _iznosEditingController = TextEditingController();
+
+  Widget _buildSearch(){
+    return Padding(padding: const EdgeInsets.all(8.0),
+    child: Row(
+      children:[
+        Expanded( child: TextField(controller: _iznosEditingController, decoration: InputDecoration(labelText: "Naziv"))),
+        ElevatedButton(onPressed: () async{
+        
+        var filter = {
+          "IznosGTE": _iznosEditingController.text
+        };
+        var data = await _uplataProvider.get(filter: filter);
+        setState(() {
+          result = data;
+        });
+
+        }, child: Text("Pretraga")),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResultView(){
+    return Expanded(
+      child: Container(
+        width: double.infinity,
+        child: SingleChildScrollView(
+        child: DataTable(
+        columns: const [
+          DataColumn(label: Text("Id"), numeric:true),
+          DataColumn(label: Text("Iznos")),
+          DataColumn(label: Text("Datum")),
+          DataColumn(label: Text("Korisnik")),
+
+        ],
+          rows: result?.resultList.map((e) => 
+          DataRow(
+            cells: [
+            DataCell(Text(e.uplataId.toString())),
+            DataCell(Text(e.iznos.toString())),
+            DataCell(Text(e.datum.toString())),
+            DataCell(Text(e.korisnikId.toString())),
+          ])).toList().cast<DataRow>() ?? [],
+          ),
+      )
+      )
+    );
+  }
+
 }

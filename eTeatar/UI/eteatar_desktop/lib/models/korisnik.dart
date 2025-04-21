@@ -12,7 +12,9 @@ class Korisnik {
   String? telefon;
   String? korisnickoIme;
   DateTime? datumRodenja;
-
+  String? lozinka;
+  String? lozinkaPotvrda;
+  
   Korisnik(
     this.korisnikId,
     this.ime,

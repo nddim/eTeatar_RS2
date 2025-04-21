@@ -2,7 +2,7 @@ import 'package:eteatar_desktop/models/sjediste.dart';
 import 'package:eteatar_desktop/providers/base_provider.dart';
 
 class SjedisteProvider extends BaseProvider<Sjediste> {
-  SjedisteProvider() :super("Glumac");
+  SjedisteProvider() :super("Sjediste");
 
   @override
   Sjediste fromJson(data) {

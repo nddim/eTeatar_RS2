@@ -2,6 +2,8 @@ import 'package:eteatar_desktop/providers/auth_provider.dart';
 import 'package:eteatar_desktop/providers/dvorana_provider.dart';
 import 'package:eteatar_desktop/providers/glumac_provider.dart';
 import 'package:eteatar_desktop/providers/hrana_provider.dart';
+import 'package:eteatar_desktop/providers/karta_provider.dart';
+import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:eteatar_desktop/providers/ocjena_provider.dart';
 import 'package:eteatar_desktop/providers/predstava_provider.dart';
 import 'package:eteatar_desktop/providers/repertoar_provider.dart';
@@ -22,6 +24,8 @@ void main() {
     ChangeNotifierProvider(create: (_) => DvoranaProvider()),
     ChangeNotifierProvider(create: (_) => GlumacProvider()),
     ChangeNotifierProvider(create: (_) => HranaProvider()),
+    ChangeNotifierProvider(create: (_) => KartaProvider()),
+    ChangeNotifierProvider(create: (_) => KorisnikProvider()),
     ChangeNotifierProvider(create: (_) => OcjenaProvider()),
     ChangeNotifierProvider(create: (_) => PredstavaProvider()),
     ChangeNotifierProvider(create: (_) => RepertoarProvider()),
@@ -60,35 +64,40 @@ class LoginPage extends StatelessWidget {
 
   @override Widget build(BuildContext context){
     return Scaffold(
-      appBar: AppBar( title: const Text('Login'),),
+      appBar: AppBar(
+        centerTitle: true,
+         title: const Text('Login'),
+         backgroundColor: Color.fromARGB(171, 72, 142, 255),
+         ),
       body:  Center(
         child: Center(
-          child:Container(constraints: BoxConstraints(maxHeight: 400, maxWidth: 400),
-          child:Card(
-            child:Column(
-              children: [
-                Image.asset("assets/images/logo.png", height: 100, width: 100,),
-                SizedBox(height: 10,),
-                TextField(controller: _usernameController,decoration: InputDecoration(labelText: "Username", prefixIcon: Icon(Icons.person)),),
-                SizedBox(height: 10,),
-                TextField(controller : _passwordController, decoration: InputDecoration(labelText: "Password", prefixIcon: Icon(Icons.lock)),),
-                SizedBox(height: 20,),
-                ElevatedButton(onPressed: () async {
-                  PredstavaProvider predstavaProvider = PredstavaProvider();
-                  AuthProvider.username = _usernameController.text;
-                  AuthProvider.password = _passwordController.text;
-                  try{
-                    var data = await predstavaProvider.get();
-                    Navigator.of(context).push(MaterialPageRoute(builder: (builder) => PredstavaListScreen()));
+          child:Container(
+            constraints: BoxConstraints(maxHeight: 400, maxWidth: 400),
+            child:Card(
+              child:Column(
+                children: [
+                  Image.asset("assets/images/logo.png", height: 100, width: 100,),
+                  SizedBox(height: 10,),
+                  TextField(controller: _usernameController,decoration: InputDecoration(labelText: "Username", prefixIcon: Icon(Icons.person)),),
+                  SizedBox(height: 10,),
+                  TextField(controller : _passwordController, decoration: InputDecoration(labelText: "Password", prefixIcon: Icon(Icons.lock)),),
+                  SizedBox(height: 20,),
+                  ElevatedButton(onPressed: () async {
+                    PredstavaProvider predstavaProvider = PredstavaProvider();
+                    AuthProvider.username = _usernameController.text;
+                    AuthProvider.password = _passwordController.text;
+                    try{
+                      var data = await predstavaProvider.get();
+                      Navigator.of(context).push(MaterialPageRoute(builder: (builder) => PredstavaListScreen()));
 
-                  } on Exception catch (e) {
-                    showDialog(context: context, builder: (context) => AlertDialog(title: const Text("Error"), 
-                      actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text("Ok"))], content: Text(e.toString()),));
-                  }
-                }, child: const Text("Login"),),
-                ],
-              )
-          ),
+                    } on Exception catch (e) {
+                      showDialog(context: context, builder: (context) => AlertDialog(title: const Text("Error"), 
+                        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text("Ok"))], content: Text(e.toString()),));
+                    }
+                  }, child: const Text("Login"),),
+                  ],
+                )
+            ),
           ),
         ),
         ),

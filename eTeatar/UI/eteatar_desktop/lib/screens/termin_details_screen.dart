@@ -1,0 +1,163 @@
+import 'package:eteatar_desktop/layouts/master_screen.dart';
+import 'package:eteatar_desktop/models/dvorana.dart';
+import 'package:eteatar_desktop/models/predstava.dart';
+import 'package:eteatar_desktop/models/search_result.dart';
+import 'package:eteatar_desktop/models/termin.dart';
+import 'package:eteatar_desktop/providers/dvorana_provider.dart';
+import 'package:eteatar_desktop/providers/predstava_provider.dart';
+import 'package:eteatar_desktop/providers/termin_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+class TerminDetailsScreen extends StatefulWidget {
+  Termin? termin;
+  TerminDetailsScreen({super.key, this.termin});
+
+  @override
+  State<TerminDetailsScreen> createState() => _TerminDetailsScreenState();
+}
+
+class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
+
+  final _formKey = GlobalKey<FormBuilderState>();
+  Map<String, dynamic> _initialValue = {};
+  late TerminProvider _terminProvider;
+  late PredstavaProvider _predstavaProvider;
+  late DvoranaProvider _dvoranaProvider;
+  SearchResult<Predstava>? predstavaResult = null;
+  SearchResult<Dvorana>? dvoranaResult = null;
+  bool isLoading = true;
+  List<int> _selectedPredstave = [];
+  List<int> _selectedDvorane = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+
+    _terminProvider = context.read<TerminProvider>();
+    _predstavaProvider = context.read<PredstavaProvider>();
+    _dvoranaProvider = context.read<DvoranaProvider>();
+
+    super.initState();
+
+    _initialValue = {
+      "Datum" : widget.termin?.datum ?? DateTime.now(),
+      "Status" : widget.termin?.status.toString() ?? "",
+      "DvoranaId" : widget.termin?.dvoranaId.toString() ?? "",
+      "PredstavaId" : widget.termin?.predstavaId.toString() ?? "",
+    };
+
+    initForm();
+  }
+
+  Future initForm() async {
+    predstavaResult = await _predstavaProvider.get();
+    dvoranaResult = await _dvoranaProvider.get();
+    print("predstavaResult: ${predstavaResult?.resultList}");
+    print("dvoranaResult: ${dvoranaResult?.resultList.length}");
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MasterScreen("Termini detalji", 
+      Column(children: [
+        isLoading ? Container() : _buildForm(), _save(),
+      ],)
+    ) ;
+  }
+
+  Widget _buildForm() {
+    return FormBuilder(
+      key: _formKey,
+      initialValue: _initialValue,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(child: 
+                FormBuilderDateTimePicker(
+                  name: "Datum",
+                  decoration: InputDecoration(labelText: "Datum"),
+                  validator: FormBuilderValidators.required(),
+                  inputType: InputType.date,
+                  format: DateFormat("yyyy-MM-dd"),
+                ),
+              ),
+              SizedBox(width: 10,),
+              Expanded(
+                child: FormBuilderTextField(
+                  name: "Status",
+                  decoration: InputDecoration(labelText: "Status"),
+                  validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                  ]),
+                  )
+              ),
+              ]
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: FormBuilderDropdown(
+                     name: "predstavaId",
+                     validator: FormBuilderValidators.required(),
+                     decoration: InputDecoration(labelText: "Predstava"),
+                     items: predstavaResult?.resultList.map((e) => DropdownMenuItem(child: Text(e.naziv ?? ""), value: e.predstavaId)).toList() ?? [],
+                )
+                ),
+                SizedBox(width: 10,),
+                Expanded(
+                  child: FormBuilderDropdown(
+                     name: "dvoranaId",
+                     validator: FormBuilderValidators.required(),
+                     decoration: InputDecoration(labelText: "Dvorana"),
+                     items: dvoranaResult?.resultList.map((e) => DropdownMenuItem(child: Text(e.naziv ?? ""), value: e.dvoranaId)).toList() ?? [],
+                )
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _save() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          ElevatedButton(onPressed: () async{
+            _formKey.currentState?.saveAndValidate();
+            final formData = _formKey.currentState!.value;
+
+            final requestData = {
+              ...formData,
+              'Datum': DateFormat('yyyy-MM-dd').format(formData['Datum']),
+            };
+            print("requestData: $requestData");
+            if(widget.termin == null){
+              _terminProvider.insert(requestData);
+            } else {
+              _terminProvider.update(widget.termin!.terminId!, requestData);
+            }
+          }, 
+          child: const Text("Sačuvaj")),
+      ],),
+    );
+  }
+
+}

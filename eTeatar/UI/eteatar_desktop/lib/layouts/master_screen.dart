@@ -13,9 +13,7 @@ import 'package:eteatar_desktop/screens/termin_list_screen.dart';
 import 'package:eteatar_desktop/screens/uplata_list_screen.dart';
 import 'package:eteatar_desktop/screens/vijest_list_screen.dart';
 import 'package:eteatar_desktop/screens/zanr_list_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class MasterScreen extends StatefulWidget {
   MasterScreen(this.title, this.child, {super.key});

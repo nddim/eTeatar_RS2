@@ -2,7 +2,7 @@ import 'package:eteatar_desktop/models/repertoar.dart';
 import 'package:eteatar_desktop/providers/base_provider.dart';
 
 class RepertoarProvider extends BaseProvider<Repertoar> {
-  RepertoarProvider() :super("Glumac");
+  RepertoarProvider() :super("Repertoar");
 
   @override
   Repertoar fromJson(data) {

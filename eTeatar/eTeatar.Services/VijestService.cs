@@ -39,6 +39,7 @@ namespace eTeatar.Services
             {
                 throw new UserException("Već postoji vijest s tim nazivom!");
             }
+            entity.Datum = DateTime.Now;
             base.BeforeInsert(request, entity);
         }
 
@@ -49,6 +50,7 @@ namespace eTeatar.Services
             {
                 throw new UserException("Već postoji vijest s tim nazivom!");
             }
+            entity.Datum = DateTime.Now;
             base.BeforeUpdate(request, entity);
         }
     }

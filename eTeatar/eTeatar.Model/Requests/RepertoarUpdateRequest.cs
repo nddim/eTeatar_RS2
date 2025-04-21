@@ -14,6 +14,6 @@ namespace eTeatar.Model.Requests
 
         public DateTime? DatumKraja { get; set; }
 
-        public List <int>? PredstavaId { get; set; }
+        public List <int>? Predstave { get; set; }
     }
 }

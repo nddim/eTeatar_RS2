@@ -71,5 +71,22 @@ namespace eTeatar.Services
             }
             base.AfterInsert(request, entity);
         }
+
+        public override void AfterUpdate(RepertoarUpdateRequest request, Repertoar entity)
+        {
+            if (request?.Predstave != null)
+            {
+                foreach (var predstavaId in request.Predstave)
+                {
+                    Context.PredstavaRepertoars.Add(new PredstavaRepertoar
+                    {
+                        PredstavaId = predstavaId,
+                        RepertoarId = entity.RepertoarId,
+                    });
+                }
+
+                Context.SaveChanges();
+            }
+        }
     }
 }

@@ -2,7 +2,7 @@ import 'package:eteatar_desktop/models/karta.dart';
 import 'package:eteatar_desktop/providers/base_provider.dart';
 
 class KartaProvider extends BaseProvider<Karta> {
-  KartaProvider() :super("Glumac");
+  KartaProvider() :super("Karta");
 
   @override
   Karta fromJson(data) {

@@ -8,6 +8,6 @@ namespace eTeatar.Model.Requests
     {
         public string Naziv { get; set; }
         public string Sadržaj { get; set; }
-        public DateTime? Datum { get; set; }
+        public int KorisnikId { get; set; }
     }
 }

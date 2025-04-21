@@ -1,0 +1,136 @@
+import 'package:eteatar_desktop/layouts/master_screen.dart';
+import 'package:eteatar_desktop/models/glumac.dart';
+import 'package:eteatar_desktop/providers/glumac_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:provider/provider.dart';
+
+class GlumacDetailsScreen extends StatefulWidget {
+  Glumac? glumac;
+  GlumacDetailsScreen({super.key, this.glumac});
+
+  @override
+  State<GlumacDetailsScreen> createState() => _GlumacDetailsScreenState();
+}
+
+class _GlumacDetailsScreenState extends State<GlumacDetailsScreen> {
+
+  final _formKey = GlobalKey<FormBuilderState>();
+  Map<String, dynamic> _initialValue = {};
+  late GlumacProvider _glumacProvider;
+  bool isLoading = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+   @override
+  void initState() {
+
+    _glumacProvider = context.read<GlumacProvider>();
+
+    super.initState();
+
+    _initialValue = {
+      "Ime" : widget.glumac?.ime ?? "",
+      "Prezime" : widget.glumac?.prezime ?? "",
+      "Biografija" : widget.glumac?.biografija ?? "",
+      
+    };
+
+    initForm();
+  }
+
+  Future initForm() async {
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MasterScreen("Glumci detalji", 
+      Column(children: [
+        isLoading ? Container() : _buildForm(), _save(),
+      ],)
+    ) ;
+  }
+
+  Widget _buildForm() {
+    return FormBuilder(
+      key: _formKey,
+      initialValue: _initialValue,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: FormBuilderTextField(
+                    name: "Ime",
+                    decoration: InputDecoration(labelText: "Ime"),
+                    validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                    ]),
+                    )
+                ),
+                SizedBox(width: 10,),
+                Expanded(
+                  child: FormBuilderTextField(
+                    name: "Prezime",
+                    decoration: InputDecoration(labelText: "Prezime"),
+                    validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                    ]),
+                    )
+                ),
+              ]
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: FormBuilderTextField(
+                    name: "Biografija",
+                    decoration: InputDecoration(labelText: "Biografija"),
+                    validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(),
+                    ]),
+                    )
+                ),
+              ]
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _save() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          ElevatedButton(onPressed: () async{
+            _formKey.currentState?.saveAndValidate();
+            final formData = _formKey.currentState!.value;
+
+            final requestData = {
+              ...formData,
+
+            };
+            if(widget.glumac == null){
+              _glumacProvider.insert(requestData);
+            } else {
+              _glumacProvider.update(widget.glumac!.glumacId!, requestData);
+            }
+          }, 
+          child: const Text("Sačuvaj")),
+      ],),
+    );
+  }
+
+}

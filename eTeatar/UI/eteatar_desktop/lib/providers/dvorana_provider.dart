@@ -2,7 +2,7 @@ import 'package:eteatar_desktop/models/dvorana.dart';
 import 'package:eteatar_desktop/providers/base_provider.dart';
 
 class DvoranaProvider extends BaseProvider<Dvorana> {
-  DvoranaProvider() :super("Glumac");
+  DvoranaProvider() :super("Dvorana");
 
   @override
   Dvorana fromJson(data) {

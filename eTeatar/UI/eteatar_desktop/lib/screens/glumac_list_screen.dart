@@ -1,5 +1,10 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
+import 'package:eteatar_desktop/models/glumac.dart';
+import 'package:eteatar_desktop/models/search_result.dart';
+import 'package:eteatar_desktop/providers/glumac_provider.dart';
+import 'package:eteatar_desktop/screens/glumac_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class GlumacListScreen extends StatefulWidget {
   const GlumacListScreen({super.key});
@@ -9,16 +14,83 @@ class GlumacListScreen extends StatefulWidget {
 }
 
 class _GlumacListScreenState extends State<GlumacListScreen> {
+  late GlumacProvider _glumacProvider;
+  SearchResult<Glumac>? result = null;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _glumacProvider = context.read<GlumacProvider>();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista glumaca", Column(
-      children: [
-        Text("Lista glumaca placeholder"),
-        SizedBox(height: 10,),
-        ElevatedButton(onPressed: () {
-          Navigator.of(context).pop();
-        }, child: const Text("Nazad"),),
-      ],
-    ),);
+    return MasterScreen("Lista glumaca", 
+    Container(
+      child: Column(
+        children: [
+          _buildSearch(),
+          _buildResultView(),
+        ],
+      )
+    )); 
   }
+
+  TextEditingController _imeEditingController = TextEditingController();
+
+  Widget _buildSearch(){
+    return Padding(padding: const EdgeInsets.all(8.0),
+    child: Row(
+      children:[
+        Expanded( child: TextField(controller: _imeEditingController, decoration: InputDecoration(labelText: "Naziv"))),
+        ElevatedButton(onPressed: () async{
+        
+        var filter = {
+          "ImeGTE": _imeEditingController.text
+        };
+        var data = await _glumacProvider.get(filter: filter);
+        setState(() {
+          result = data;
+        });
+
+        }, child: Text("Pretraga")),
+
+        SizedBox(width: 10,),
+        ElevatedButton(onPressed: () async{
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => GlumacDetailsScreen()));
+        }, child: Text("Dodaj"))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResultView(){
+    return Expanded(
+      child: Container(
+        width: double.infinity,
+        child: SingleChildScrollView(
+        child: DataTable(
+        columns: const [
+          DataColumn(label: Text("Id"), numeric:true),
+          DataColumn(label: Text("Ime")),
+          DataColumn(label: Text("Prezime")),
+        ],
+          rows: result?.resultList.map((e) => 
+          DataRow(
+            onSelectChanged: (selected) => {
+              if(selected == true){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => GlumacDetailsScreen(glumac: e,)))
+              }
+            },
+            cells: [
+            DataCell(Text(e.glumacId.toString())),
+            DataCell(Text(e.ime ?? "")),
+            DataCell(Text(e.prezime ?? ""))
+          ])).toList().cast<DataRow>() ?? [],
+          ),
+      )
+      )
+    );
+  }
+
 }

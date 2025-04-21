@@ -2,7 +2,7 @@ import 'package:eteatar_desktop/models/ocjena.dart';
 import 'package:eteatar_desktop/providers/base_provider.dart';
 
 class OcjenaProvider extends BaseProvider<Ocjena> {
-  OcjenaProvider() :super("Glumac");
+  OcjenaProvider() :super("Ocjena");
 
   @override
   Ocjena fromJson(data) {
