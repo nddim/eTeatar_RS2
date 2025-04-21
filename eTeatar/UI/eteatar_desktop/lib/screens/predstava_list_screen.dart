@@ -74,7 +74,7 @@ class _PredstavaListScreenState extends State<PredstavaListScreen> {
         width: double.infinity,
         child: SingleChildScrollView(
         child: DataTable(
-        columns: [
+        columns: const [
           DataColumn(label: Text("Id"), numeric:true),
           DataColumn(label: Text("Naziv")),
           DataColumn(label: Text("Cijena")),

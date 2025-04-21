@@ -290,7 +290,6 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
               'Zanrovi': _selectedZanrovi,
               'Glumci': _selectedGlumci,
             };
-            print(requestData);
             if(widget.predstava == null){
               _predstavaProvider.insert(requestData);
             } else {

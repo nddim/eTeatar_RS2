@@ -1,24 +1,24 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:flutter/material.dart';
 
-class KorisnikListScreen extends StatefulWidget {
-  const KorisnikListScreen({super.key});
+class ZanrListScreen extends StatefulWidget {
+  const ZanrListScreen({super.key});
 
   @override
-  State<KorisnikListScreen> createState() => _KorisnikListScreenState();
+  State<ZanrListScreen> createState() => _ZanrListScreenState();
 }
 
-class _KorisnikListScreenState extends State<KorisnikListScreen> {
+class _ZanrListScreenState extends State<ZanrListScreen> {
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista korisnika", Column(
+    return MasterScreen("Lista zanrova", Column(
       children: [
-        Text("Lista korisnika placeholder"),
+        Text("Lista zanrova placeholder"),
         SizedBox(height: 10,),
         ElevatedButton(onPressed: () {
           Navigator.of(context).pop();
         }, child: const Text("Nazad"),),
       ],
-    ),); 
+    ),);
   }
 }
