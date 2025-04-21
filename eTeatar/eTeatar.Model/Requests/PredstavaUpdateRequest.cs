@@ -15,7 +15,7 @@ namespace eTeatar.Model.Requests
         public string Scenografija { get; set; } = null!;
         public decimal Cijena { get; set; }
         public byte[]? Slika { get; set; }
-        public List<int>? ZanrId { get; set; }
-        public List<int>? GlumacId { get; set; }
+        public List<int>? Zanrovi { get; set; }
+        public List<int>? Glumci { get; set; }
     }
 }

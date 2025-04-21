@@ -15,6 +15,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class PredstavaDetailsScreen extends StatefulWidget {
   Predstava? predstava;
@@ -34,17 +35,16 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
   SearchResult<Glumac>? glumacResult = null;
   SearchResult<Zanr>? zanrResult = null;
   bool isLoading = true;
+  List<int> _selectedZanrovi = [];
+  List<int> _selectedGlumci = [];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    
   }
 
   @override
   void initState() {
-    // TODO: implement initState
 
     _predstavaProvider = context.read<PredstavaProvider>();
     _glumacProvider = context.read<GlumacProvider>();
@@ -79,12 +79,13 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Detalji", 
+    return MasterScreen("Predstava detalji", 
       Column(children: [
         isLoading ? Container() : _buildForm(), _save(),
       ],)
     ) ;
   }
+
   Widget _buildForm() {
     return FormBuilder(
       key: _formKey,
@@ -161,20 +162,64 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
             Row(
               children: [
                 Expanded(
-                  child: FormBuilderDropdown(
-                    name: "zanrId",
-                    validator: FormBuilderValidators.required(),
-                    decoration: InputDecoration(labelText: "Zanr"),
-                    items: zanrResult?.resultList.map((e) => DropdownMenuItem(child: Text(e.naziv ?? ""), value: e.zanrId)).toList() ?? [],
+                  child: 
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MultiSelectDialogField<int>(
+                      items: zanrResult?.resultList
+                          .map((e) => MultiSelectItem<int>(e.zanrId!, e.naziv ?? ""))
+                          .toList() ?? [],
+                      title: Text("Odaberi žanrove"),
+                      selectedColor: Colors.blue,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1,
+                        ),
+                      ),
+                      buttonText: Text("Žanrovi"),
+                      onConfirm: (values) {
+                        _selectedZanrovi = values.cast<int>();
+                      },
+                      validator: (values) {
+                        if (values == null || values.isEmpty) {
+                          return "Odaberite barem jedan žanr";
+                        }
+                        return null;
+                      },
+                    ),
                   )
                 ),
                 SizedBox(width: 10,),
                 Expanded(
-                  child: FormBuilderDropdown(
-                    name: "glumacId",
-                    validator: FormBuilderValidators.required(),
-                    decoration: InputDecoration(labelText: "Glumac"),
-                    items: glumacResult?.resultList.map((e) => DropdownMenuItem(child: Text('${e.ime ?? ""} ${e.prezime ?? ""}'), value: e.glumacId)).toList() ?? [],
+                  child: 
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MultiSelectDialogField(
+                      items: glumacResult?.resultList
+                          .map((e) => MultiSelectItem<int>(e.glumacId!, "${e.ime} ${e.prezime}"))
+                          .toList() ?? [],
+                      title: Text("Odaberi glumce"),
+                      selectedColor: Colors.blue,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1,
+                        ),
+                      ),
+                      buttonText: Text("Glumci"),
+                      onConfirm: (values) {
+                        _selectedGlumci = values.cast<int>();
+                      },
+                      validator: (values) {
+                        if (values == null || values.isEmpty) {
+                          return "Odaberite barem jednog glumca";
+                        }
+                        return null;
+                      },
+                    ),
                   )
                 )
               ]
@@ -242,7 +287,10 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
               'TrajanjePocetak': DateFormat('yyyy-MM-dd').format(formData['TrajanjePocetak']),
               'TrajanjeKraj': DateFormat('yyyy-MM-dd').format(formData['TrajanjeKraj']),
               'Slika': _base64Image,
+              'Zanrovi': _selectedZanrovi,
+              'Glumci': _selectedGlumci,
             };
+            print(requestData);
             if(widget.predstava == null){
               _predstavaProvider.insert(requestData);
             } else {
@@ -253,6 +301,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
       ],),
     );
   }
+  
   File? _image;
   String? _base64Image;
 

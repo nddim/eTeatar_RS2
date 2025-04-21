@@ -74,7 +74,6 @@ class LoginPage extends StatelessWidget {
                 TextField(controller : _passwordController, decoration: InputDecoration(labelText: "Password", prefixIcon: Icon(Icons.lock)),),
                 SizedBox(height: 20,),
                 ElevatedButton(onPressed: () async {
-                  print("credentials: ${_usernameController.text} ${_passwordController.text}");
                   PredstavaProvider predstavaProvider = PredstavaProvider();
                   AuthProvider.username = _usernameController.text;
                   AuthProvider.password = _passwordController.text;

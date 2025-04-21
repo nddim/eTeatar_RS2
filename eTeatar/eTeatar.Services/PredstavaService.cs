@@ -111,5 +111,36 @@ namespace eTeatar.Services
                 Context.SaveChanges();
             }
         }
+
+        public override void AfterUpdate(PredstavaUpdateRequest request, Database.Predstava entity)
+        {
+            if (request?.Zanrovi != null)
+            {
+                foreach (var zanrId in request.Zanrovi)
+                {
+                    Context.PredstavaZanrs.Add(new PredstavaZanr
+                    {
+                        ZanrId = zanrId,
+                        PredstavaId = entity.PredstavaId,
+                    });
+                }
+
+                Context.SaveChanges();
+            }
+
+            if (request?.Glumci != null)
+            {
+                foreach (var glumacId in request.Glumci)
+                {
+                    Context.PredstavaGlumacs.Add(new PredstavaGlumac
+                    {
+                        GlumacId = glumacId,
+                        PredstavaId = entity.PredstavaId,
+                    });
+                }
+
+                Context.SaveChanges();
+            }
+        }
     }
 }

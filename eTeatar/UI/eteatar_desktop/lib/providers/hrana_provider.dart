@@ -1,4 +1,3 @@
-import 'package:eteatar_desktop/models/dvorana.dart';
 import 'package:eteatar_desktop/models/hrana.dart';
 import 'package:eteatar_desktop/providers/base_provider.dart';
 
