@@ -15,27 +15,43 @@ class KorisnikListScreen extends StatefulWidget {
 }
 
 class _KorisnikListScreenState extends State<KorisnikListScreen> {
-
+  bool _isInit = true;
+  bool _isLoading = true;
   late KorisnikProvider _korisnikProvider;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _korisnikProvider = context.read<KorisnikProvider>();
+    if (_isInit) {
+      _korisnikProvider = context.read<KorisnikProvider>();
+      _loadData();
+      _isInit = false;
+    }
   }
+
+  Future<void> _loadData() async {
+    var data = await _korisnikProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
+  }
+
   SearchResult<Korisnik>? result = null;
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista korisnika", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista korisnika",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _imeEditingController = TextEditingController();

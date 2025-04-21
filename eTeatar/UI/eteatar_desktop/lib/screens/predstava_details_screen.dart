@@ -262,7 +262,6 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                       )
                     );
                   },
-                  
                 )
               )
             ],)
@@ -286,7 +285,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
               ...formData,
               'TrajanjePocetak': DateFormat('yyyy-MM-dd').format(formData['TrajanjePocetak']),
               'TrajanjeKraj': DateFormat('yyyy-MM-dd').format(formData['TrajanjeKraj']),
-              'Slika': _base64Image,
+              'Slika': _base64Image ?? widget.predstava?.slika,
               'Zanrovi': _selectedZanrovi,
               'Glumci': _selectedGlumci,
             };

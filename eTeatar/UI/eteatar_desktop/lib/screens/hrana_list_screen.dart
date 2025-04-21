@@ -15,26 +15,42 @@ class HranaListScreen extends StatefulWidget {
 }
 
 class _HranaListScreenState extends State<HranaListScreen> {
+  bool _isInit = true;
+  bool _isLoading = true;
   late HranaProvider _hranaProvider;
   SearchResult<Hrana>? result = null;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _hranaProvider = context.read<HranaProvider>();
+    if (_isInit) {
+      _hranaProvider = context.read<HranaProvider>();
+      _loadData();
+      _isInit = false;
+    }
+  }
+
+  Future<void> _loadData() async {
+    var data = await _hranaProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista hrane", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista hrane",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _nazivEditingController = TextEditingController();

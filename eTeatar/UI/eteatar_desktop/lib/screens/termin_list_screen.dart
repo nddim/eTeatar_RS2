@@ -16,7 +16,8 @@ class TerminListScreen extends StatefulWidget {
 }
 
 class _TerminListScreenState extends State<TerminListScreen> {
-
+  bool _isInit = true;
+  bool _isLoading = true;
   late TerminProvider _terminProvider;
   late DvoranaProvider _dvoranaProvider;
   late PredstavaProvider _predstavaProvider;
@@ -25,22 +26,36 @@ class _TerminListScreenState extends State<TerminListScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _terminProvider = context.read<TerminProvider>();
-    _dvoranaProvider = context.read<DvoranaProvider>();
-    _predstavaProvider = context.read<PredstavaProvider>();
+    if (_isInit) {
+      _terminProvider = context.read<TerminProvider>();
+      _dvoranaProvider = context.read<DvoranaProvider>();
+      _predstavaProvider = context.read<PredstavaProvider>();
+      _loadData();
+      _isInit = false;
+    }
+  }
+
+  Future<void> _loadData() async {
+    var data = await _terminProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista termina", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista termina",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _statusEditingController = TextEditingController();

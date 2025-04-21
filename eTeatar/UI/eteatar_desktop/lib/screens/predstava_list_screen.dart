@@ -16,28 +16,43 @@ class PredstavaListScreen extends StatefulWidget {
 }
 
 class _PredstavaListScreenState extends State<PredstavaListScreen> {
-
+  bool _isInit = true;
+  bool _isLoading = true;
   late PredstavaProvider _predstavaProvider;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _predstavaProvider = context.read<PredstavaProvider>();
+    if (_isInit) {
+      _predstavaProvider = context.read<PredstavaProvider>();
+      _loadData();
+      _isInit = false;
+    }
+  }
+
+  Future<void> _loadData() async {
+    var data = await _predstavaProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
   }
 
   SearchResult<Predstava>? result = null;
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista predstava", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista predstava",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _nazivEditingController = TextEditingController();

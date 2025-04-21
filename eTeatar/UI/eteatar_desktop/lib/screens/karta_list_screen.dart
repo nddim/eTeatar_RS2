@@ -15,6 +15,8 @@ class KartaListScreen extends StatefulWidget {
 }
 
 class _KartaListScreenState extends State<KartaListScreen> {
+  bool _isInit = true;
+  bool _isLoading = true;
   late KartaProvider _kartaProvider;
   late KorisnikProvider _korisnikProvider;
   SearchResult<Karta>? result = null;
@@ -22,22 +24,37 @@ class _KartaListScreenState extends State<KartaListScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _kartaProvider = context.read<KartaProvider>();
-    _korisnikProvider = context.read<KorisnikProvider>();
+    if (_isInit) {
+      _kartaProvider = context.read<KartaProvider>();
+      _korisnikProvider = context.read<KorisnikProvider>();
+      _loadData();
+      _isInit = false;
+    }
+  }
+
+  Future<void> _loadData() async {
+    var data = await _kartaProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista karata", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista karata",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
+
   TextEditingController _korisnikEditingController = TextEditingController();
 
   Widget _buildSearch(){

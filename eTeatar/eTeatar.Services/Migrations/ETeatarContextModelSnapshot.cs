@@ -754,7 +754,7 @@ namespace eTeatar.Services.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Sadržaj")
+                    b.Property<string>("Sadrzaj")
                         .IsRequired()
                         .HasMaxLength(500)
                         .IsUnicode(false)

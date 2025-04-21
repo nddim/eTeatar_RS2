@@ -15,6 +15,8 @@ class RezervacijaListScreen extends StatefulWidget {
 }
 
 class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
+  bool _isInit = true;
+  bool _isLoading = true;
   late RezervacijaProvider _rezervacijaProvider;
   late KorisnikProvider _korisnikProvider;
   late TerminProvider _terminProvider;
@@ -23,23 +25,37 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _rezervacijaProvider = context.read<RezervacijaProvider>();
-    _korisnikProvider = context.read<KorisnikProvider>();
-    _terminProvider = context.read<TerminProvider>();
+    
+    if (_isInit) {
+      _rezervacijaProvider = context.read<RezervacijaProvider>();
+      _korisnikProvider = context.read<KorisnikProvider>();
+      _terminProvider = context.read<TerminProvider>();
+      _loadData();
+      _isInit = false;
+    }
+  }
 
+  Future<void> _loadData() async {
+    var data = await _rezervacijaProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista rezervacija", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista rezervacija",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _nazivEditingController = TextEditingController();

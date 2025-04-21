@@ -1,11 +1,11 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/dvorana.dart';
-import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/providers/dvorana_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class DvoranaDetailsScreen extends StatefulWidget {
   Dvorana? dvorana;
@@ -72,7 +72,7 @@ class _DvoranaDetailsScreenState extends State<DvoranaDetailsScreen> {
                     name: "Naziv",
                     decoration: InputDecoration(labelText: "Naziv"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
                     ]),
                     )
                 ),
@@ -83,7 +83,9 @@ class _DvoranaDetailsScreenState extends State<DvoranaDetailsScreen> {
                     decoration: InputDecoration(labelText: "Kapacitet"),
                     validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(),
-                    FormBuilderValidators.numeric(),
+                    FormBuilderValidators.numeric(errorText: "Mora biti broj!"),
+                    FormBuilderValidators.max(100, errorText: "Maksimalno 100 kg"),
+                    FormBuilderValidators.min(0, errorText: "Minimalno 0 kg"),
                     ]),
                     )
                 ),
@@ -110,9 +112,25 @@ class _DvoranaDetailsScreenState extends State<DvoranaDetailsScreen> {
 
             };
             if(widget.dvorana == null){
-              _dvoranaProvider.insert(requestData);
+             try {
+               await _dvoranaProvider.insert(requestData);
+             } catch (e){
+               QuickAlert.show(
+                 context: context,
+                 type: QuickAlertType.error,
+                 title: "Greška pri kreiranju dvorane!",
+                 width: 300);
+             }
             } else {
-              _dvoranaProvider.update(widget.dvorana!.dvoranaId!, requestData);
+             try {
+               await _dvoranaProvider.update(widget.dvorana!.dvoranaId!, requestData);
+             } catch (e){
+               QuickAlert.show(
+                 context: context,
+                 type: QuickAlertType.error,
+                 title: "Greška pri azuriranju dvorane!",
+                 width: 300);
+             }
             }
           }, 
           child: const Text("Sačuvaj")),

@@ -14,27 +14,42 @@ class ZanrListScreen extends StatefulWidget {
 }
 
 class _ZanrListScreenState extends State<ZanrListScreen> {
-
+  bool _isInit = true;
+  bool _isLoading = true;
   late ZanrProvider _zanrProvider;
   SearchResult<Zanr>? result = null;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _zanrProvider = context.read<ZanrProvider>();
+    if (_isInit) {
+      _zanrProvider = context.read<ZanrProvider>();
+      _loadData();
+      _isInit = false;
+    }
+  }
+
+  Future<void> _loadData() async {
+    var data = await _zanrProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista zanrova", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista zanrovi",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _nazivEditingController = TextEditingController();

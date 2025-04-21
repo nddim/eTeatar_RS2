@@ -14,7 +14,8 @@ class UplataListScreen extends StatefulWidget {
 }
 
 class _UplataListScreenState extends State<UplataListScreen> {
-
+  bool _isInit = true;
+  bool _isLoading = true;
   late UplataProvider _uplataProvider;
   late KorisnikProvider _korisnikProvider;
   SearchResult<Uplata>? result = null;
@@ -22,21 +23,35 @@ class _UplataListScreenState extends State<UplataListScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _uplataProvider = context.read<UplataProvider>();
-    _korisnikProvider = context.read<KorisnikProvider>();
+    if (_isInit) {
+      _uplataProvider = context.read<UplataProvider>();
+      _korisnikProvider = context.read<KorisnikProvider>();
+      _loadData();
+      _isInit = false;
+    }
+  }
+
+  Future<void> _loadData() async {
+    var data = await _uplataProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista uplata", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista uplata",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _iznosEditingController = TextEditingController();

@@ -458,7 +458,7 @@ public partial class ETeatarContext : DbContext
             entity.Property(e => e.Naziv)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Sadržaj)
+            entity.Property(e => e.Sadrzaj)
                 .HasMaxLength(500)
                 .IsUnicode(false);
             entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");

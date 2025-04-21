@@ -14,27 +14,42 @@ class RepertoarListScreen extends StatefulWidget {
 }
 
 class _RepertoarListScreenState extends State<RepertoarListScreen> {
-
+  bool _isInit = true;
+  bool _isLoading = true;
   late RepertoarProvider _repertoarProvider;
   SearchResult<Repertoar>? result = null;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _repertoarProvider = context.read<RepertoarProvider>();
+    if (_isInit) {
+      _repertoarProvider = context.read<RepertoarProvider>();
+      _loadData();
+      _isInit = false;
+    }
+  }
+
+  Future<void> _loadData() async {
+    var data = await _repertoarProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista repertoara", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista repertoara",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _nazivEditingController = TextEditingController();

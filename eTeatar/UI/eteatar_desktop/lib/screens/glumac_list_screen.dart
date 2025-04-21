@@ -14,26 +14,42 @@ class GlumacListScreen extends StatefulWidget {
 }
 
 class _GlumacListScreenState extends State<GlumacListScreen> {
+  bool _isInit = true;
+  bool _isLoading = true;
   late GlumacProvider _glumacProvider;
   SearchResult<Glumac>? result = null;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _glumacProvider = context.read<GlumacProvider>();
+    if (_isInit) {
+      _glumacProvider = context.read<GlumacProvider>();
+      _loadData();
+      _isInit = false;
+    }
+  }
+
+  Future<void> _loadData() async {
+    var data = await _glumacProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista glumaca", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista glumaca",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _imeEditingController = TextEditingController();

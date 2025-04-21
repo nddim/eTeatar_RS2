@@ -1,3 +1,4 @@
+import 'package:eteatar_desktop/main.dart';
 import 'package:eteatar_desktop/providers/auth_provider.dart';
 import 'package:eteatar_desktop/screens/dvorana_list_screen.dart';
 import 'package:eteatar_desktop/screens/glumac_list_screen.dart';
@@ -166,7 +167,10 @@ class _MasterScreenState extends State<MasterScreen> {
                     const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               ),
               onPressed: () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  (Route<dynamic> route) => false,
+                );
                 AuthProvider.username = "";
                 AuthProvider.password = "";
               },

@@ -15,7 +15,8 @@ class VijestListScreen extends StatefulWidget {
 }
 
 class _VijestListScreenState extends State<VijestListScreen> {
-
+  bool _isInit = true;
+  bool _isLoading = true;
   late VijestProvider _vijestProvider;
   late KorisnikProvider _korisnikProvider;
   SearchResult<Vijest>? result = null;
@@ -23,22 +24,36 @@ class _VijestListScreenState extends State<VijestListScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _vijestProvider = context.read<VijestProvider>();
-    _korisnikProvider = context.read<KorisnikProvider>();
+    if (_isInit) {
+      _vijestProvider = context.read<VijestProvider>();
+      _korisnikProvider = context.read<KorisnikProvider>();
+      _loadData();
+      _isInit = false;
+    }
+
   }
 
-  
+  Future<void> _loadData() async {
+    var data = await _vijestProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista vijesti", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista vijesti",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _nazivEditingController = TextEditingController();

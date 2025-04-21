@@ -13,26 +13,42 @@ class StavkaUplateListScreen extends StatefulWidget {
 }
 
 class _StavkaUplateListScreenState extends State<StavkaUplateListScreen> {
+  bool _isInit = true;
+  bool _isLoading = true;
   late StavkaUplateProvider _stavkaUplateProvider;
   SearchResult<StavkaUplate>? result = null;
   
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _stavkaUplateProvider = context.read<StavkaUplateProvider>();
+    if (_isInit) {
+      _stavkaUplateProvider = context.read<StavkaUplateProvider>();
+      _loadData();
+      _isInit = false;
+    }
   }
 
-   @override
+  Future<void> _loadData() async {
+    var data = await _stavkaUplateProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista stavki uplata", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista stavki uplata",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _cijenaEditingController = TextEditingController();

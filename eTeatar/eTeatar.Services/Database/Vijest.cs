@@ -9,7 +9,7 @@ public partial class Vijest
 
     public string Naziv { get; set; } = null!;
 
-    public string Sadržaj { get; set; } = null!;
+    public string Sadrzaj { get; set; } = null!;
 
     public DateTime Datum { get; set; }
 

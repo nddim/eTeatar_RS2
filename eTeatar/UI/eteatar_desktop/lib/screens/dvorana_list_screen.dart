@@ -6,6 +6,7 @@ import 'package:eteatar_desktop/screens/dvorana_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eteatar_desktop/providers/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class DvoranaListScreen extends StatefulWidget {
   const DvoranaListScreen({super.key});
@@ -15,26 +16,51 @@ class DvoranaListScreen extends StatefulWidget {
 }
 
 class _DvoranaListScreenState extends State<DvoranaListScreen> {
+  bool _isInit = true;
+  bool _isLoading = true;
   late DvoranaProvider _dvoranaProvider;
   SearchResult<Dvorana>? result = null;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _dvoranaProvider = context.read<DvoranaProvider>();
+    if (_isInit) {
+      _dvoranaProvider = context.read<DvoranaProvider>();
+      _loadData();
+      _isInit = false;
+    }
+  }
+
+  Future<void> _loadData() async {
+    var data;
+    try {
+       data = await _dvoranaProvider.get();
+    } catch (e){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohhvatanju dvorana!",
+        width: 300);
+    }
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista dvorana", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista dvorana",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _nazivEditingController = TextEditingController();
@@ -49,7 +75,16 @@ class _DvoranaListScreenState extends State<DvoranaListScreen> {
         var filter = {
           "NazivGTE": _nazivEditingController.text
         };
-        var data = await _dvoranaProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _dvoranaProvider.get(filter: filter);
+        } catch (e){
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dodavanju biblioteke",
+            width: 300);
+        }
         setState(() {
           result = data;
         });

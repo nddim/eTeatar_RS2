@@ -14,27 +14,42 @@ class OcjenaListScreen extends StatefulWidget {
 }
 
 class _OcjenaListScreenState extends State<OcjenaListScreen> {
-
+  bool _isInit = true;
+  bool _isLoading = true;
   late OcjenaProvider _ocjenaProvider;
   SearchResult<Ocjena>? result = null;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _ocjenaProvider = context.read<OcjenaProvider>();
+    if (_isInit) {
+      _ocjenaProvider = context.read<OcjenaProvider>();
+      _loadData();
+      _isInit = false;
+    }
+  }
+
+  Future<void> _loadData() async {
+    var data = await _ocjenaProvider.get();
+    setState(() {
+      result = data;
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista ocjena", 
-    Container(
-      child: Column(
-        children: [
-          _buildSearch(),
-          _buildResultView(),
-        ],
-      )
-    )); 
+    return MasterScreen(
+      "Lista ocjena",
+      _isLoading 
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+          children: [
+            _buildSearch(),
+            _buildResultView(),
+          ],
+        ),
+    );
   }
 
   TextEditingController _vrijednostEditingController = TextEditingController();
