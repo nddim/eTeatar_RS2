@@ -1,6 +1,7 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/models/vijest.dart';
+import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:eteatar_desktop/providers/vijest_provider.dart';
 import 'package:eteatar_desktop/screens/vijest_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +17,14 @@ class VijestListScreen extends StatefulWidget {
 class _VijestListScreenState extends State<VijestListScreen> {
 
   late VijestProvider _vijestProvider;
+  late KorisnikProvider _korisnikProvider;
   SearchResult<Vijest>? result = null;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _vijestProvider = context.read<VijestProvider>();
+    _korisnikProvider = context.read<KorisnikProvider>();
   }
 
   
@@ -87,7 +90,21 @@ class _VijestListScreenState extends State<VijestListScreen> {
             DataCell(Text(e.vijestId.toString())),
             DataCell(Text(e.naziv ?? "")),
             DataCell(Text(e.datum.toString())),
-            DataCell(Text(e.korisnikId.toString())),
+            DataCell(
+              FutureBuilder(
+                future: _korisnikProvider.getById(e.korisnikId!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Text("Učitavanje...");
+                  } else if (snapshot.hasError) {
+                    return Text("Greška");
+                  } else {
+                    var korisnik = snapshot.data!;
+                    return Text("${korisnik.ime} ${korisnik.prezime}");
+                  }
+                },
+              )
+            ),
           ])).toList().cast<DataRow>() ?? [],
           ),
       )

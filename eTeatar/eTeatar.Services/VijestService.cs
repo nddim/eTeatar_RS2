@@ -45,11 +45,6 @@ namespace eTeatar.Services
 
         public override void BeforeUpdate(VijestUpsertRequest request, Vijest entity)
         {
-            var naziv = Context.Vijests.Where(x => x.Naziv == request.Naziv).FirstOrDefault();
-            if (naziv != null)
-            {
-                throw new UserException("Već postoji vijest s tim nazivom!");
-            }
             entity.Datum = DateTime.Now;
             base.BeforeUpdate(request, entity);
         }

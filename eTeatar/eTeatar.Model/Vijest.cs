@@ -10,7 +10,7 @@ namespace eTeatar.Model
 
         public string Naziv { get; set; }
 
-        public string Sadržaj { get; set; } 
+        public string Sadrzaj { get; set; } 
 
         public DateTime Datum { get; set; }
 

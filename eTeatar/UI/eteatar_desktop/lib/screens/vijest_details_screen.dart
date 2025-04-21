@@ -40,7 +40,6 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
     _initialValue = {
       "Naziv" : widget.vijest?.naziv ?? "",
       "Sadrzaj" : widget.vijest?.sadrzaj ?? "",
-      "Datum" : widget.vijest?.datum.toString() ?? DateTime.now(),
       "KorisnikId" : widget.vijest?.korisnikId.toString() ?? "",
     };
 
@@ -97,8 +96,8 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
               children: [
                 Expanded(
                   child: FormBuilderTextField(
-                    name: "Sadržaj",
-                    decoration: InputDecoration(labelText: "Sadržaj"),
+                    name: "Sadrzaj",
+                    decoration: InputDecoration(labelText: "Sadrzaj"),
                     validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(),
                     ]),

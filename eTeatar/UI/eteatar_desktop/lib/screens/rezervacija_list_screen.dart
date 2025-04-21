@@ -1,7 +1,9 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/rezervacija.dart';
 import 'package:eteatar_desktop/models/search_result.dart';
+import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:eteatar_desktop/providers/rezervacija_provider.dart';
+import 'package:eteatar_desktop/providers/termin_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,12 +16,17 @@ class RezervacijaListScreen extends StatefulWidget {
 
 class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
   late RezervacijaProvider _rezervacijaProvider;
+  late KorisnikProvider _korisnikProvider;
+  late TerminProvider _terminProvider;
   SearchResult<Rezervacija>? result = null;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _rezervacijaProvider = context.read<RezervacijaProvider>();
+    _korisnikProvider = context.read<KorisnikProvider>();
+    _terminProvider = context.read<TerminProvider>();
+
   }
 
   @override
@@ -68,7 +75,7 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
         columns: const [
           DataColumn(label: Text("Id"), numeric:true),
           DataColumn(label: Text("Status")),
-          DataColumn(label: Text("Termin")),
+          DataColumn(label: Text("Vrijeme termina")),
           DataColumn(label: Text("Korisnik")),
         ],
           rows: result?.resultList.map((e) => 
@@ -76,8 +83,36 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
             cells: [
             DataCell(Text(e.rezervacijaId.toString())),
             DataCell(Text(e.status ?? "")),
-            DataCell(Text(e.terminId.toString())),
-            DataCell(Text(e.korisnikId.toString())),
+            DataCell(
+              FutureBuilder(
+                future: _terminProvider.getById(e.terminId!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Text("Učitavanje...");
+                  } else if (snapshot.hasError) {
+                    return Text("Greška");
+                  } else {
+                    var termin = snapshot.data!;
+                    return Text("${termin.datum}");
+                  }
+                },
+              )
+            ),
+            DataCell(
+              FutureBuilder(
+                future: _korisnikProvider.getById(e.korisnikId!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Text("Učitavanje...");
+                  } else if (snapshot.hasError) {
+                    return Text("Greška");
+                  } else {
+                    var korisnik = snapshot.data!;
+                    return Text("${korisnik.ime} ${korisnik.prezime}");
+                  }
+                },
+              )
+            ),
 
           ])).toList().cast<DataRow>() ?? [],
           ),

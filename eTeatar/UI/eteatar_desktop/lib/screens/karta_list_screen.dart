@@ -2,6 +2,7 @@ import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/karta.dart';
 import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/providers/karta_provider.dart';
+import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eteatar_desktop/providers/utils.dart';
@@ -15,12 +16,14 @@ class KartaListScreen extends StatefulWidget {
 
 class _KartaListScreenState extends State<KartaListScreen> {
   late KartaProvider _kartaProvider;
+  late KorisnikProvider _korisnikProvider;
   SearchResult<Karta>? result = null;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _kartaProvider = context.read<KartaProvider>();
+    _korisnikProvider = context.read<KorisnikProvider>();
   }
 
   @override
@@ -80,7 +83,21 @@ class _KartaListScreenState extends State<KartaListScreen> {
             DataCell(Text(e.sjedisteId.toString())),
             DataCell(Text(e.terminId.toString())),
             DataCell(Text(e.rezervacijaId.toString())),
-            DataCell(Text(e.korisnikId.toString())),
+            DataCell(
+              FutureBuilder(
+                future: _korisnikProvider.getById(e.korisnikId!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Text("Učitavanje...");
+                  } else if (snapshot.hasError) {
+                    return Text("Greška");
+                  } else {
+                    var korisnik = snapshot.data!;
+                    return Text("${korisnik.ime} ${korisnik.prezime}");
+                  }
+                },
+              )
+            ),
           ])).toList().cast<DataRow>() ?? [],
           ),
       )

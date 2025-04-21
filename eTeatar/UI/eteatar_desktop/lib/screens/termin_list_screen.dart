@@ -1,6 +1,8 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/models/termin.dart';
+import 'package:eteatar_desktop/providers/dvorana_provider.dart';
+import 'package:eteatar_desktop/providers/predstava_provider.dart';
 import 'package:eteatar_desktop/providers/termin_provider.dart';
 import 'package:eteatar_desktop/screens/termin_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +18,16 @@ class TerminListScreen extends StatefulWidget {
 class _TerminListScreenState extends State<TerminListScreen> {
 
   late TerminProvider _terminProvider;
+  late DvoranaProvider _dvoranaProvider;
+  late PredstavaProvider _predstavaProvider;
   SearchResult<Termin>? result = null;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _terminProvider = context.read<TerminProvider>();
+    _dvoranaProvider = context.read<DvoranaProvider>();
+    _predstavaProvider = context.read<PredstavaProvider>();
   }
 
   @override
@@ -88,8 +94,36 @@ class _TerminListScreenState extends State<TerminListScreen> {
             DataCell(Text(e.terminId.toString())),
             DataCell(Text(e.status ?? "")),
             DataCell(Text(e.datum.toString() ?? "")),
-            DataCell(Text(e.dvoranaId.toString())),
-            DataCell(Text(e.predstavaId.toString())),
+            DataCell(
+              FutureBuilder(
+                future: _dvoranaProvider.getById(e.dvoranaId!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Text("Učitavanje...");
+                  } else if (snapshot.hasError) {
+                    return Text("Greška");
+                  } else {
+                    var dvorana = snapshot.data!;
+                    return Text("${dvorana.naziv}");
+                  }
+                },
+              )
+            ),
+            DataCell(
+              FutureBuilder(
+                future: _predstavaProvider.getById(e.predstavaId!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Text("Učitavanje...");
+                  } else if (snapshot.hasError) {
+                    return Text("Greška");
+                  } else {
+                    var predstava = snapshot.data!;
+                    return Text("${predstava.naziv}");
+                  }
+                },
+              )
+            ),
           ])).toList().cast<DataRow>() ?? [],
           ),
       )
