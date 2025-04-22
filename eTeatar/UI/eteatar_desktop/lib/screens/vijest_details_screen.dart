@@ -4,6 +4,7 @@ import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/models/vijest.dart';
 import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:eteatar_desktop/providers/vijest_provider.dart';
+import 'package:eteatar_desktop/screens/vijest_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -87,7 +88,8 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
                     name: "Naziv",
                     decoration: InputDecoration(labelText: "Naziv"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
                 ),
@@ -95,7 +97,9 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
                 Expanded(
                   child: FormBuilderDropdown(
                      name: "korisnikId",
-                     validator: FormBuilderValidators.required(),
+                     validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    ]),
                      decoration: InputDecoration(labelText: "Korisnik"),
                      items: korisnikResult?.resultList.map((e) => DropdownMenuItem(child: Text(e.ime ?? ""), value: e.korisnikId)).toList() ?? [],
                 )
@@ -109,7 +113,8 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
                     name: "Sadrzaj",
                     decoration: InputDecoration(labelText: "Sadrzaj"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(500, errorText: "Maksimalna dužina je 500 karaktera!"),
                     ]),
                     )
                 ),
@@ -128,36 +133,65 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(onPressed: () async{
-            _formKey.currentState?.saveAndValidate();
-            final formData = _formKey.currentState!.value;
+            var formCheck = _formKey.currentState?.saveAndValidate();
+            if(formCheck == true) {
+              final formData = _formKey.currentState!.value;
 
-            final requestData = {
-              ...formData,
+              final requestData = {
+                ...formData,
 
-            };
-            if(widget.vijest == null){
-              try {
-                _vijestProvider.insert(requestData);
-              } catch (e){
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri dodavanju vijesti!",
-                  width: 300
-                );
-              }
-            } else {
-              try {
-                _vijestProvider.update(widget.vijest!.vijestId!, requestData);
-              } catch (e){
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri ažuriranju vijesti!",
-                  width: 300
-                );
+              };
+              if(widget.vijest == null){
+                try {
+                  await _vijestProvider.insert(requestData);
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.success,
+                    title: "Uspješno dodana vijest!",
+                    width: 300,
+                    onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const VijestListScreen(),
+                        ),
+                      );
+                    },
+                  );
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri dodavanju vijesti!",
+                    width: 300
+                  );
+                }
+              } else {
+                try {
+                  await _vijestProvider.update(widget.vijest!.vijestId!, requestData);
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.success,
+                    title: "Uspješno ažurirana vijest!",
+                    width: 300,
+                    onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const VijestListScreen(),
+                        ),
+                      );
+                    },
+                  );
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri ažuriranju vijesti!",
+                    width: 300
+                  );
+                }
               }
             }
+            
           }, 
           child: const Text("Sačuvaj")),
       ],),

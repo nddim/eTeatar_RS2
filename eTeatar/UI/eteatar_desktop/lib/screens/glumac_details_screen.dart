@@ -1,6 +1,7 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/glumac.dart';
 import 'package:eteatar_desktop/providers/glumac_provider.dart';
+import 'package:eteatar_desktop/screens/glumac_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -73,7 +74,8 @@ class _GlumacDetailsScreenState extends State<GlumacDetailsScreen> {
                     name: "Ime",
                     decoration: InputDecoration(labelText: "Ime"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
                 ),
@@ -83,7 +85,8 @@ class _GlumacDetailsScreenState extends State<GlumacDetailsScreen> {
                     name: "Prezime",
                     decoration: InputDecoration(labelText: "Prezime"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
                 ),
@@ -96,7 +99,8 @@ class _GlumacDetailsScreenState extends State<GlumacDetailsScreen> {
                     name: "Biografija",
                     decoration: InputDecoration(labelText: "Biografija"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(500, errorText: "Maksimalna dužina je 500 karaktera!"),
                     ]),
                     )
                 ),
@@ -115,34 +119,63 @@ class _GlumacDetailsScreenState extends State<GlumacDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(onPressed: () async{
-            _formKey.currentState?.saveAndValidate();
-            final formData = _formKey.currentState!.value;
+            var formCheck = _formKey.currentState?.saveAndValidate();
+            if(formCheck == true) {
+              final formData = _formKey.currentState!.value;
 
-            final requestData = {
-              ...formData,
+              final requestData = {
+                ...formData,
 
-            };
-            if(widget.glumac == null){
-              try {
-                _glumacProvider.insert(requestData);
-              } catch (e){
+              };
+              if(widget.glumac == null){
+                try {
+                await _glumacProvider.insert(requestData);
                 QuickAlert.show(
                   context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri kreiranju glumca!",
-                  width: 300);
-              }
-            } else {
-              try {
-                _glumacProvider.update(widget.glumac!.glumacId!, requestData);
-              } catch (e){
+                  type: QuickAlertType.success,
+                  title: "Uspješno dodan glumac!",
+                  width: 300,
+                  onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const GlumacListScreen(),
+                      ),
+                    );
+                  },
+                );
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri kreiranju glumca!",
+                    width: 300);
+                }
+              } else {
+                try {
+                await _glumacProvider.update(widget.glumac!.glumacId!, requestData);
                 QuickAlert.show(
                   context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri ažuriranju glumca!",
-                  width: 300);
+                  type: QuickAlertType.success,
+                  title: "Uspješno ažuriran glumac!",
+                  width: 300,
+                  onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const GlumacListScreen(),
+                      ),
+                    );
+                  },
+                );
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri ažuriranju glumca!",
+                    width: 300);
+                }
               }
             }
+            
           }, 
           child: const Text("Sačuvaj")),
       ],),

@@ -1,6 +1,7 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/zanr.dart';
 import 'package:eteatar_desktop/providers/zanr_provider.dart';
+import 'package:eteatar_desktop/screens/zanr_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -71,7 +72,8 @@ class _ZanrDetailsScreenState extends State<ZanrDetailsScreen> {
                     name: "Naziv",
                     decoration: InputDecoration(labelText: "Naziv"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
                 ),
@@ -90,34 +92,62 @@ class _ZanrDetailsScreenState extends State<ZanrDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(onPressed: () async{
-            _formKey.currentState?.saveAndValidate();
-            final formData = _formKey.currentState!.value;
+            var formCheck = _formKey.currentState?.saveAndValidate();
+            if(formCheck == true) {
+              final formData = _formKey.currentState!.value;
 
-            final requestData = {
-              ...formData,
+              final requestData = {
+                ...formData,
 
-            };
-            if(widget.zanr == null){
-              try {
-                _zanrProvider.insert(requestData);
-              } catch (e){
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri dodavanju žanrova!",
-                  width: 300
-                );
-              }
-            } else {
-              try {
-                _zanrProvider.update(widget.zanr!.zanrId!, requestData);
-              } catch (e){
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri ažuriranju žanrova!",
-                  width: 300
-                );
+              };
+              if(widget.zanr == null){
+                try {
+                  await _zanrProvider.insert(requestData);
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.success,
+                    title: "Uspješno dodan žanr!",
+                    width: 300,
+                    onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ZanrListScreen(),
+                        ),
+                      );
+                    },
+                  );
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri dodavanju žanrova!",
+                    width: 300
+                  );
+                }
+              } else {
+                try {
+                  await _zanrProvider.update(widget.zanr!.zanrId!, requestData);
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.success,
+                    title: "Uspješno ažuriran žanr!",
+                    width: 300,
+                    onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ZanrListScreen(),
+                        ),
+                      );
+                    },
+                  );
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri ažuriranju žanrova!",
+                    width: 300
+                  );
+                }
               }
             }
           }, 

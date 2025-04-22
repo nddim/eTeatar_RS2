@@ -1,6 +1,7 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/hrana.dart';
 import 'package:eteatar_desktop/providers/hrana_provider.dart';
+import 'package:eteatar_desktop/screens/hrana_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -71,7 +72,8 @@ class _HranaDetailsScreenState extends State<HranaDetailsScreen> {
                     name: "Naziv",
                     decoration: InputDecoration(labelText: "Naziv"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
                 ),
@@ -81,8 +83,10 @@ class _HranaDetailsScreenState extends State<HranaDetailsScreen> {
                     name: "Cijena",
                     decoration: InputDecoration(labelText: "Cijena"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.numeric(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.numeric(),
+                      FormBuilderValidators.max(10000, errorText: "Cijena ne smije biti veca od 10000 KM!"),
+                      FormBuilderValidators.min(1, errorText: "Cijena ne smije biti manja od 1 KM"),
                     ]),
                     )
                 ),
@@ -101,37 +105,66 @@ class _HranaDetailsScreenState extends State<HranaDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(onPressed: () async{
-            _formKey.currentState?.saveAndValidate();
-            final formData = _formKey.currentState!.value;
+            var formCheck = _formKey.currentState?.saveAndValidate();
+            if(formCheck == true) {
+              final formData = _formKey.currentState!.value;
 
-            final requestData = {
-              ...formData,
+              final requestData = {
+                ...formData,
 
-            };
-            if(widget.hrana == null){
-              _hranaProvider.insert(requestData);
-              try {
-                _hranaProvider.insert(requestData);
-              } catch (e){
-                QuickAlert.show(
+              };
+              if(widget.hrana == null) {
+                try {
+                  await _hranaProvider.insert(requestData);
+                  QuickAlert.show(
                   context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri dodavanju hrane!",
-                  width: 300
+                  type: QuickAlertType.success,
+                  title: "Uspješno dodata hrana!",
+                  width: 300,
+                  onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const HranaListScreen(),
+                      ),
+                    );
+                  },
                 );
-              }
-            } else {
-              try {
-                _hranaProvider.update(widget.hrana!.hranaId!, requestData);
-              } catch (e){
-                QuickAlert.show(
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri dodavanju hrane!",
+                    width: 300
+                  );
+                }
+
+              } else {
+                try {
+                  await _hranaProvider.update(widget.hrana!.hranaId!, requestData);
+                  QuickAlert.show(
                   context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri ažuriranju hrane!",
-                  width: 300
+                  type: QuickAlertType.success,
+                  title: "Uspješno ažurirana hrana!",
+                  width: 300,
+                  onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const HranaListScreen(),
+                      ),
+                    );
+                  },
                 );
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri ažuriranju hrane!",
+                    width: 300
+                  );
+                }
               }
             }
+            
           }, 
           child: const Text("Sačuvaj")),
       ],),

@@ -4,6 +4,7 @@ import 'package:eteatar_desktop/models/repertoar.dart';
 import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/providers/predstava_provider.dart';
 import 'package:eteatar_desktop/providers/repertoar_provider.dart';
+import 'package:eteatar_desktop/screens/repertoar_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -93,7 +94,8 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                     name: "Naziv",
                     decoration: InputDecoration(labelText: "Naziv"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
                 ),
@@ -103,7 +105,8 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                     name: "Opis",
                     decoration: InputDecoration(labelText: "Opis"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
                 ),
@@ -114,7 +117,16 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                 FormBuilderDateTimePicker(
                   name: "DatumPocetka",
                   decoration: InputDecoration(labelText: "Datum pocetka"),
-                  validator: FormBuilderValidators.required(),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    (value) {
+                      if (value == null) return null;
+                      if (value.isBefore(DateTime(1900, 1, 1))) {
+                        return "Datum rođenja ne može biti manji od 1900.01.01.";
+                      }
+                      return null;
+                    }
+                  ]),
                   inputType: InputType.date,
                   format: DateFormat("yyyy-MM-dd"),
                 ),
@@ -124,7 +136,16 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                 FormBuilderDateTimePicker(
                   name: "DatumKraja",
                   decoration: InputDecoration(labelText: "Datum kraja"),
-                  validator: FormBuilderValidators.required(),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    (value) {
+                      if (value == null) return null;
+                      if (value.isBefore(DateTime(1900, 1, 1))) {
+                        return "Datum rođenja ne može biti manji od 1900.01.01.";
+                      }
+                      return null;
+                    }
+                  ]),
                   inputType: InputType.date,
                   format: DateFormat("yyyy-MM-dd"),
                 ),
@@ -178,38 +199,67 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(onPressed: () async{
-            _formKey.currentState?.saveAndValidate();
-            final formData = _formKey.currentState!.value;
+            var formCheck = _formKey.currentState?.saveAndValidate();
+            if(formCheck == true) {
+              final formData = _formKey.currentState!.value;
 
-            final requestData = {
-              ...formData,
-              'DatumPocetka': DateFormat('yyyy-MM-dd').format(formData['DatumPocetka']),
-              'DatumKraja': DateFormat('yyyy-MM-dd').format(formData['DatumKraja']),
-              'Predstave': _selectedPredstave,
-            };
-            if(widget.repertoar == null){
-              try {
-                _repertoarProvider.insert(requestData);
-              } catch (e){
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri dodavanju repertoara!",
-                  width: 300
-                );
-              }
-            } else {
-              try {
-                _repertoarProvider.update(widget.repertoar!.repertoarId!, requestData);
-              } catch (e){
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri ažuriranju repertoara!",
-                  width: 300
-                );
+              final requestData = {
+                ...formData,
+                'DatumPocetka': DateFormat('yyyy-MM-dd').format(formData['DatumPocetka']),
+                'DatumKraja': DateFormat('yyyy-MM-dd').format(formData['DatumKraja']),
+                'Predstave': _selectedPredstave,
+              };
+              if(widget.repertoar == null){
+                try {
+                  await _repertoarProvider.insert(requestData);
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.success,
+                    title: "Uspješno dodan repertoar!",
+                    width: 300,
+                    onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const RepertoarListScreen(),
+                        ),
+                      );
+                    },
+                  );
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri dodavanju repertoara!",
+                    width: 300
+                  );
+                }
+              } else {
+                try {
+                  await _repertoarProvider.update(widget.repertoar!.repertoarId!, requestData);
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.success,
+                    title: "Uspješno ažuriran repertoar!",
+                    width: 300,
+                    onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const RepertoarListScreen(),
+                        ),
+                      );
+                    },
+                  );
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri ažuriranju repertoara!",
+                    width: 300
+                  );
+                }
               }
             }
+            
           }, 
           child: const Text("Sačuvaj")),
       ],),

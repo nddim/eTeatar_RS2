@@ -7,6 +7,7 @@ import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/models/uloga.dart';
 import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:eteatar_desktop/providers/uloga_provider.dart';
+import 'package:eteatar_desktop/screens/korisnik_list_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -69,8 +70,6 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
         width: 300
       );
     }
-    print("zanrResult: ${ulogaResult?.resultList.length}");
-
     setState(() {
       isLoading = false;
     });
@@ -100,7 +99,8 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                     name: "Ime",
                     decoration: InputDecoration(labelText: "Ime"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
                 ),
@@ -110,7 +110,8 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                     name: "Prezime",
                     decoration: InputDecoration(labelText: "Prezime"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
                 ),
@@ -120,7 +121,8 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                     name: "KorisnickoIme",
                     decoration: InputDecoration(labelText: "Korisnicko ime"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
                 ),
@@ -133,7 +135,16 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                 FormBuilderDateTimePicker(
                   name: "DatumRodenja",
                   decoration: InputDecoration(labelText: "Datum rođenja"),
-                  validator: FormBuilderValidators.required(),
+                   validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    (value) {
+                      if (value == null) return null;
+                      if (value.isBefore(DateTime(1900, 1, 1))) {
+                        return "Datum rođenja ne može biti manji od 1900.01.01.";
+                      }
+                      return null;
+                    }
+                  ]),
                   inputType: InputType.date,
                   format: DateFormat("yyyy-MM-dd"),
                 ),
@@ -144,7 +155,8 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                   name: "Email",
                   decoration: InputDecoration(labelText: "Email"),
                   validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                   ]),
                   )
               ),
@@ -154,7 +166,8 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                   name: "Telefon",
                   decoration: InputDecoration(labelText: "Telefon"),
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                   ]),
                 ),
               ),
@@ -166,7 +179,7 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                   name: "Lozinka",
                   decoration: InputDecoration(labelText: "Lozinka"),
                   validator: FormBuilderValidators.compose([
-                    
+                    FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                   ]),
                 ),
               ),
@@ -176,7 +189,7 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                   name: "LozinkaPotvrda",
                   decoration: InputDecoration(labelText: "Lozinka potvrda"),
                   validator: FormBuilderValidators.compose([
-                    
+                    FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                   ]),
                 ),
               ),
@@ -214,37 +227,66 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(onPressed: () async{
-            _formKey.currentState?.saveAndValidate();
-            final formData = _formKey.currentState!.value;
+            var formCheck = _formKey.currentState?.saveAndValidate();
+            if(formCheck == true) {
+              final formData = _formKey.currentState!.value;
 
-            final requestData = {
-              ...formData,
-              'DatumRodenja': DateFormat('yyyy-MM-dd').format(formData['DatumRodenja']),
-              'Slika': _base64Image,
-            };
-            if(widget.korisnik == null){
-              try {
-                _korisnikProvider.insert(requestData);
-              } catch (e){
-                QuickAlert.show(
+              final requestData = {
+                ...formData,
+                'DatumRodenja': DateFormat('yyyy-MM-dd').format(formData['DatumRodenja']),
+                'Slika': _base64Image,
+              };
+              if(widget.korisnik == null){
+                try {
+                  await _korisnikProvider.insert(requestData);
+                  QuickAlert.show(
                   context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri dodavanju korisnika!",
-                  width: 300
+                  type: QuickAlertType.success,
+                  title: "Uspješno dodat korisnik!",
+                  width: 300,
+                  onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const KorisnikListScreen(),
+                      ),
+                    );
+                  },
                 );
-              }
-            } else {
-              try {
-                _korisnikProvider.update(widget.korisnik!.korisnikId!, requestData);
-              } catch (e){
-                QuickAlert.show(
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri dodavanju korisnika!",
+                    width: 300
+                  );
+                }
+              } else {
+                try {
+                  await _korisnikProvider.update(widget.korisnik!.korisnikId!, requestData);
+                  QuickAlert.show(
                   context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri ažuriranju korisnika!",
-                  width: 300
+                  type: QuickAlertType.success,
+                  title: "Uspješno ažuriran korisnik!",
+                  width: 300,
+                  onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const KorisnikListScreen(),
+                      ),
+                    );
+                  },
                 );
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri ažuriranju korisnika!",
+                    width: 300
+                  );
+                }
               }
             }
+            
           }, 
           child: const Text("Sačuvaj")),
       ],),

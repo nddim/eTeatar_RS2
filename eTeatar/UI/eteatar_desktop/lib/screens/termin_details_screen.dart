@@ -6,6 +6,7 @@ import 'package:eteatar_desktop/models/termin.dart';
 import 'package:eteatar_desktop/providers/dvorana_provider.dart';
 import 'package:eteatar_desktop/providers/predstava_provider.dart';
 import 'package:eteatar_desktop/providers/termin_provider.dart';
+import 'package:eteatar_desktop/screens/termin_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -107,7 +108,9 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
                 FormBuilderDateTimePicker(
                   name: "Datum",
                   decoration: InputDecoration(labelText: "Datum"),
-                  validator: FormBuilderValidators.required(),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                  ]),
                   inputType: InputType.date,
                   format: DateFormat("yyyy-MM-dd"),
                 ),
@@ -118,7 +121,8 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
                   name: "Status",
                   decoration: InputDecoration(labelText: "Status"),
                   validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                   ]),
                   )
               ),
@@ -129,7 +133,9 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
                 Expanded(
                   child: FormBuilderDropdown(
                      name: "predstavaId",
-                     validator: FormBuilderValidators.required(),
+                     validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    ]),
                      decoration: InputDecoration(labelText: "Predstava"),
                      items: predstavaResult?.resultList.map((e) => DropdownMenuItem(child: Text(e.naziv ?? ""), value: e.predstavaId)).toList() ?? [],
                 )
@@ -138,7 +144,9 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
                 Expanded(
                   child: FormBuilderDropdown(
                      name: "dvoranaId",
-                     validator: FormBuilderValidators.required(),
+                     validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    ]),
                      decoration: InputDecoration(labelText: "Dvorana"),
                      items: dvoranaResult?.resultList.map((e) => DropdownMenuItem(child: Text(e.naziv ?? ""), value: e.dvoranaId)).toList() ?? [],
                 )
@@ -158,37 +166,65 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(onPressed: () async{
-            _formKey.currentState?.saveAndValidate();
-            final formData = _formKey.currentState!.value;
+            var formCheck = _formKey.currentState?.saveAndValidate();
+            if(formCheck == true) {
+              final formData = _formKey.currentState!.value;
 
-            final requestData = {
-              ...formData,
-              'Datum': DateFormat('yyyy-MM-dd').format(formData['Datum']),
-            };
-            print("requestData: $requestData");
-            if(widget.termin == null){
-              try {
-                _terminProvider.insert(requestData);
-              } catch (e){
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri dodavanju termina!",
-                  width: 300
-                );
-              }
-            } else {
-              try {
-                _terminProvider.update(widget.termin!.terminId!, requestData);
-              } catch (e){
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri ažuriranju termina!",
-                  width: 300
-                );
+              final requestData = {
+                ...formData,
+                'Datum': DateFormat('yyyy-MM-dd').format(formData['Datum']),
+              };
+              if(widget.termin == null){
+                try {
+                  await _terminProvider.insert(requestData);
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.success,
+                    title: "Uspješno dodan termin!",
+                    width: 300,
+                    onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const TerminListScreen(),
+                        ),
+                      );
+                    },
+                  );
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri dodavanju termina!",
+                    width: 300
+                  );
+                }
+              } else {
+                try {
+                  await _terminProvider.update(widget.termin!.terminId!, requestData);
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.success,
+                    title: "Uspješno ažuriran termin!",
+                    width: 300,
+                    onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const TerminListScreen(),
+                        ),
+                      );
+                    },
+                  );
+                } catch (e){
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri ažuriranju termina!",
+                    width: 300
+                  );
+                }
               }
             }
+            
           }, 
           child: const Text("Sačuvaj")),
       ],),

@@ -9,6 +9,7 @@ import 'package:eteatar_desktop/models/zanr.dart';
 import 'package:eteatar_desktop/providers/glumac_provider.dart';
 import 'package:eteatar_desktop/providers/predstava_provider.dart';
 import 'package:eteatar_desktop/providers/zanr_provider.dart';
+import 'package:eteatar_desktop/screens/predstava_list_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -89,8 +90,6 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
         width: 300
       );
     }
-    print("glumacResult: ${glumacResult?.resultList.length}");
-    print("zanrResult: ${zanrResult?.resultList.length}");
     setState(() {
       isLoading = false;
     });
@@ -120,7 +119,8 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                     name: "Naziv",
                     decoration: InputDecoration(labelText: "Naziv"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
                 ),
@@ -130,8 +130,10 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                     name: "Cijena",
                     decoration: InputDecoration(labelText: "Cijena"),
                     validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.numeric(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.numeric(),
+                      FormBuilderValidators.max(10000, errorText: "Cijena ne smije biti veca od 10000 KM!"),
+                      FormBuilderValidators.min(1, errorText: "Cijena ne smije biti manja od 1 KM"),
                     ]),
                     )
                 ),
@@ -141,7 +143,9 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                     name: "Opis",
                     decoration: InputDecoration(labelText: "Opis"),
                     validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
+
                     ]),
                   ),
                 ),
@@ -153,7 +157,9 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                   name: "Produkcija",
                   decoration: InputDecoration(labelText: "Produkcija"),
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
+                    
                   ]),
                 ),
               ),
@@ -163,7 +169,8 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                   name: "Koreografija",
                   decoration: InputDecoration(labelText: "Koreografija"),
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                   ]),
                 ),
               ),
@@ -173,7 +180,8 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                   name: "Scenografija",
                   decoration: InputDecoration(labelText: "Scenografija"),
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                   ]),
                 ),
               ),
@@ -248,7 +256,16 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                 FormBuilderDateTimePicker(
                   name: "TrajanjePocetak",
                   decoration: InputDecoration(labelText: "Trajanje početak"),
-                  validator: FormBuilderValidators.required(),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    (value) {
+                      if (value == null) return null;
+                      if (value.isBefore(DateTime(1900, 1, 1))) {
+                        return "Datum rođenja ne može biti manji od 1900.01.01.";
+                      }
+                      return null;
+                    }
+                  ]),
                   inputType: InputType.date,
                   format: DateFormat("yyyy-MM-dd"),
                 ),
@@ -258,7 +275,16 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                 FormBuilderDateTimePicker(
                   name: "TrajanjeKraj",
                   decoration: InputDecoration(labelText: "Trajanje kraj"),
-                  validator: FormBuilderValidators.required(),
+                  validator: FormBuilderValidators.compose([
+                    FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    (value) {
+                      if (value == null) return null;
+                      if (value.isBefore(DateTime(1900, 1, 1))) {
+                        return "Datum rođenja ne može biti manji od 1900.01.01.";
+                      }
+                      return null;
+                    }
+                  ]),
                   inputType: InputType.date,
                   format: DateFormat("yyyy-MM-dd"),
                 ),
@@ -297,41 +323,69 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ElevatedButton(onPressed: () async{
-            _formKey.currentState?.saveAndValidate();
-            final formData = _formKey.currentState!.value;
+            var formCheck = _formKey.currentState?.saveAndValidate();
+            if(formCheck == true) {
+              final formData = _formKey.currentState!.value;
 
-            final requestData = {
-              ...formData,
-              'TrajanjePocetak': DateFormat('yyyy-MM-dd').format(formData['TrajanjePocetak']),
-              'TrajanjeKraj': DateFormat('yyyy-MM-dd').format(formData['TrajanjeKraj']),
-              'Slika': _base64Image ?? widget.predstava?.slika,
-              'Zanrovi': _selectedZanrovi,
-              'Glumci': _selectedGlumci,
-            };
-            if(widget.predstava == null){
-              _predstavaProvider.insert(requestData);
-              try {
-                _predstavaProvider.insert(requestData);
-              } catch (e) {
-                QuickAlert.show(
+              final requestData = {
+                ...formData,
+                'TrajanjePocetak': DateFormat('yyyy-MM-dd').format(formData['TrajanjePocetak']),
+                'TrajanjeKraj': DateFormat('yyyy-MM-dd').format(formData['TrajanjeKraj']),
+                'Slika': _base64Image ?? widget.predstava?.slika,
+                'Zanrovi': _selectedZanrovi,
+                'Glumci': _selectedGlumci,
+              };
+              if(widget.predstava == null){
+                try {
+                  await _predstavaProvider.insert(requestData);
+                  QuickAlert.show(
                   context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri azuriranju predstave!",
-                  width: 300
+                  type: QuickAlertType.success,
+                  title: "Uspješno dodana predstava!",
+                  width: 300,
+                  onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const PredstavaListScreen(),
+                      ),
+                    );
+                  },
                 );
-              }
-            } else {
-              try {
-                _predstavaProvider.update(widget.predstava!.predstavaId!, requestData);
-              } catch (e) {
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri ažuriranju predstave!",
-                  width: 300
-                );
+                } catch (e) {
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri azuriranju predstave!",
+                    width: 300
+                  );
+                }
+              } else {
+                try {
+                  await _predstavaProvider.update(widget.predstava!.predstavaId!, requestData);
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.success,
+                    title: "Uspješno ažurirana predstava!",
+                    width: 300,
+                    onConfirmBtnTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const PredstavaListScreen(),
+                        ),
+                      );
+                    },
+                  );
+                } catch (e) {
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri ažuriranju predstave!",
+                    width: 300
+                  );
+                }
               }
             }
+            
           }, 
           child: const Text("Sačuvaj")),
       ],),
