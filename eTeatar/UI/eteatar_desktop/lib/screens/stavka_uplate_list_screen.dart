@@ -4,6 +4,7 @@ import 'package:eteatar_desktop/models/stavka_uplate.dart';
 import 'package:eteatar_desktop/providers/stavka_uplate_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class StavkaUplateListScreen extends StatefulWidget {
   const StavkaUplateListScreen({super.key});
@@ -29,7 +30,17 @@ class _StavkaUplateListScreenState extends State<StavkaUplateListScreen> {
   }
 
   Future<void> _loadData() async {
-    var data = await _stavkaUplateProvider.get();
+    var data;
+    try {
+      data = await _stavkaUplateProvider.get();
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju stavki uplata!",
+        width: 300
+      );
+    }
     setState(() {
       result = data;
       _isLoading = false;
@@ -63,7 +74,17 @@ class _StavkaUplateListScreenState extends State<StavkaUplateListScreen> {
         var filter = {
           "NazivGTE": _cijenaEditingController.text
         };
-        var data = await _stavkaUplateProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _stavkaUplateProvider.get(filter: filter);
+        } catch (e) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dohvatanju stavki uplata!",
+            width: 300
+          );
+        }
         setState(() {
           result = data;
         });

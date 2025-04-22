@@ -6,6 +6,7 @@ import 'package:eteatar_desktop/screens/hrana_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eteatar_desktop/providers/utils.dart';
+import 'package:quickalert/quickalert.dart';
 
 class HranaListScreen extends StatefulWidget {
   const HranaListScreen({super.key});
@@ -31,7 +32,17 @@ class _HranaListScreenState extends State<HranaListScreen> {
   }
 
   Future<void> _loadData() async {
-    var data = await _hranaProvider.get();
+    var data;
+    try {
+      data = await _hranaProvider.get();
+    } catch (e){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju hrane!",
+        width: 300
+      );
+    }
     setState(() {
       result = data;
       _isLoading = false;
@@ -65,7 +76,17 @@ class _HranaListScreenState extends State<HranaListScreen> {
         var filter = {
           "NazivGTE": _nazivEditingController.text
         };
-        var data = await _hranaProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _hranaProvider.get(filter: filter);
+        } catch (e) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dohvatanju hrane!",
+            width: 300
+          );
+        }
         setState(() {
           result = data;
         });

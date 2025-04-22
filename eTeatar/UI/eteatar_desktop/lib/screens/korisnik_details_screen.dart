@@ -13,6 +13,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class KorisnikDetailsScreen extends StatefulWidget {
   Korisnik? korisnik;
@@ -58,7 +59,16 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
   }
 
    Future initForm() async {
-    ulogaResult = await _ulogaProvider.get();
+    try {
+      ulogaResult = await _ulogaProvider.get();
+    } catch (e){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju uloga!",
+        width: 300
+      );
+    }
     print("zanrResult: ${ulogaResult?.resultList.length}");
 
     setState(() {
@@ -213,9 +223,27 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
               'Slika': _base64Image,
             };
             if(widget.korisnik == null){
-              _korisnikProvider.insert(requestData);
+              try {
+                _korisnikProvider.insert(requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri dodavanju korisnika!",
+                  width: 300
+                );
+              }
             } else {
-              _korisnikProvider.update(widget.korisnik!.korisnikId!, requestData);
+              try {
+                _korisnikProvider.update(widget.korisnik!.korisnikId!, requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri ažuriranju korisnika!",
+                  width: 300
+                );
+              }
             }
           }, 
           child: const Text("Sačuvaj")),

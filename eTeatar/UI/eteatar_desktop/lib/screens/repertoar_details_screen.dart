@@ -10,6 +10,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class RepertoarDetailsScreen extends StatefulWidget {
   Repertoar? repertoar;
@@ -53,7 +54,16 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
   }
 
   Future initForm() async {
-    predstavaResult = await _predstavaProvider.get();
+    try {
+      predstavaResult = await _predstavaProvider.get();
+    } catch (e){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju predstava!",
+        width: 300
+      );
+    }
     setState(() {
       isLoading = false;
     });
@@ -178,9 +188,27 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
               'Predstave': _selectedPredstave,
             };
             if(widget.repertoar == null){
-              _repertoarProvider.insert(requestData);
+              try {
+                _repertoarProvider.insert(requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri dodavanju repertoara!",
+                  width: 300
+                );
+              }
             } else {
-              _repertoarProvider.update(widget.repertoar!.repertoarId!, requestData);
+              try {
+                _repertoarProvider.update(widget.repertoar!.repertoarId!, requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri ažuriranju repertoara!",
+                  width: 300
+                );
+              }
             }
           }, 
           child: const Text("Sačuvaj")),

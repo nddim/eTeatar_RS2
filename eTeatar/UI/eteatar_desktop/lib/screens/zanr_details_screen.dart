@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class ZanrDetailsScreen extends StatefulWidget {
   Zanr? zanr;
@@ -48,7 +49,7 @@ class _ZanrDetailsScreenState extends State<ZanrDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Zanr detalji", 
+    return MasterScreen("Žanr detalji", 
       Column(children: [
         isLoading ? Container() : _buildForm(), _save(),
       ],)
@@ -97,9 +98,27 @@ class _ZanrDetailsScreenState extends State<ZanrDetailsScreen> {
 
             };
             if(widget.zanr == null){
-              _zanrProvider.insert(requestData);
+              try {
+                _zanrProvider.insert(requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri dodavanju žanrova!",
+                  width: 300
+                );
+              }
             } else {
-              _zanrProvider.update(widget.zanr!.zanrId!, requestData);
+              try {
+                _zanrProvider.update(widget.zanr!.zanrId!, requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri ažuriranju žanrova!",
+                  width: 300
+                );
+              }
             }
           }, 
           child: const Text("Sačuvaj")),

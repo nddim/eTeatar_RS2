@@ -11,6 +11,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class TerminDetailsScreen extends StatefulWidget {
   Termin? termin;
@@ -58,10 +59,26 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
   }
 
   Future initForm() async {
-    predstavaResult = await _predstavaProvider.get();
-    dvoranaResult = await _dvoranaProvider.get();
-    print("predstavaResult: ${predstavaResult?.resultList}");
-    print("dvoranaResult: ${dvoranaResult?.resultList.length}");
+    try {
+      predstavaResult = await _predstavaProvider.get();
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju predstava!",
+        width: 300
+      );
+    }
+    try {
+      dvoranaResult = await _dvoranaProvider.get();
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju dvorana!",
+        width: 300
+      );
+    }
     setState(() {
       isLoading = false;
     });
@@ -150,9 +167,27 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
             };
             print("requestData: $requestData");
             if(widget.termin == null){
-              _terminProvider.insert(requestData);
+              try {
+                _terminProvider.insert(requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri dodavanju termina!",
+                  width: 300
+                );
+              }
             } else {
-              _terminProvider.update(widget.termin!.terminId!, requestData);
+              try {
+                _terminProvider.update(widget.termin!.terminId!, requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri ažuriranju termina!",
+                  width: 300
+                );
+              }
             }
           }, 
           child: const Text("Sačuvaj")),

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class VijestDetailsScreen extends StatefulWidget {
   Vijest? vijest;
@@ -47,7 +48,16 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
   }
 
   Future initForm() async {
-    korisnikResult = await _korisnikProvider.get();
+    try {
+      korisnikResult = await _korisnikProvider.get();
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju korisnika!",
+        width: 300
+      );
+    }
     setState(() {
       isLoading = false;
     });
@@ -126,9 +136,27 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
 
             };
             if(widget.vijest == null){
-              _vijestProvider.insert(requestData);
+              try {
+                _vijestProvider.insert(requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri dodavanju vijesti!",
+                  width: 300
+                );
+              }
             } else {
-              _vijestProvider.update(widget.vijest!.vijestId!, requestData);
+              try {
+                _vijestProvider.update(widget.vijest!.vijestId!, requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri ažuriranju vijesti!",
+                  width: 300
+                );
+              }
             }
           }, 
           child: const Text("Sačuvaj")),

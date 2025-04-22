@@ -1,10 +1,12 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/ocjena.dart';
+import 'package:eteatar_desktop/models/predstava.dart';
 import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/providers/ocjena_provider.dart';
-import 'package:eteatar_desktop/providers/utils.dart';
+import 'package:eteatar_desktop/providers/predstava_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class OcjenaListScreen extends StatefulWidget {
   const OcjenaListScreen({super.key});
@@ -17,6 +19,7 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
   bool _isInit = true;
   bool _isLoading = true;
   late OcjenaProvider _ocjenaProvider;
+  late PredstavaProvider _predstavaProvider;
   SearchResult<Ocjena>? result = null;
 
   @override
@@ -24,13 +27,24 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
     super.didChangeDependencies();
     if (_isInit) {
       _ocjenaProvider = context.read<OcjenaProvider>();
+      _predstavaProvider = context.read<PredstavaProvider>();
       _loadData();
       _isInit = false;
     }
   }
 
   Future<void> _loadData() async {
-    var data = await _ocjenaProvider.get();
+    var data ;
+    try {
+      data = await _ocjenaProvider.get();
+    } catch (e){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju ocjena!",
+        width: 300
+      );
+    }
     setState(() {
       result = data;
       _isLoading = false;
@@ -64,7 +78,17 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
         var filter = {
           "VrijednostGTE": _vrijednostEditingController.text
         };
-        var data = await _ocjenaProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _ocjenaProvider.get(filter: filter);
+        } catch (e) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dohvatanju ocjena!",
+            width: 300
+          );
+        }
         setState(() {
           result = data;
         });
@@ -93,13 +117,39 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
             DataCell(Text(e.ocjenaId.toString())),
             DataCell(Text(e.vrijednost.toString())),
             DataCell(Text(e.komentar ?? "")),
-            DataCell(Text(e.predstavaId.toString())),
-
+            DataCell(
+              FutureBuilder(
+                future: fetchPredstava(e.predstavaId!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Text("Učitavanje...");
+                  } else if (snapshot.hasError) {
+                    return Text("Greška");
+                  } else {
+                    var predstava = snapshot.data!;
+                    return Text("${predstava.naziv}");
+                  }
+                },
+              )
+            ),
           ])).toList().cast<DataRow>() ?? [],
           ),
       )
       )
     );
   }
-
+  Future<Predstava> fetchPredstava(int predstavaId) async {
+    try {
+      var predstava = await _predstavaProvider.getById(predstavaId);
+      return predstava;
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška prilikom dohvatanja predstava!",
+        width: 300
+      );
+      throw Exception("Greška prilikom dohvatanja predstava!");
+    }
+  }
 }

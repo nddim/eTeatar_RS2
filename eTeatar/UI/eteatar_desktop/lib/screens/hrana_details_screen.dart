@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class HranaDetailsScreen extends StatefulWidget {
   Hrana? hrana;
@@ -109,8 +110,27 @@ class _HranaDetailsScreenState extends State<HranaDetailsScreen> {
             };
             if(widget.hrana == null){
               _hranaProvider.insert(requestData);
+              try {
+                _hranaProvider.insert(requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri dodavanju hrane!",
+                  width: 300
+                );
+              }
             } else {
-              _hranaProvider.update(widget.hrana!.hranaId!, requestData);
+              try {
+                _hranaProvider.update(widget.hrana!.hranaId!, requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri ažuriranju hrane!",
+                  width: 300
+                );
+              }
             }
           }, 
           child: const Text("Sačuvaj")),

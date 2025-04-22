@@ -1,10 +1,12 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
+import 'package:eteatar_desktop/models/korisnik.dart';
 import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/models/uplata.dart';
 import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:eteatar_desktop/providers/uplata_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class UplataListScreen extends StatefulWidget {
   const UplataListScreen({super.key});
@@ -32,7 +34,17 @@ class _UplataListScreenState extends State<UplataListScreen> {
   }
 
   Future<void> _loadData() async {
-    var data = await _uplataProvider.get();
+    var data;
+    try {
+      data = await _uplataProvider.get();
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju uplata!",
+        width: 300
+      );
+    }
     setState(() {
       result = data;
       _isLoading = false;
@@ -66,7 +78,17 @@ class _UplataListScreenState extends State<UplataListScreen> {
         var filter = {
           "IznosGTE": _iznosEditingController.text
         };
-        var data = await _uplataProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _uplataProvider.get(filter: filter);
+        } catch (e) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dohvatanju uplata!",
+            width: 300
+          );
+        }
         setState(() {
           result = data;
         });
@@ -98,7 +120,7 @@ class _UplataListScreenState extends State<UplataListScreen> {
             DataCell(Text(e.datum.toString())),
             DataCell(
               FutureBuilder(
-                future: _korisnikProvider.getById(e.korisnikId!),
+                future: fetchKorisnikSafe(e.korisnikId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Text("Učitavanje...");
@@ -118,4 +140,18 @@ class _UplataListScreenState extends State<UplataListScreen> {
     );
   }
 
+  Future<Korisnik> fetchKorisnikSafe(int korisnikId) async {
+    try {
+      var korisnik = await _korisnikProvider.getById(korisnikId);
+      return korisnik;
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška prilikom dohvata korisnika!",
+        width: 300
+      );
+      throw Exception("Greška prilikom dohvata korisnika!");
+    }
+  }
 }

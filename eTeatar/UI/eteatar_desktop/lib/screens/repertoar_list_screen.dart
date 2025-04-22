@@ -5,6 +5,7 @@ import 'package:eteatar_desktop/providers/repertoar_provider.dart';
 import 'package:eteatar_desktop/screens/repertoar_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class RepertoarListScreen extends StatefulWidget {
   const RepertoarListScreen({super.key});
@@ -30,7 +31,17 @@ class _RepertoarListScreenState extends State<RepertoarListScreen> {
   }
 
   Future<void> _loadData() async {
-    var data = await _repertoarProvider.get();
+    var data;
+    try {
+      data = await _repertoarProvider.get();
+    } catch (e){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju repertoara!",
+        width: 300
+      );
+    }
     setState(() {
       result = data;
       _isLoading = false;
@@ -64,7 +75,17 @@ class _RepertoarListScreenState extends State<RepertoarListScreen> {
         var filter = {
           "NazivGTE": _nazivEditingController.text
         };
-        var data = await _repertoarProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _repertoarProvider.get(filter: filter);
+        } catch (e) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dohvatanju repertoara!",
+            width: 300
+          );
+        }
         setState(() {
           result = data;
         });

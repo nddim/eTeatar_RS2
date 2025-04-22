@@ -6,6 +6,7 @@ import 'package:eteatar_desktop/screens/korisnik_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eteatar_desktop/providers/utils.dart';
+import 'package:quickalert/quickalert.dart';
 
 class KorisnikListScreen extends StatefulWidget {
   const KorisnikListScreen({super.key});
@@ -30,7 +31,17 @@ class _KorisnikListScreenState extends State<KorisnikListScreen> {
   }
 
   Future<void> _loadData() async {
-    var data = await _korisnikProvider.get();
+    var data; 
+    try {
+      data = await _korisnikProvider.get();
+    } catch (e){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju korisnika!",
+        width: 300
+      );
+    }
     setState(() {
       result = data;
       _isLoading = false;
@@ -66,7 +77,17 @@ class _KorisnikListScreenState extends State<KorisnikListScreen> {
         var filter = {
           "ImeGTE": _imeEditingController.text
         };
-        var data = await _korisnikProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _korisnikProvider.get(filter: filter);
+        } catch (e) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dohvatanju korisnika!",
+            width: 300
+          );
+        }
         setState(() {
           result = data;
         });

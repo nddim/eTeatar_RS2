@@ -78,11 +78,11 @@ class _DvoranaListScreenState extends State<DvoranaListScreen> {
         var data;
         try {
           data = await _dvoranaProvider.get(filter: filter);
-        } catch (e){
+        } catch (e) {
           QuickAlert.show(
             context: context,
             type: QuickAlertType.error,
-            title: "Greška pri dodavanju biblioteke",
+            title: "Greška pri dodavanju dvorane!",
             width: 300);
         }
         setState(() {

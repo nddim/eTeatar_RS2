@@ -7,6 +7,7 @@ import 'package:eteatar_desktop/screens/predstava_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class PredstavaListScreen extends StatefulWidget {
   const PredstavaListScreen({super.key});
@@ -31,7 +32,17 @@ class _PredstavaListScreenState extends State<PredstavaListScreen> {
   }
 
   Future<void> _loadData() async {
-    var data = await _predstavaProvider.get();
+    var data;
+    try {
+      data = await _predstavaProvider.get();
+    } catch (e){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju predstava!",
+        width: 300
+      );
+    }
     setState(() {
       result = data;
       _isLoading = false;
@@ -67,7 +78,17 @@ class _PredstavaListScreenState extends State<PredstavaListScreen> {
         var filter = {
           "NazivGTE": _nazivEditingController.text
         };
-        var data = await _predstavaProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _predstavaProvider.get(filter: filter);
+        } catch (e) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dohvatanju preddstava!",
+            width: 300
+          );
+        }
         setState(() {
           result = data;
         });

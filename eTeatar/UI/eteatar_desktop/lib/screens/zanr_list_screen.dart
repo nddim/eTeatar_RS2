@@ -5,6 +5,7 @@ import 'package:eteatar_desktop/providers/zanr_provider.dart';
 import 'package:eteatar_desktop/screens/zanr_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class ZanrListScreen extends StatefulWidget {
   const ZanrListScreen({super.key});
@@ -30,7 +31,17 @@ class _ZanrListScreenState extends State<ZanrListScreen> {
   }
 
   Future<void> _loadData() async {
-    var data = await _zanrProvider.get();
+    var data;
+    try {
+      data = await _zanrProvider.get();
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju žanrova!",
+        width: 300
+      );
+    }
     setState(() {
       result = data;
       _isLoading = false;
@@ -64,7 +75,17 @@ class _ZanrListScreenState extends State<ZanrListScreen> {
         var filter = {
           "NazivGTE": _nazivEditingController.text
         };
-        var data = await _zanrProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _zanrProvider.get(filter: filter);
+        } catch (e) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dohvatanju žanrova!",
+            width: 300
+          );
+        }
         setState(() {
           result = data;
         });

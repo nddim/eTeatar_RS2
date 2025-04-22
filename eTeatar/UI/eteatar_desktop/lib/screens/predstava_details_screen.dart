@@ -16,6 +16,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:quickalert/quickalert.dart';
 
 class PredstavaDetailsScreen extends StatefulWidget {
   Predstava? predstava;
@@ -68,8 +69,26 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
   }
 
   Future initForm() async {
-    glumacResult = await _glumacProvider.get();
-    zanrResult = await _zanrProvider.get();
+    try {
+      glumacResult = await _glumacProvider.get();
+    } catch (e){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju glumaca!",
+        width: 300
+      );
+    }
+    try {
+      zanrResult = await _zanrProvider.get();
+    } catch (e){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju zanrova!",
+        width: 300
+      );
+    }
     print("glumacResult: ${glumacResult?.resultList.length}");
     print("zanrResult: ${zanrResult?.resultList.length}");
     setState(() {
@@ -291,8 +310,27 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
             };
             if(widget.predstava == null){
               _predstavaProvider.insert(requestData);
+              try {
+                _predstavaProvider.insert(requestData);
+              } catch (e) {
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri azuriranju predstave!",
+                  width: 300
+                );
+              }
             } else {
-              _predstavaProvider.update(widget.predstava!.predstavaId!, requestData);
+              try {
+                _predstavaProvider.update(widget.predstava!.predstavaId!, requestData);
+              } catch (e) {
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri ažuriranju predstave!",
+                  width: 300
+                );
+              }
             }
           }, 
           child: const Text("Sačuvaj")),

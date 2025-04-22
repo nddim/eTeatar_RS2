@@ -5,7 +5,7 @@ import 'package:eteatar_desktop/providers/glumac_provider.dart';
 import 'package:eteatar_desktop/screens/glumac_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:quickalert/quickalert.dart';
 class GlumacListScreen extends StatefulWidget {
   const GlumacListScreen({super.key});
 
@@ -30,7 +30,17 @@ class _GlumacListScreenState extends State<GlumacListScreen> {
   }
 
   Future<void> _loadData() async {
-    var data = await _glumacProvider.get();
+    var data;
+    try {
+      data = await _glumacProvider.get();
+    } catch (e){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju glumaca!",
+        width: 300
+      );
+    }
     setState(() {
       result = data;
       _isLoading = false;
@@ -64,7 +74,17 @@ class _GlumacListScreenState extends State<GlumacListScreen> {
         var filter = {
           "ImeGTE": _imeEditingController.text
         };
-        var data = await _glumacProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _glumacProvider.get(filter: filter);
+        } catch (e) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dohvatanju glumaca!",
+            width: 300
+          );
+        }
         setState(() {
           result = data;
         });

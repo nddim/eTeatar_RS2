@@ -1,4 +1,5 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
+import 'package:eteatar_desktop/models/korisnik.dart';
 import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/models/vijest.dart';
 import 'package:eteatar_desktop/providers/korisnik_provider.dart';
@@ -6,6 +7,7 @@ import 'package:eteatar_desktop/providers/vijest_provider.dart';
 import 'package:eteatar_desktop/screens/vijest_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class VijestListScreen extends StatefulWidget {
   const VijestListScreen({super.key});
@@ -34,7 +36,17 @@ class _VijestListScreenState extends State<VijestListScreen> {
   }
 
   Future<void> _loadData() async {
-    var data = await _vijestProvider.get();
+    var data;
+    try {
+      data = await _vijestProvider.get();
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju vijesti!",
+        width: 300
+      );
+    }
     setState(() {
       result = data;
       _isLoading = false;
@@ -67,7 +79,17 @@ class _VijestListScreenState extends State<VijestListScreen> {
         var filter = {
           "NazivGTE": _nazivEditingController.text
         };
-        var data = await _vijestProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _vijestProvider.get(filter: filter);
+        } catch (e) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dohvatanju vijesti!",
+            width: 300
+          );
+        }
         setState(() {
           result = data;
         });
@@ -107,7 +129,7 @@ class _VijestListScreenState extends State<VijestListScreen> {
             DataCell(Text(e.datum.toString())),
             DataCell(
               FutureBuilder(
-                future: _korisnikProvider.getById(e.korisnikId!),
+                future: fetchKorisnikSafe(e.korisnikId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Text("Učitavanje...");
@@ -127,4 +149,18 @@ class _VijestListScreenState extends State<VijestListScreen> {
     );
   }
 
+  Future<Korisnik> fetchKorisnikSafe(int korisnikId) async {
+    try {
+      var korisnik = await _korisnikProvider.getById(korisnikId);
+      return korisnik;
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška prilikom dohvata korisnika!",
+        width: 300
+      );
+      throw Exception("Greška prilikom dohvata korisnika!");
+    }
+  }
 }

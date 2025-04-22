@@ -1,4 +1,6 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
+import 'package:eteatar_desktop/models/dvorana.dart';
+import 'package:eteatar_desktop/models/predstava.dart';
 import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/models/termin.dart';
 import 'package:eteatar_desktop/providers/dvorana_provider.dart';
@@ -7,6 +9,7 @@ import 'package:eteatar_desktop/providers/termin_provider.dart';
 import 'package:eteatar_desktop/screens/termin_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class TerminListScreen extends StatefulWidget {
   const TerminListScreen({super.key});
@@ -36,7 +39,17 @@ class _TerminListScreenState extends State<TerminListScreen> {
   }
 
   Future<void> _loadData() async {
-    var data = await _terminProvider.get();
+    var data;
+    try {
+      data = await _terminProvider.get();
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju termina!",
+        width: 300
+      );
+    }
     setState(() {
       result = data;
       _isLoading = false;
@@ -70,7 +83,17 @@ class _TerminListScreenState extends State<TerminListScreen> {
         var filter = {
           "Status": _statusEditingController.text
         };
-        var data = await _terminProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _terminProvider.get(filter: filter);
+        } catch (e) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dohvatanju termina!",
+            width: 300
+          );
+        }
         setState(() {
           result = data;
         });
@@ -108,10 +131,10 @@ class _TerminListScreenState extends State<TerminListScreen> {
             cells: [
             DataCell(Text(e.terminId.toString())),
             DataCell(Text(e.status ?? "")),
-            DataCell(Text(e.datum.toString() ?? "")),
+            DataCell(Text(e.datum.toString())),
             DataCell(
               FutureBuilder(
-                future: _dvoranaProvider.getById(e.dvoranaId!),
+                future: fetchDvorana(e.dvoranaId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Text("Učitavanje...");
@@ -126,7 +149,7 @@ class _TerminListScreenState extends State<TerminListScreen> {
             ),
             DataCell(
               FutureBuilder(
-                future: _predstavaProvider.getById(e.predstavaId!),
+                future: fetchPredstava(e.predstavaId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Text("Učitavanje...");
@@ -146,4 +169,32 @@ class _TerminListScreenState extends State<TerminListScreen> {
     );
   }
 
+  Future<Dvorana> fetchDvorana(int dvoranaId) async {
+    try {
+      var dvorana = await _dvoranaProvider.getById(dvoranaId);
+      return dvorana;
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška prilikom dohvata dvorane!",
+        width: 300
+      );
+      throw Exception("Greška prilikom dohvata dvorane!");
+    }
+  }
+  Future<Predstava> fetchPredstava(int predstavaId) async {
+    try {
+      var dvorana = await _predstavaProvider.getById(predstavaId);
+      return dvorana;
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška prilikom dohvata predstave!",
+        width: 300
+      );
+      throw Exception("Greška prilikom dohvata predstave!");
+    }
+  }
 }

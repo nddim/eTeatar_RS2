@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
-
+import 'package:quickalert/quickalert.dart';
 class GlumacDetailsScreen extends StatefulWidget {
   Glumac? glumac;
   GlumacDetailsScreen({super.key, this.glumac});
@@ -123,9 +123,25 @@ class _GlumacDetailsScreenState extends State<GlumacDetailsScreen> {
 
             };
             if(widget.glumac == null){
-              _glumacProvider.insert(requestData);
+              try {
+                _glumacProvider.insert(requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri kreiranju glumca!",
+                  width: 300);
+              }
             } else {
-              _glumacProvider.update(widget.glumac!.glumacId!, requestData);
+              try {
+                _glumacProvider.update(widget.glumac!.glumacId!, requestData);
+              } catch (e){
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri ažuriranju glumca!",
+                  width: 300);
+              }
             }
           }, 
           child: const Text("Sačuvaj")),

@@ -1,11 +1,14 @@
 import 'package:eteatar_desktop/layouts/master_screen.dart';
+import 'package:eteatar_desktop/models/korisnik.dart';
 import 'package:eteatar_desktop/models/rezervacija.dart';
 import 'package:eteatar_desktop/models/search_result.dart';
+import 'package:eteatar_desktop/models/termin.dart';
 import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:eteatar_desktop/providers/rezervacija_provider.dart';
 import 'package:eteatar_desktop/providers/termin_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class RezervacijaListScreen extends StatefulWidget {
   const RezervacijaListScreen({super.key});
@@ -36,7 +39,17 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
   }
 
   Future<void> _loadData() async {
-    var data = await _rezervacijaProvider.get();
+    var data;
+    try {
+      data = await _rezervacijaProvider.get();
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju rezervacija!",
+        width: 300
+      );
+    }
     setState(() {
       result = data;
       _isLoading = false;
@@ -70,7 +83,17 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
         var filter = {
           "NazivGTE": _nazivEditingController.text
         };
-        var data = await _rezervacijaProvider.get(filter: filter);
+        var data;
+        try {
+          data = await _rezervacijaProvider.get(filter: filter);
+        } catch (e) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Greška pri dohvatanju rezervacija!",
+            width: 300
+          );
+        }
         setState(() {
           result = data;
         });
@@ -101,7 +124,7 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
             DataCell(Text(e.status ?? "")),
             DataCell(
               FutureBuilder(
-                future: _terminProvider.getById(e.terminId!),
+                future: fetchTermin(e.terminId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Text("Učitavanje...");
@@ -116,7 +139,7 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
             ),
             DataCell(
               FutureBuilder(
-                future: _korisnikProvider.getById(e.korisnikId!),
+                future: fetchKorisnikSafe(e.korisnikId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Text("Učitavanje...");
@@ -129,7 +152,6 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
                 },
               )
             ),
-
           ])).toList().cast<DataRow>() ?? [],
           ),
       )
@@ -137,4 +159,32 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
     );
   }
 
+  Future<Korisnik> fetchKorisnikSafe(int korisnikId) async {
+    try {
+      var korisnik = await _korisnikProvider.getById(korisnikId);
+      return korisnik;
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška prilikom dohvata korisnika!",
+        width: 300
+      );
+      throw Exception("Greška prilikom dohvata korisnika!");
+    }
+  }
+  Future<Termin> fetchTermin(int terminId) async {
+    try {
+      var termin = await _terminProvider.getById(terminId);
+      return termin;
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška prilikom dohvata termina!",
+        width: 300
+      );
+      throw Exception("Greška prilikom dohvata termina!");
+    }
+  }
 }
