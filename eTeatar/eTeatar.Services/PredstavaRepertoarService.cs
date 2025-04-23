@@ -25,6 +25,11 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.RepertoarId == search.RepertoarId);
             }
+            if (search?.isDeleted != null)
+            {
+                query = query.Where(x => x.IsDeleted == search.isDeleted);
+            }
+
             return query;
         }
         public override void BeforeInsert(PredstavaRepertoarUpsertRequest request, PredstavaRepertoar entity)

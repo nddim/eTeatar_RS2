@@ -25,6 +25,11 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.GlumacId == search.GlumacId);
             }
+            if (search?.isDeleted != null)
+            {
+                query = query.Where(x => x.IsDeleted == search.isDeleted);
+            }
+
             return query;
         }
 

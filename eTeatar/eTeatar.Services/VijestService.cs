@@ -28,7 +28,11 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.Datum < search.DatumLTE);
             }
-         
+            if (search?.isDeleted != null)
+            {
+                query = query.Where(x => x.IsDeleted == search.isDeleted);
+            }
+
             return query;
         }
 

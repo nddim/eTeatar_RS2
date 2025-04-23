@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace eTeatar.Services.Database;
 
-public partial class Kartum
+public partial class Kartum : ISoftDelete
 {
     public int KartaId { get; set; }
 

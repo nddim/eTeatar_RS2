@@ -29,34 +29,39 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.Cijena < search.CijenaLTE);
             }
+            if (search?.isDeleted != null)
+            {
+                query = query.Where(x => x.IsDeleted == search.isDeleted);
+            }
 
             return query;
         }
 
         public override void BeforeInsert(HranaUpsertRequest request, Hrana entity)
         {
+            if (request.Cijena < 0)
+            {
+                throw new UserException("Cijena ne smije imati vrijednost manju od 0!");
+            }
             var naziv = Context.Hranas.Where(x => x.Naziv == request.Naziv && x.HranaId != entity.HranaId).FirstOrDefault();
             if (naziv != null)
             {
                 throw new UserException("Već postoji hrana s tim nazivom!");
             }
-            if (request.Cijena < 0)
-            {
-                throw new UserException("Cijena ne smije imati vrijednost manju od 0!");
-            }
+            
             base.BeforeInsert(request, entity);
         }
 
         public override void BeforeUpdate(HranaUpsertRequest request, Hrana entity)
         {
+            if (request.Cijena < 0)
+            {
+                throw new UserException("Cijena ne smije imati vrijednost manju od 0!");
+            }
             var naziv = Context.Hranas.Where(x => x.Naziv == request.Naziv && x.HranaId != entity.HranaId).FirstOrDefault();
             if (naziv != null)
             {
                 throw new UserException("Već postoji hrana s tim nazivom!");
-            }
-            if (request.Cijena < 0)
-            {
-                throw new UserException("Cijena ne smije imati vrijednost manju od 0!");
             }
             base.BeforeUpdate(request, entity);
         }

@@ -63,6 +63,10 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.PredstavaRepertoars.Any(pr => pr.RepertoarId == search.RepertoarId));
             }
+            if (search?.isDeleted != null)
+            {
+                query = query.Where(x => x.IsDeleted == search.isDeleted);
+            }
 
             return query;
         }

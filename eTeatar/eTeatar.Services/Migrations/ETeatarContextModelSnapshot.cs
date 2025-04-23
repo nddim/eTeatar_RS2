@@ -158,7 +158,7 @@ namespace eTeatar.Services.Migrations
 
                     b.HasIndex("TerminId");
 
-                    b.ToTable("Karta");
+                    b.ToTable("Karta", (string)null);
                 });
 
             modelBuilder.Entity("eTeatar.Services.Database.Korisnik", b =>
@@ -728,7 +728,7 @@ namespace eTeatar.Services.Migrations
 
                     b.HasIndex("KorisnikId");
 
-                    b.ToTable("Uplata");
+                    b.ToTable("Uplata", (string)null);
                 });
 
             modelBuilder.Entity("eTeatar.Services.Database.Vijest", b =>

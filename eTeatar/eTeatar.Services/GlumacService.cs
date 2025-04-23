@@ -30,18 +30,26 @@ namespace eTeatar.Services
                 query = query.Include(x => x.PredstavaGlumacs)
                     .Where(x => x.PredstavaGlumacs.Any(pg => pg.PredstavaId == search.PredstavaId));
             }
+            if (search?.isDeleted != null)
+            {
+                query = query.Where(x => x.IsDeleted == search.isDeleted);
+            }
 
             return query;
         }
 
         public override void BeforeInsert(GlumacInsertRequest request, Glumac entity)
         {
+            if (request.Ime.Length < 2 || request.Prezime.Length < 2)
+            {
+                throw new UserException("Ime i prezime moraju minimalno imati 2 karaktera!");
+            }
             var glumacImePrezime = Context.Glumacs.Where(x => x.Ime == request.Ime && x.Prezime == request.Prezime).FirstOrDefault();
             if (glumacImePrezime != null)
             {
                 throw new UserException("Već postoji glumac s tim imenom i prezimenom!");
             }
-
+            
             base.BeforeInsert(request, entity);
         }
 

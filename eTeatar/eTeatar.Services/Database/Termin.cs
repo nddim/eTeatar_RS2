@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace eTeatar.Services.Database;
 
-public partial class Termin
+public partial class Termin : ISoftDelete
 {
     public int TerminId { get; set; }
 

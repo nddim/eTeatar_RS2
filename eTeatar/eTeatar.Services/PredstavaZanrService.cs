@@ -25,6 +25,10 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.ZanrId == search.ZanrId);
             }
+            if (search?.isDeleted != null)
+            {
+                query = query.Where(x => x.IsDeleted == search.isDeleted);
+            }
 
             return query;
         }

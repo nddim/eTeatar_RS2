@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace eTeatar.Services.Database;
 
-public partial class Zanr
+public partial class Zanr : ISoftDelete
 {
     public int ZanrId { get; set; }
 

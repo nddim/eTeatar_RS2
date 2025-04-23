@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Model.Requests;
+using eTeatar.Model;
 
 namespace eTeatar.Services
 {
@@ -53,5 +54,25 @@ namespace eTeatar.Services
         }
         public virtual void BeforeUpdate(TUpdate request, TDbEntity entity) { }
         public virtual void AfterUpdate(TUpdate request, TDbEntity entity) { }
+        public virtual void Delete(int id)
+        {
+            var entity = Context.Set<TDbEntity>().Find(id);
+
+            if (entity == null)
+            {
+                throw new UserException("Nije pronaden objekat sa poslanim id-om!");
+            }
+
+            if (entity is ISoftDelete softDeleteEntity)
+            {
+                softDeleteEntity.IsDeleted = true;
+                softDeleteEntity.VrijemeBrisanja = DateTime.Now;
+                Context.Update(entity);
+            } else {
+                Context.Remove(entity);
+            }
+
+            Context.SaveChanges();
+        }
     }
 }

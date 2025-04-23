@@ -55,6 +55,11 @@ namespace eTeatar.Services
             {
                 query = query.Include(x => x.KorisnikUlogas).ThenInclude(x => x.Uloga).Where(x=>x.KorisnikUlogas.Any(ku=>ku.UlogaId==search.UlogaId));
             }
+            if (search?.isDeleted != null)
+            {
+                query = query.Where(x => x.IsDeleted == search.isDeleted);
+            }
+
             int count = query.Count();
             if (search?.Page.HasValue == true && search?.PageSize.HasValue == true)
             {

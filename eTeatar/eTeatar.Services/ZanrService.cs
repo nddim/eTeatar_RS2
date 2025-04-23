@@ -21,6 +21,10 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.Naziv.StartsWith(search.NazivGTE));
             }
+            if (search?.isDeleted != null)
+            {
+                query = query.Where(x => x.IsDeleted == search.isDeleted);
+            }
 
             return query;
         }

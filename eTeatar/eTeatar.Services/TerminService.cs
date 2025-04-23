@@ -41,6 +41,10 @@ namespace eTeatar.Services
             {
                 query = query.Include(x => x.Rezervacijas.Any(r => r.RezervacijaId == search.RezervacijaId));
             }
+            if (search?.isDeleted != null)
+            {
+                query = query.Where(x => x.IsDeleted == search.isDeleted);
+            }
 
             return query;
         }

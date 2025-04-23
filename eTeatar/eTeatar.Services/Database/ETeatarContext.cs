@@ -102,6 +102,10 @@ public partial class ETeatarContext : DbContext
             entity.Property(e => e.Naziv)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+
+            entity.Property(e => e.Cijena)
+                .HasPrecision(18, 2);
+
             entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
         });
 
@@ -110,6 +114,9 @@ public partial class ETeatarContext : DbContext
             entity.HasKey(e => e.KartaId).HasName("PK__Karta__EC3FA9EEAD399E80");
 
             entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
+
+            entity.Property(e => e.Cijena)
+                .HasPrecision(18, 2);
 
             entity.HasOne(d => d.Korisnik).WithMany(p => p.Karta)
                 .HasForeignKey(d => d.KorisnikId)
@@ -230,6 +237,10 @@ public partial class ETeatarContext : DbContext
             entity.Property(e => e.Scenografija)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+
+            entity.Property(e => e.Cijena)
+                .HasPrecision(18, 2);
+
             entity.Property(e => e.Slika).HasMaxLength(2000);
             entity.Property(e => e.TrajanjeKraj).HasColumnType("datetime");
             entity.Property(e => e.TrajanjePocetak).HasColumnType("datetime");
@@ -385,6 +396,9 @@ public partial class ETeatarContext : DbContext
 
             entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
 
+            entity.Property(e => e.Cijena)
+                .HasPrecision(18, 2);
+
             entity.HasOne(d => d.Hrana).WithMany(p => p.StavkaUplates)
                 .HasForeignKey(d => d.HranaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -441,6 +455,9 @@ public partial class ETeatarContext : DbContext
 
             entity.Property(e => e.Datum).HasColumnType("datetime");
             entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
+
+            entity.Property(e => e.Iznos)
+                .HasPrecision(18, 2);
 
             entity.HasOne(d => d.Korisnik).WithMany(p => p.Uplata)
                 .HasForeignKey(d => d.KorisnikId)

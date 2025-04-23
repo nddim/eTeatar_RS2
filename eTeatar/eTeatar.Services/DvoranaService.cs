@@ -28,6 +28,10 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.Kapacitet < search.KapacitetLTE);
             }
+            if (search?.isDeleted != null)
+            {
+                query = query.Where(x => x.IsDeleted == search.isDeleted);
+            }
 
             return query;
         }

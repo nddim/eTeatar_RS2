@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace eTeatar.Services.Database;
 
-public partial class PredstavaGlumac
+public partial class PredstavaGlumac : ISoftDelete
 {
     public int PredstavaGlumacId { get; set; }
 
