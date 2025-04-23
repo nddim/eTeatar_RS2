@@ -8,5 +8,9 @@ namespace eTeatar.Services
     {
         public Rezervacija potvrdiRezervaciju(int rezervacijaId);
         public Rezervacija otkaziRezervaciju(int rezervacijaId);
+        public Rezervacija Odobri(int rezervacijaId);
+        public Rezervacija Zavrsi(int rezervacijaId);
+        public Rezervacija Ponisti(int rezervacijaId);
+        public List<string> AllowedActions(int rezervacijaId);
     }
 }

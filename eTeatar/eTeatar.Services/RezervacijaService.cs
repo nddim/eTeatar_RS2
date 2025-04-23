@@ -2,6 +2,7 @@
 using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
+using eTeatar.Services.RezervacijaStateMachine;
 using MapsterMapper;
 using Rezervacija = eTeatar.Services.Database.Rezervacija;
 
@@ -9,9 +10,10 @@ namespace eTeatar.Services
 {
     public class RezervacijaService : BaseCRUDService<Model.Rezervacija, RezervacijaSearchObject, Rezervacija, RezervacijaInsertRequest, RezervacijaUpdateRequest>, IRezervacijaService
     {
-        public RezervacijaService(ETeatarContext _eTeatarContext, IMapper _mapper) : base(_eTeatarContext, _mapper)
+        public BaseRezervacijaState BaseRezervacijaState { get; set; }
+        public RezervacijaService(ETeatarContext _eTeatarContext, IMapper _mapper, BaseRezervacijaState baseRezervacijaState) : base(_eTeatarContext, _mapper)
         {
-
+            BaseRezervacijaState = baseRezervacijaState;
         }
 
         public override IQueryable<Rezervacija> AddFilter(RezervacijaSearchObject search, IQueryable<Rezervacija> query)
@@ -38,6 +40,12 @@ namespace eTeatar.Services
             return query;
         }
 
+        public override Model.Rezervacija Insert(RezervacijaInsertRequest request)
+        {
+            var state = BaseRezervacijaState.CreateState("Initial");
+            return state.Insert(request);
+        }
+
         public override void BeforeInsert(RezervacijaInsertRequest request, Rezervacija entity)
         {
             var termin = Context.Termins.Where(x => x.TerminId == request.TerminId).FirstOrDefault();
@@ -52,7 +60,54 @@ namespace eTeatar.Services
             }
 
             entity.Status = "Rezervisano";
-            //base.BeforeInsert(request, entity);
+        }
+
+        public Model.Rezervacija Odobri(int rezervacijaId)
+        {
+            var rezervacija = Context.Rezervacijas.Find(rezervacijaId);
+            if (rezervacija == null)
+            {
+                throw new UserException("Rezervacija ne postoji!");
+            }
+
+            var state = BaseRezervacijaState.CreateState(rezervacija.StateMachine);
+            return state.Odobri(rezervacijaId);
+        }
+
+        public Model.Rezervacija Ponisti(int rezervacijaId)
+        {
+            var rezervacija = Context.Rezervacijas.Find(rezervacijaId);
+            if (rezervacija == null)
+            {
+                throw new UserException("Rezervacija ne postoji!");
+            }
+
+            var state = BaseRezervacijaState.CreateState(rezervacija.StateMachine);
+            return state.Ponisti(rezervacijaId);
+        }
+
+        public List<string> AllowedActions(int rezervacijaId)
+        {
+            var rezervacija = Context.Rezervacijas.Find(rezervacijaId);
+            if (rezervacija == null)
+            {
+                throw new UserException("Rezervacija ne postoji!");
+            }
+
+            var state = BaseRezervacijaState.CreateState(rezervacija.StateMachine);
+            return state.AllowedActions(rezervacija);
+        }
+
+        public Model.Rezervacija Zavrsi(int rezervacijaId)
+        {
+            var rezervacija = Context.Rezervacijas.Find(rezervacijaId);
+            if (rezervacija == null)
+            {
+                throw new UserException("Rezervacija ne postoji!");
+            }
+
+            var state = BaseRezervacijaState.CreateState(rezervacija.StateMachine);
+            return state.Zavrsi(rezervacijaId);
         }
 
         public Model.Rezervacija potvrdiRezervaciju(int rezervacijaId)

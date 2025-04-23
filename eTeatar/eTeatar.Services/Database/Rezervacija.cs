@@ -13,6 +13,8 @@ public partial class Rezervacija : ISoftDelete
 
     public DateTime? VrijemeBrisanja { get; set; }
 
+    public string? StateMachine { get; set; }
+
     public int TerminId { get; set; }
 
     public int KorisnikId { get; set; }

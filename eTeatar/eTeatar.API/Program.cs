@@ -2,6 +2,7 @@ using eTeatar.API.Auth;
 using eTeatar.API.Filters;
 using eTeatar.Services;
 using eTeatar.Services.Database;
+using eTeatar.Services.RezervacijaStateMachine;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,15 @@ builder.Services.AddTransient<IUlogaService, UlogaService>();
 builder.Services.AddTransient<IUplataService, UplataService>();
 builder.Services.AddTransient<IVijestService, VijestService>();
 builder.Services.AddTransient<IZanrService, ZanrService>();
+
+builder.Services.AddTransient<BaseRezervacijaState>();
+builder.Services.AddTransient<InitialRezervacijaState>();
+builder.Services.AddTransient<KreiranaRezervacijaState>();
+builder.Services.AddTransient<PonistiRezervacijaState>();
+builder.Services.AddTransient<OdobriRezervacijaState>();
+builder.Services.AddTransient<ZavrsiRezervacijaState>();
+
+
 builder.Services.AddControllers(x =>
 {
     x.Filters.Add<ExceptionFilter>();
