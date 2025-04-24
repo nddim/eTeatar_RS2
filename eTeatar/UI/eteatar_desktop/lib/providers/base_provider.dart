@@ -92,6 +92,18 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
+  Future delete(int id) async {
+    var url = "$baseUrl$_endpoint/$id";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var response = await http.delete(uri, headers: headers);
+
+    if (!isValidResponse(response)) {
+      throw new Exception("Greška sa brisanjem");
+    }
+  }
+  
   T fromJson(data) {
     throw Exception("Method not implemented");
   }

@@ -49,7 +49,7 @@ class _KartaListScreenState extends State<KartaListScreen> {
   Future<void> _loadData() async {
     var data;
     try {
-      data = await _kartaProvider.get();
+      data = await _kartaProvider.get(filter: { 'isDeleted': false});
     } catch (e){
       QuickAlert.show(
         context: context,
@@ -89,7 +89,8 @@ class _KartaListScreenState extends State<KartaListScreen> {
         ElevatedButton(onPressed: () async{
         
         var filter = {
-          "KorisnikId": _korisnikEditingController.text
+          "KorisnikId": _korisnikEditingController.text,
+          'isDeleted': false
         };
         var data;
         try {
@@ -119,17 +120,16 @@ class _KartaListScreenState extends State<KartaListScreen> {
         child: SingleChildScrollView(
         child: DataTable(
         columns: const [
-          DataColumn(label: Text("Id"), numeric:true),
           DataColumn(label: Text("Cijena")),
           DataColumn(label: Text("Naziv sjedista"), numeric:true),
           DataColumn(label: Text("Datum termina"), numeric:true),
           DataColumn(label: Text("Status rezervacije"), numeric:true),
           DataColumn(label: Text("Korisnik"), numeric:true),
+          DataColumn(label: Text('Obriši')),
         ],
           rows: result?.resultList.map((e) => 
           DataRow(
             cells: [
-            DataCell(Text(e.kartaId.toString())),
             DataCell(Text(formatNumber(e.cijena))),
             DataCell(
               FutureBuilder(
@@ -189,6 +189,15 @@ class _KartaListScreenState extends State<KartaListScreen> {
                     var korisnik = snapshot.data!;
                     return Text("${korisnik.ime} ${korisnik.prezime}");
                   }
+                },
+              )
+            ),
+  
+            DataCell(
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  openDeleteModal(e.kartaId!);
                 },
               )
             ),
@@ -258,4 +267,58 @@ class _KartaListScreenState extends State<KartaListScreen> {
       throw Exception("Greška prilikom dohvata sjedista!");
     }
   }
+
+  void openDeleteModal(int karataId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Brisanje'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Da li ste sigurni da želite da obrišete kartu?'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, 
+              child: const Text(
+                'Poništi',
+                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _kartaProvider.delete(karataId);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                  await _loadData();
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: "Greška pri brisanju karte!",
+                      width: 300
+                    );
+                  }
+                }
+              },
+              child: const Text(
+                'Obriši',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

@@ -33,7 +33,7 @@ class _RepertoarListScreenState extends State<RepertoarListScreen> {
   Future<void> _loadData() async {
     var data;
     try {
-      data = await _repertoarProvider.get();
+      data = await _repertoarProvider.get(filter: { 'isDeleted': false});
     } catch (e){
       QuickAlert.show(
         context: context,
@@ -73,7 +73,8 @@ class _RepertoarListScreenState extends State<RepertoarListScreen> {
         ElevatedButton(onPressed: () async{
         
         var filter = {
-          "NazivGTE": _nazivEditingController.text
+          "NazivGTE": _nazivEditingController.text,
+          'isDeleted': false
         };
         var data;
         try {
@@ -108,28 +109,94 @@ class _RepertoarListScreenState extends State<RepertoarListScreen> {
         child: SingleChildScrollView(
         child: DataTable(
         columns: const [
-          DataColumn(label: Text("Id"), numeric:true),
           DataColumn(label: Text("Naziv")),
           DataColumn(label: Text("Datum Pocetka")),
           DataColumn(label: Text("Datum Kraja")),
+          DataColumn(label: Text('Uredi')),
+          DataColumn(label: Text('Obriši')),
 
         ],
           rows: result?.resultList.map((e) => 
           DataRow(
-            onSelectChanged: (selected) => {
-              if(selected == true){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => RepertoarDetailsScreen(repertoar: e,)))
-              }
-            },
             cells: [
-            DataCell(Text(e.repertoarId.toString())),
             DataCell(Text(e.naziv ?? "")),
             DataCell(Text(e.datumPocetka.toString())),
             DataCell(Text(e.datumKraja.toString())),
+            DataCell(
+              IconButton(
+                icon: Icon(Icons.edit,
+                    color: Theme.of(context).primaryColor),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RepertoarDetailsScreen(repertoar: e,)));
+                },
+              )
+            ),
+            DataCell(
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  openDeleteModal(e.repertoarId!);
+                },
+              )
+            ),
           ])).toList().cast<DataRow>() ?? [],
           ),
       )
       )
     );
   }
+
+  void openDeleteModal(int repertoarId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Brisanje'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Da li ste sigurni da želite da obrišete repertoar?'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, 
+              child: const Text(
+                'Poništi',
+                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _repertoarProvider.delete(repertoarId);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                  await _loadData();
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: "Greška pri brisanju repertoara!",
+                      width: 300
+                    );
+                  }
+                }
+              },
+              child: const Text(
+                'Obriši',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

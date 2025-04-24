@@ -41,7 +41,7 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
   Future<void> _loadData() async {
     var data;
     try {
-      data = await _rezervacijaProvider.get();
+      data = await _rezervacijaProvider.get(filter: { 'isDeleted': false});
     } catch (e) {
       QuickAlert.show(
         context: context,
@@ -81,7 +81,8 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
         ElevatedButton(onPressed: () async{
         
         var filter = {
-          "NazivGTE": _nazivEditingController.text
+          "NazivGTE": _nazivEditingController.text,
+          'isDeleted': false
         };
         var data;
         try {
@@ -112,15 +113,14 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
         child: SingleChildScrollView(
         child: DataTable(
         columns: const [
-          DataColumn(label: Text("Id"), numeric:true),
           DataColumn(label: Text("Status")),
           DataColumn(label: Text("Vrijeme termina")),
           DataColumn(label: Text("Korisnik")),
+          DataColumn(label: Text('Obriši')),
         ],
           rows: result?.resultList.map((e) => 
           DataRow(
             cells: [
-            DataCell(Text(e.rezervacijaId.toString())),
             DataCell(Text(e.status ?? "")),
             DataCell(
               FutureBuilder(
@@ -149,6 +149,14 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
                     var korisnik = snapshot.data!;
                     return Text("${korisnik.ime} ${korisnik.prezime}");
                   }
+                },
+              )
+            ),
+            DataCell(
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  openDeleteModal(e.rezervacijaId!);
                 },
               )
             ),
@@ -186,5 +194,58 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
       );
       throw Exception("Greška prilikom dohvata termina!");
     }
+  }
+
+  void openDeleteModal(int rezervacijaId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Brisanje'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Da li ste sigurni da želite da obrišete rezervaciju?'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, 
+              child: const Text(
+                'Poništi',
+                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _rezervacijaProvider.delete(rezervacijaId);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                  await _loadData();
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: "Greška pri brisanju rezervacije!",
+                      width: 300
+                    );
+                  }
+                }
+              },
+              child: const Text(
+                'Obriši',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

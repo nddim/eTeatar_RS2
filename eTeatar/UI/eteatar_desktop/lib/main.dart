@@ -49,7 +49,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue, primary: Colors.red),
+        dataTableTheme: DataTableThemeData(
+          headingRowColor:
+              MaterialStateColor.resolveWith((states) => const Color.fromRGBO(72, 142, 255, 1)),
+          headingTextStyle: const TextStyle(color: Colors.white),
+        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(72, 142, 255, 1), primary: const Color.fromRGBO(72, 142, 255, 1)),
         useMaterial3: true,
       ),
       home: LoginPage(),
@@ -66,21 +71,23 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-         title: const Text('Login'),
-         backgroundColor: Color.fromARGB(171, 72, 142, 255),
+         title: const Text('Dobrodošli u eTeatar'),
+         backgroundColor: Color.fromRGBO(72, 142, 255, 1),
          ),
       body:  Center(
         child: Center(
           child:Container(
-            constraints: BoxConstraints(maxHeight: 400, maxWidth: 400),
+            constraints: BoxConstraints(maxHeight: 400, maxWidth: 500),
             child:Card(
               child:Column(
                 children: [
                   Image.asset("assets/images/logo.png", height: 100, width: 100,),
-                  SizedBox(height: 10,),
-                  TextField(controller: _usernameController,decoration: InputDecoration(labelText: "Username", prefixIcon: Icon(Icons.person)),),
-                  SizedBox(height: 10,),
-                  TextField(controller : _passwordController, decoration: InputDecoration(labelText: "Password", prefixIcon: Icon(Icons.lock)),),
+                  SizedBox(height: 20,),
+                  Text('Dobrodošli u eTeatar'),
+                  SizedBox(height: 20,),
+                  TextField(controller: _usernameController, decoration: InputDecoration(labelText: "Korisničko ime", hintText: 'Korisničko ime', prefixIcon: Icon(Icons.person)),),
+                  SizedBox(height: 20,),
+                  TextField(controller : _passwordController, decoration: InputDecoration(labelText: "Password", hintText: '********', prefixIcon: Icon(Icons.lock)),),
                   SizedBox(height: 20,),
                   ElevatedButton(onPressed: () async {
                     PredstavaProvider predstavaProvider = PredstavaProvider();

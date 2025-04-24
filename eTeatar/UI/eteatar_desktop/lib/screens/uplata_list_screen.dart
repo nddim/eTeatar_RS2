@@ -36,7 +36,7 @@ class _UplataListScreenState extends State<UplataListScreen> {
   Future<void> _loadData() async {
     var data;
     try {
-      data = await _uplataProvider.get();
+      data = await _uplataProvider.get(filter: { 'isDeleted': false});
     } catch (e) {
       QuickAlert.show(
         context: context,
@@ -76,7 +76,8 @@ class _UplataListScreenState extends State<UplataListScreen> {
         ElevatedButton(onPressed: () async{
         
         var filter = {
-          "IznosGTE": _iznosEditingController.text
+          "IznosGTE": _iznosEditingController.text,
+          'isDeleted': false
         };
         var data;
         try {
@@ -106,16 +107,15 @@ class _UplataListScreenState extends State<UplataListScreen> {
         child: SingleChildScrollView(
         child: DataTable(
         columns: const [
-          DataColumn(label: Text("Id"), numeric:true),
           DataColumn(label: Text("Iznos")),
           DataColumn(label: Text("Datum")),
           DataColumn(label: Text("Korisnik")),
+          DataColumn(label: Text('Obriši')),
 
         ],
           rows: result?.resultList.map((e) => 
           DataRow(
             cells: [
-            DataCell(Text(e.uplataId.toString())),
             DataCell(Text(e.iznos.toString())),
             DataCell(Text(e.datum.toString())),
             DataCell(
@@ -130,6 +130,14 @@ class _UplataListScreenState extends State<UplataListScreen> {
                     var korisnik = snapshot.data!;
                     return Text("${korisnik.ime} ${korisnik.prezime}");
                   }
+                },
+              )
+            ),
+            DataCell(
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  openDeleteModal(e.uplataId!);
                 },
               )
             ),
@@ -154,4 +162,58 @@ class _UplataListScreenState extends State<UplataListScreen> {
       throw Exception("Greška prilikom dohvata korisnika!");
     }
   }
+
+  void openDeleteModal(int uplataId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Brisanje'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Da li ste sigurni da želite da obrišete uplatu?'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, 
+              child: const Text(
+                'Poništi',
+                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _uplataProvider.delete(uplataId);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                  await _loadData();
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: "Greška pri brisanju uplate!",
+                      width: 300
+                    );
+                  }
+                }
+              },
+              child: const Text(
+                'Obriši',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

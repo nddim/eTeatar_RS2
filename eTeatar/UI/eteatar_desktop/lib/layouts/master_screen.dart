@@ -31,7 +31,7 @@ class _MasterScreenState extends State<MasterScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 72, 142, 255),
+        backgroundColor:const Color.fromRGBO(72, 142, 255, 1),
         title: Text(widget.title),
         ),
         drawer: _buildDrawer(),

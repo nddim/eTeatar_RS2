@@ -32,7 +32,7 @@ class _StavkaUplateListScreenState extends State<StavkaUplateListScreen> {
   Future<void> _loadData() async {
     var data;
     try {
-      data = await _stavkaUplateProvider.get();
+      data = await _stavkaUplateProvider.get(filter: { 'isDeleted': false});
     } catch (e) {
       QuickAlert.show(
         context: context,
@@ -72,7 +72,8 @@ class _StavkaUplateListScreenState extends State<StavkaUplateListScreen> {
         ElevatedButton(onPressed: () async{
         
         var filter = {
-          "NazivGTE": _cijenaEditingController.text
+          "NazivGTE": _cijenaEditingController.text,
+          'isDeleted': false
         };
         var data;
         try {
@@ -102,21 +103,79 @@ class _StavkaUplateListScreenState extends State<StavkaUplateListScreen> {
         child: SingleChildScrollView(
         child: DataTable(
         columns: const [
-          DataColumn(label: Text("Id"), numeric:true),
           DataColumn(label: Text("Kolicina")),
           DataColumn(label: Text("Cijena")),
+          DataColumn(label: Text('Obriši')),
         ],
           rows: result?.resultList.map((e) => 
           DataRow(
             cells: [
-            DataCell(Text(e.stavkaUplateId.toString())),
             DataCell(Text(e.kolicina.toString())),
             DataCell(Text(e.cijena.toString())),
+            DataCell(
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  openDeleteModal(e.stavkaUplateId!);
+                },
+              )
+            ),
           ])).toList().cast<DataRow>() ?? [],
           ),
       )
       )
     );
   }
-
+  void openDeleteModal(int stavjaUplateId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Brisanje'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Da li ste sigurni da želite da obrišete stavku uplate?'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, 
+              child: const Text(
+                'Poništi',
+                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _stavkaUplateProvider.delete(stavjaUplateId);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                  await _loadData();
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: "Greška pri brisanju stavke uplate!",
+                      width: 300
+                    );
+                  }
+                }
+              },
+              child: const Text(
+                'Obriši',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

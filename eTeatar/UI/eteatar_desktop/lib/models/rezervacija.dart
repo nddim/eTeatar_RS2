@@ -8,7 +8,8 @@ class Rezervacija {
   String? status;
   int? terminId;
   int? korisnikId;
-
+  String? stateMachine;
+  
   Rezervacija(
     this.rezervacijaId,
     this.status,

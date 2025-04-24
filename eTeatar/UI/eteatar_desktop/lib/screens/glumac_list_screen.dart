@@ -32,7 +32,7 @@ class _GlumacListScreenState extends State<GlumacListScreen> {
   Future<void> _loadData() async {
     var data;
     try {
-      data = await _glumacProvider.get();
+      data = await _glumacProvider.get(filter: { 'isDeleted': false});
     } catch (e){
       QuickAlert.show(
         context: context,
@@ -72,7 +72,8 @@ class _GlumacListScreenState extends State<GlumacListScreen> {
         ElevatedButton(onPressed: () async{
         
         var filter = {
-          "ImeGTE": _imeEditingController.text
+          "ImeGTE": _imeEditingController.text,
+          'isDeleted': false
         };
         var data;
         try {
@@ -107,26 +108,95 @@ class _GlumacListScreenState extends State<GlumacListScreen> {
         child: SingleChildScrollView(
         child: DataTable(
         columns: const [
-          DataColumn(label: Text("Id"), numeric:true),
           DataColumn(label: Text("Ime")),
           DataColumn(label: Text("Prezime")),
+          DataColumn(label: Text('Uredi')),
+          DataColumn(label: Text('Obriši')),
         ],
           rows: result?.resultList.map((e) => 
           DataRow(
-            onSelectChanged: (selected) => {
-              if(selected == true){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => GlumacDetailsScreen(glumac: e,)))
-              }
-            },
+            // onSelectChanged: (selected) => {
+            //   if(selected == true){
+            //   Navigator.of(context).push(MaterialPageRoute(builder: (context) => GlumacDetailsScreen(glumac: e,)))
+            //   }
+            // },
             cells: [
-            DataCell(Text(e.glumacId.toString())),
             DataCell(Text(e.ime ?? "")),
-            DataCell(Text(e.prezime ?? ""))
+            DataCell(Text(e.prezime ?? "")),
+            DataCell(
+              IconButton(
+                icon: Icon(Icons.edit,
+                    color: Theme.of(context).primaryColor),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => GlumacDetailsScreen(glumac: e,)));
+                },
+              )
+            ),
+            DataCell(
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  openDeleteModal(e.glumacId!);
+                },
+              )
+            ),
           ])).toList().cast<DataRow>() ?? [],
           ),
       )
       )
     );
   }
-
+  
+  void openDeleteModal(int glumacId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Brisanje'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Da li ste sigurni da želite da obrišete glumca?'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, 
+              child: const Text(
+                'Poništi',
+                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _glumacProvider.delete(glumacId);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                  await _loadData();
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: "Greška pri brisanju glumca!",
+                      width: 300
+                    );
+                  }
+                }
+              },
+              child: const Text(
+                'Obriši',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

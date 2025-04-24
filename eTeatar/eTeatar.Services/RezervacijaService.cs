@@ -109,29 +109,5 @@ namespace eTeatar.Services
             var state = BaseRezervacijaState.CreateState(rezervacija.StateMachine);
             return state.Zavrsi(rezervacijaId);
         }
-
-        public Model.Rezervacija potvrdiRezervaciju(int rezervacijaId)
-        {
-            var rezervacija = Context.Rezervacijas.Find(rezervacijaId);
-            if (rezervacija == null)
-            {
-                throw new UserException("Rezervacija ne postoji!");
-            }
-            rezervacija.Status = "Potvrđeno";
-            Context.SaveChanges();
-            return Mapper.Map<Model.Rezervacija>(rezervacija);
-        }
-
-        public Model.Rezervacija otkaziRezervaciju(int rezervacijaId)
-        {
-            var rezervacija = Context.Rezervacijas.Find(rezervacijaId);
-            if (rezervacija == null)
-            {
-                throw new UserException("Rezervacija ne postoji!");
-            }
-            rezervacija.Status = "Otkazano";
-            Context.SaveChanges();
-            return Mapper.Map<Model.Rezervacija>(rezervacija);
-        }
     }
 }

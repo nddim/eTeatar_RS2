@@ -36,7 +36,7 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
   Future<void> _loadData() async {
     var data ;
     try {
-      data = await _ocjenaProvider.get();
+      data = await _ocjenaProvider.get(filter: { 'isDeleted': false});
     } catch (e){
       QuickAlert.show(
         context: context,
@@ -76,7 +76,8 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
         ElevatedButton(onPressed: () async{
         
         var filter = {
-          "VrijednostGTE": _vrijednostEditingController.text
+          "VrijednostGTE": _vrijednostEditingController.text,
+          'isDeleted': false
         };
         var data;
         try {
@@ -106,15 +107,14 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
         child: SingleChildScrollView(
         child: DataTable(
         columns: const [
-          DataColumn(label: Text("Id"), numeric:true),
           DataColumn(label: Text("Vrijednost")),
           DataColumn(label: Text("Komentar")),
           DataColumn(label: Text("Predstava")),
+          DataColumn(label: Text('Obriši')),
         ],
           rows: result?.resultList.map((e) => 
           DataRow(
             cells: [
-            DataCell(Text(e.ocjenaId.toString())),
             DataCell(Text(e.vrijednost.toString())),
             DataCell(Text(e.komentar ?? "")),
             DataCell(
@@ -129,6 +129,14 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
                     var predstava = snapshot.data!;
                     return Text("${predstava.naziv}");
                   }
+                },
+              )
+            ),
+            DataCell(
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  openDeleteModal(e.ocjenaId!);
                 },
               )
             ),
@@ -152,4 +160,58 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
       throw Exception("Greška prilikom dohvatanja predstava!");
     }
   }
+
+  void openDeleteModal(int ocjenaId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Brisanje'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Da li ste sigurni da želite da obrišete ocjenu?'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, 
+              child: const Text(
+                'Poništi',
+                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _ocjenaProvider.delete(ocjenaId);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                  await _loadData();
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: "Greška pri brisanju ocjene!",
+                      width: 300
+                    );
+                  }
+                }
+              },
+              child: const Text(
+                'Obriši',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

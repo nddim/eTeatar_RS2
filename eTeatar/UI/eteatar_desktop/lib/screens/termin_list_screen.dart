@@ -41,7 +41,7 @@ class _TerminListScreenState extends State<TerminListScreen> {
   Future<void> _loadData() async {
     var data;
     try {
-      data = await _terminProvider.get();
+      data = await _terminProvider.get(filter: { 'isDeleted': false});
     } catch (e) {
       QuickAlert.show(
         context: context,
@@ -81,7 +81,8 @@ class _TerminListScreenState extends State<TerminListScreen> {
         ElevatedButton(onPressed: () async{
         
         var filter = {
-          "Status": _statusEditingController.text
+          "Status": _statusEditingController.text,
+          'isDeleted': false
         };
         var data;
         try {
@@ -115,21 +116,16 @@ class _TerminListScreenState extends State<TerminListScreen> {
         child: SingleChildScrollView(
         child: DataTable(
         columns: const [
-          DataColumn(label: Text("Id"), numeric:true),
           DataColumn(label: Text("Status")),
           DataColumn(label: Text("Datum")),
           DataColumn(label: Text("Dvorana")),
           DataColumn(label: Text("Predstava")),
+          DataColumn(label: Text('Uredi')),
+          DataColumn(label: Text('Obriši')),
         ],
           rows: result?.resultList.map((e) => 
           DataRow(
-            onSelectChanged: (selected) => {
-              if(selected == true){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => TerminDetailsScreen(termin: e,)))
-              }
-            },
             cells: [
-            DataCell(Text(e.terminId.toString())),
             DataCell(Text(e.status ?? "")),
             DataCell(Text(e.datum.toString())),
             DataCell(
@@ -159,6 +155,23 @@ class _TerminListScreenState extends State<TerminListScreen> {
                     var predstava = snapshot.data!;
                     return Text("${predstava.naziv}");
                   }
+                },
+              )
+            ),
+            DataCell(
+              IconButton(
+                icon: Icon(Icons.edit,
+                    color: Theme.of(context).primaryColor),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => TerminDetailsScreen(termin: e,)));
+                },
+              )
+            ),
+            DataCell(
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  openDeleteModal(e.terminId!);
                 },
               )
             ),
@@ -197,4 +210,58 @@ class _TerminListScreenState extends State<TerminListScreen> {
       throw Exception("Greška prilikom dohvata predstave!");
     }
   }
+
+  void openDeleteModal(int terminId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Brisanje'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Da li ste sigurni da želite da obrišete termin?'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, 
+              child: const Text(
+                'Poništi',
+                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _dvoranaProvider.delete(terminId);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                  await _loadData();
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: "Greška pri brisanju termina!",
+                      width: 300
+                    );
+                  }
+                }
+              },
+              child: const Text(
+                'Obriši',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

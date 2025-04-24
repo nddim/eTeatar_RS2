@@ -29,16 +29,5 @@ namespace eTeatar.API.Controllers
         {
             return (_service as IRezervacijaService).Ponisti(id);
         }
-
-        //[HttpPut("potvrdi")]
-        //public Rezervacija PotvrdiRezervaciju(int rezervacijaId)
-        //{
-        //    return (_service as IRezervacijaService).potvrdiRezervaciju(rezervacijaId);
-        //}
-        //[HttpPut("otkazi")]
-        //public Rezervacija OtkaziRezrvaciju(int rezervacijaId)
-        //{
-        //    return (_service as IRezervacijaService).otkaziRezervaciju(rezervacijaId);
-        //}
     }
 }

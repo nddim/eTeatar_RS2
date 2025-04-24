@@ -33,7 +33,7 @@ class _KorisnikListScreenState extends State<KorisnikListScreen> {
   Future<void> _loadData() async {
     var data; 
     try {
-      data = await _korisnikProvider.get();
+      data = await _korisnikProvider.get(filter: { 'isDeleted': false});
     } catch (e){
       QuickAlert.show(
         context: context,
@@ -75,7 +75,8 @@ class _KorisnikListScreenState extends State<KorisnikListScreen> {
         ElevatedButton(onPressed: () async{
         
         var filter = {
-          "ImeGTE": _imeEditingController.text
+          "ImeGTE": _imeEditingController.text,
+          'isDeleted': false
         };
         var data;
         try {
@@ -109,34 +110,102 @@ class _KorisnikListScreenState extends State<KorisnikListScreen> {
         child: SingleChildScrollView(
         child: DataTable(
         columns: const [
-          DataColumn(label: Text("Id"), numeric:true),
           DataColumn(label: Text("Ime")),
           DataColumn(label: Text("Prezime")),
           DataColumn(label: Text("Email")),
           DataColumn(label: Text("Telefon")),
           DataColumn(label: Text("Korisnicko ime")),
           DataColumn(label: Text("Slika")),
+          DataColumn(label: Text('Uredi')),
+          DataColumn(label: Text('Obriši')),
 
         ],
           rows: result?.resultList.map((e) => 
           DataRow(
-            onSelectChanged: (selected) => {
-              if(selected == true){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => KorisnikDetailsScreen(korisnik: e,)))
-              }
-            },
             cells: [
-            DataCell(Text(e.korisnikId.toString())),
             DataCell(Text(e.ime ?? "")),
             DataCell(Text(e.prezime ?? "")),
             DataCell(Text(e.email ?? "")),
             DataCell(Text(e.telefon ?? "")),
             DataCell(Text(e.korisnickoIme ?? "")),
-            DataCell(e.slika != null ? Container(width: 100, height: 100, child: imageFromString(e.slika!),): Text(""))
+            DataCell(
+              e.slika != null 
+              ? Container(width: 100, height: 100, child: imageFromString(e.slika!),) : Text("")),
+            DataCell(
+              IconButton(
+                icon: Icon(Icons.edit,
+                    color: Theme.of(context).primaryColor),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => KorisnikDetailsScreen(korisnik: e,)));
+                },
+              )
+            ),
+            DataCell(
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  openDeleteModal(e.korisnikId!);
+                },
+              )
+            ),
           ])).toList().cast<DataRow>() ?? [],
           ),
       )
       )
     );
   }
+
+  void openDeleteModal(int korisnikId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Brisanje'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Da li ste sigurni da želite da obrišete korisnika?'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, 
+              child: const Text(
+                'Poništi',
+                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _korisnikProvider.delete(korisnikId);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                  await _loadData();
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: "Greška pri brisanju korisnika!",
+                      width: 300
+                    );
+                  }
+                }
+              },
+              child: const Text(
+                'Obriši',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
