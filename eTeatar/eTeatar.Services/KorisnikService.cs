@@ -35,21 +35,9 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.Prezime.StartsWith(search.PrezimeGTE));
             }
-            if (!string.IsNullOrWhiteSpace(search?.EmailGTE))
+            if (!string.IsNullOrWhiteSpace(search?.KorisnickoImeGTE))
             {
-                query = query.Where(x => x.Prezime.StartsWith(search.EmailGTE));
-            }
-            if (!string.IsNullOrWhiteSpace(search?.Telefon))
-            {
-                query = query.Where(x => x.Telefon == search.Telefon);
-            }
-            if (search?.DatumRodenjaGTE != null)
-            {
-                query = query.Where(x => x.DatumRodenja > search.DatumRodenjaGTE);
-            }
-            if (search?.DatumRodenjaLTE != null)
-            {
-                query = query.Where(x => x.DatumRodenja < search.DatumRodenjaLTE);
+                query = query.Where(x => x.KorisnickoIme.StartsWith(search.KorisnickoImeGTE));
             }
             if (search?.UlogaId != null )
             {

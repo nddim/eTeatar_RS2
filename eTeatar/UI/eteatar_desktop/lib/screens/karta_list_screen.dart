@@ -85,7 +85,7 @@ class _KartaListScreenState extends State<KartaListScreen> {
     return Padding(padding: const EdgeInsets.all(8.0),
     child: Row(
       children:[
-        Expanded( child: TextField(controller: _korisnikEditingController, decoration: InputDecoration(labelText: "Korisnik Id"))),
+        Expanded( child: TextField(controller: _korisnikEditingController, decoration: const InputDecoration(labelText: "Korisnik Id", hintText: "Korisnik Id karte"))),
         ElevatedButton(onPressed: () async{
         
         var filter = {

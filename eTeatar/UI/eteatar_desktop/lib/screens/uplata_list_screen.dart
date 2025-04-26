@@ -5,6 +5,7 @@ import 'package:eteatar_desktop/models/uplata.dart';
 import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:eteatar_desktop/providers/uplata_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -21,7 +22,8 @@ class _UplataListScreenState extends State<UplataListScreen> {
   late UplataProvider _uplataProvider;
   late KorisnikProvider _korisnikProvider;
   SearchResult<Uplata>? result = null;
-  
+  SearchResult<Korisnik>? _korisnikResult;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -37,6 +39,16 @@ class _UplataListScreenState extends State<UplataListScreen> {
     var data;
     try {
       data = await _uplataProvider.get(filter: { 'isDeleted': false});
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju uplata!",
+        width: 300
+      );
+    }
+    try {
+      _korisnikResult = await _korisnikProvider.get(filter: { 'isDeleted': false});
     } catch (e) {
       QuickAlert.show(
         context: context,
@@ -67,16 +79,42 @@ class _UplataListScreenState extends State<UplataListScreen> {
   }
 
   TextEditingController _iznosEditingController = TextEditingController();
-
+  int? _selectedKorisnikId;
   Widget _buildSearch(){
     return Padding(padding: const EdgeInsets.all(8.0),
     child: Row(
       children:[
-        Expanded( child: TextField(controller: _iznosEditingController, decoration: InputDecoration(labelText: "Naziv"))),
+        Expanded( 
+          child: 
+          TextField(
+            controller: _iznosEditingController, 
+            decoration: InputDecoration(labelText: "Naziv")
+          )
+        ),
+        SizedBox(width: 10,),
+        Expanded(
+          child: FormBuilderDropdown<int>(
+            name: "korisnikId",
+            decoration: InputDecoration(labelText: "Korisnik"),
+            items: _korisnikResult?.resultList
+                .map((e) => DropdownMenuItem(
+                      value: e.korisnikId,
+                      child: Text("${e.ime ?? ""} ${e.prezime ?? ""}"),
+                    ))
+                .toList() ?? [],
+            onChanged: (value) {
+              setState(() {
+                _selectedKorisnikId = value;
+              });
+            },
+          ),
+        ),
+        SizedBox(width: 20,),
         ElevatedButton(onPressed: () async{
         
         var filter = {
           "IznosGTE": _iznosEditingController.text,
+          "KorisnikId": _selectedKorisnikId,
           'isDeleted': false
         };
         var data;

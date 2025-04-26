@@ -3,6 +3,7 @@ using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Predstava = eTeatar.Model.Predstava;
 using PredstavaGlumac = eTeatar.Services.Database.PredstavaGlumac;
 using PredstavaZanr = eTeatar.Services.Database.PredstavaZanr;
@@ -61,7 +62,13 @@ namespace eTeatar.Services
             }
             if (search?.RepertoarId != null)
             {
-                query = query.Where(x => x.PredstavaRepertoars.Any(pr => pr.RepertoarId == search.RepertoarId));
+                query = query.Include(x=>x.PredstavaRepertoars)
+                    .Where(x => x.PredstavaRepertoars.Any(pr => pr.RepertoarId == search.RepertoarId));
+            }
+            if (search?.ZanrId != null)
+            {
+                query = query.Include(x => x.PredstavaZanrs)
+                    .Where(x => x.PredstavaZanrs.Any(pz => pz.ZanrId == search.ZanrId));
             }
             if (search?.isDeleted != null)
             {

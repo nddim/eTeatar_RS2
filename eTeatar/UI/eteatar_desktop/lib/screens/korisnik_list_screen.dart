@@ -66,16 +66,24 @@ class _KorisnikListScreenState extends State<KorisnikListScreen> {
   }
 
   TextEditingController _imeEditingController = TextEditingController();
-
+  TextEditingController _prezimeEditingController = TextEditingController();
+  TextEditingController _korisnickoImeEditingController = TextEditingController();  
   Widget _buildSearch(){
     return Padding(padding: const EdgeInsets.all(8.0),
     child: Row(
       children:[
         Expanded( child: TextField(controller: _imeEditingController, decoration: InputDecoration(labelText: "Ime"))),
+        SizedBox(width: 10,),
+        Expanded( child: TextField(controller: _prezimeEditingController, decoration: InputDecoration(labelText: "Prezime"))),
+        SizedBox(width: 10,),
+        Expanded( child: TextField(controller: _korisnickoImeEditingController, decoration: InputDecoration(labelText: "Korisnicko ime"))),
+        SizedBox(width: 10,),
         ElevatedButton(onPressed: () async{
         
         var filter = {
           "ImeGTE": _imeEditingController.text,
+          "PrezimeGTE": _prezimeEditingController.text,
+          "KorisnickoImeGTE": _korisnickoImeEditingController.text,
           'isDeleted': false
         };
         var data;
@@ -92,9 +100,7 @@ class _KorisnikListScreenState extends State<KorisnikListScreen> {
         setState(() {
           result = data;
         });
-
         }, child: Text("Pretraga")),
-
         SizedBox(width: 10,),
         ElevatedButton(onPressed: () async{
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => KorisnikDetailsScreen()));
@@ -110,7 +116,7 @@ class _KorisnikListScreenState extends State<KorisnikListScreen> {
         child: SingleChildScrollView(
         child: DataTable(
         columns: const [
-          DataColumn(label: Text("Ime")),
+          DataColumn(label: Text("Ime i prezime")),
           DataColumn(label: Text("Prezime")),
           DataColumn(label: Text("Email")),
           DataColumn(label: Text("Telefon")),

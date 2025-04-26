@@ -68,7 +68,7 @@ class _DvoranaListScreenState extends State<DvoranaListScreen> {
     return Padding(padding: const EdgeInsets.all(8.0),
     child: Row(
       children:[
-        Expanded( child: TextField(controller: _nazivEditingController, decoration: InputDecoration(labelText: "Naziv"))),
+        Expanded( child: TextField(controller: _nazivEditingController, decoration: const InputDecoration(labelText: "Naziv", hintText: "Naziv dvorane"))),
         ElevatedButton(onPressed: () async{
         
         var filter = {

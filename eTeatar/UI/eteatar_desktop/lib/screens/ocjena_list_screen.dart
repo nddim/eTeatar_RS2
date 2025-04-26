@@ -66,35 +66,56 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
     );
   }
 
-  TextEditingController _vrijednostEditingController = TextEditingController();
+  int? _selectedVrijednost;
 
-  Widget _buildSearch(){
-    return Padding(padding: const EdgeInsets.all(8.0),
-    child: Row(
-      children:[
-        Expanded( child: TextField(controller: _vrijednostEditingController, decoration: InputDecoration(labelText: "Vrijednost"))),
-        ElevatedButton(onPressed: () async{
-        
-        var filter = {
-          "VrijednostGTE": _vrijednostEditingController.text,
-          'isDeleted': false
-        };
-        var data;
-        try {
-          data = await _ocjenaProvider.get(filter: filter);
-        } catch (e) {
-          QuickAlert.show(
-            context: context,
-            type: QuickAlertType.error,
-            title: "Greška pri dohvatanju ocjena!",
-            width: 300
-          );
-        }
-        setState(() {
-          result = data;
-        });
-
-        }, child: Text("Pretraga")),
+  Widget _buildSearch() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: DropdownButtonFormField<int>(
+              value: _selectedVrijednost,
+              decoration: const InputDecoration(labelText: "Vrijednost"),
+              items: const[
+                DropdownMenuItem(value: 1, child: Text("1")),
+                DropdownMenuItem(value: 2, child: Text("2")),
+                DropdownMenuItem(value: 3, child: Text("3")),
+                DropdownMenuItem(value: 4, child: Text("4")),
+                DropdownMenuItem(value: 5, child: Text("5")),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedVrijednost = value;
+                });
+              },
+            ),
+          ),
+          const SizedBox(width: 10),
+          ElevatedButton(
+            onPressed: () async {
+              var filter = {
+                if (_selectedVrijednost != null)
+                  "VrijednostGTE": _selectedVrijednost.toString(),
+                  'isDeleted': false,
+              };
+              var data;
+              try {
+                data = await _ocjenaProvider.get(filter: filter);
+              } catch (e) {
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: "Greška pri dohvatanju ocjena!",
+                  width: 300,
+                );
+              }
+              setState(() {
+                result = data;
+              });
+            },
+            child: const Text("Pretraga"),
+          ),
         ],
       ),
     );

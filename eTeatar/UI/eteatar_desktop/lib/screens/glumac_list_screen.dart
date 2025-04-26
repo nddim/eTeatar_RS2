@@ -68,7 +68,7 @@ class _GlumacListScreenState extends State<GlumacListScreen> {
     return Padding(padding: const EdgeInsets.all(8.0),
     child: Row(
       children:[
-        Expanded( child: TextField(controller: _imeEditingController, decoration: InputDecoration(labelText: "Naziv"))),
+        Expanded( child: TextField(controller: _imeEditingController, decoration: const InputDecoration(labelText: "Ime i prezime", hintText: "Ime i prezime glumca"))),
         ElevatedButton(onPressed: () async{
         
         var filter = {

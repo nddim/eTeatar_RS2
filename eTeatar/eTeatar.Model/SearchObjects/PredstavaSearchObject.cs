@@ -17,5 +17,7 @@ namespace eTeatar.Model.SearchObjects
         public decimal? CijenaGTE { get; set; }
         public decimal? CijenaLTE { get; set; }
         public int? RepertoarId { get; set; }
+        public int? ZanrId { get; set; }
+
     }
 }

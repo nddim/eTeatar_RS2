@@ -8,6 +8,7 @@ import 'package:eteatar_desktop/providers/predstava_provider.dart';
 import 'package:eteatar_desktop/providers/termin_provider.dart';
 import 'package:eteatar_desktop/screens/termin_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -25,7 +26,8 @@ class _TerminListScreenState extends State<TerminListScreen> {
   late DvoranaProvider _dvoranaProvider;
   late PredstavaProvider _predstavaProvider;
   SearchResult<Termin>? result = null;
-
+  SearchResult<Predstava>? _predstavaResult;
+  SearchResult<Dvorana>? _dvoranaResult;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -42,6 +44,26 @@ class _TerminListScreenState extends State<TerminListScreen> {
     var data;
     try {
       data = await _terminProvider.get(filter: { 'isDeleted': false});
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju termina!",
+        width: 300
+      );
+    }
+    try {
+      _predstavaResult = await _predstavaProvider.get(filter: { 'isDeleted': false});
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju termina!",
+        width: 300
+      );
+    }
+    try {
+      _dvoranaResult = await _dvoranaProvider.get(filter: { 'isDeleted': false});
     } catch (e) {
       QuickAlert.show(
         context: context,
@@ -72,16 +94,57 @@ class _TerminListScreenState extends State<TerminListScreen> {
   }
 
   TextEditingController _statusEditingController = TextEditingController();
+  int? _selectedPredstavaId;
+  int? _selectedDvoranaId;
 
   Widget _buildSearch(){
     return Padding(padding: const EdgeInsets.all(8.0),
     child: Row(
       children:[
         Expanded( child: TextField(controller: _statusEditingController, decoration: InputDecoration(labelText: "Status"))),
+        SizedBox(width: 10,),
+        Expanded(
+          child: FormBuilderDropdown<int>(
+            name: "predstavaId",
+            decoration: InputDecoration(labelText: "Predstava"),
+            items: _predstavaResult?.resultList
+                .map((e) => DropdownMenuItem(
+                      value: e.predstavaId,
+                      child: Text(e.naziv ?? ""),
+                    ))
+                .toList() ?? [],
+            onChanged: (value) {
+              setState(() {
+                _selectedPredstavaId = value;
+              });
+            },
+          ),
+        ),
+        SizedBox(width: 10,),
+        Expanded(
+          child: FormBuilderDropdown<int>(
+            name: "dvoranaId",
+            decoration: InputDecoration(labelText: "Dvorana"),
+            items: _dvoranaResult?.resultList
+                .map((e) => DropdownMenuItem(
+                      value: e.dvoranaId,
+                      child: Text(e.naziv ?? ""),
+                    ))
+                .toList() ?? [],
+            onChanged: (value) {
+              setState(() {
+                _selectedDvoranaId = value;
+              });
+            },
+          ),
+        ),
+        SizedBox(width: 20,),
         ElevatedButton(onPressed: () async{
         
         var filter = {
           "Status": _statusEditingController.text,
+          "PredstavaId": _selectedPredstavaId,
+          "DvoranaId": _selectedDvoranaId,
           'isDeleted': false
         };
         var data;

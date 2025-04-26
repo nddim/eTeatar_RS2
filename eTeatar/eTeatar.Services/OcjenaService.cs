@@ -19,11 +19,7 @@ namespace eTeatar.Services
             query = base.AddFilter(search, query);
             if (search?.VrijednostGTE != null)
             {
-                query = query.Where(x => x.Vrijednost > search.VrijednostGTE);
-            }
-            if (search?.VrijednostLTE != null)
-            {
-                query = query.Where(x => x.Vrijednost < search.VrijednostLTE);
+                query = query.Where(x => x.Vrijednost == search.VrijednostGTE);
             }
             if (search?.DatumKreiranjaGTE != null)
             {
