@@ -72,29 +72,46 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
          title: const Text('Dobrodošli u eTeatar'),
-         backgroundColor: Color.fromRGBO(72, 142, 255, 1),
+         backgroundColor: const Color.fromRGBO(72, 142, 255, 1),
          ),
       body:  Center(
         child: Center(
           child:Container(
-            constraints: BoxConstraints(maxHeight: 400, maxWidth: 500),
+            constraints: const BoxConstraints(maxHeight: 400, maxWidth: 500),
             child:Card(
               child:Column(
                 children: [
                   Image.asset("assets/images/logo.png", height: 100, width: 100,),
-                  SizedBox(height: 20,),
-                  Text('Dobrodošli u eTeatar'),
-                  SizedBox(height: 20,),
-                  TextField(controller: _usernameController, decoration: InputDecoration(labelText: "Korisničko ime", hintText: 'Korisničko ime', prefixIcon: Icon(Icons.person)),),
-                  SizedBox(height: 20,),
-                  TextField(controller : _passwordController, decoration: InputDecoration(labelText: "Password", hintText: '********', prefixIcon: Icon(Icons.lock)),),
-                  SizedBox(height: 20,),
+                  const SizedBox(height: 20,),
+                  const Text('Dobrodošli u eTeatar'),
+                  const SizedBox(height: 20,),
+                  TextField(
+                    controller: _usernameController, 
+                    decoration: 
+                    const InputDecoration(
+                      labelText: "Korisničko ime", 
+                      hintText: 'Korisničko ime', 
+                      prefixIcon: Icon(Icons.person)
+                    ),
+                  ),
+                  const SizedBox(height: 20,),
+                  TextField(
+                    controller : _passwordController, 
+                    obscureText: true,
+                    decoration: 
+                    const InputDecoration(
+                      labelText: "Password", 
+                      hintText: '********', 
+                      prefixIcon: Icon(Icons.lock)
+                    ),
+                  ),
+                  const SizedBox(height: 20,),
                   ElevatedButton(onPressed: () async {
                     PredstavaProvider predstavaProvider = PredstavaProvider();
                     AuthProvider.username = _usernameController.text;
                     AuthProvider.password = _passwordController.text;
                     try{
-                      var data = await predstavaProvider.get();
+                      await predstavaProvider.get();
                       Navigator.of(context).push(MaterialPageRoute(builder: (builder) => PredstavaListScreen()));
 
                     } on Exception catch (e) {

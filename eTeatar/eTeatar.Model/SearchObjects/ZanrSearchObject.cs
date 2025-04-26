@@ -7,5 +7,6 @@ namespace eTeatar.Model.SearchObjects
     public class ZanrSearchObject : BaseSearchObject
     {
         public string? NazivGTE { get; set; }
+        public int? PredstavaId { get; set; }
     }
 }

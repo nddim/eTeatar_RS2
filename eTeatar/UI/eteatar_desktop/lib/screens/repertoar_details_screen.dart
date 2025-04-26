@@ -56,7 +56,7 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
 
   Future initForm() async {
     try {
-      predstavaResult = await _predstavaProvider.get();
+      predstavaResult = await _predstavaProvider.get(filter: { 'isDeleted': false});
     } catch (e){
       QuickAlert.show(
         context: context,

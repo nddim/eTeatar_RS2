@@ -61,7 +61,7 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
 
   Future initForm() async {
     try {
-      predstavaResult = await _predstavaProvider.get();
+      predstavaResult = await _predstavaProvider.get(filter: { 'isDeleted': false});
     } catch (e) {
       QuickAlert.show(
         context: context,
@@ -71,7 +71,7 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
       );
     }
     try {
-      dvoranaResult = await _dvoranaProvider.get();
+      dvoranaResult = await _dvoranaProvider.get(filter: { 'isDeleted': false});
     } catch (e) {
       QuickAlert.show(
         context: context,

@@ -3,6 +3,7 @@ using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Zanr = eTeatar.Services.Database.Zanr;
 
 namespace eTeatar.Services
@@ -20,6 +21,11 @@ namespace eTeatar.Services
             if (!string.IsNullOrEmpty(search?.NazivGTE))
             {
                 query = query.Where(x => x.Naziv.StartsWith(search.NazivGTE));
+            }
+            if (search?.PredstavaId != null)
+            {
+                query = query.Include(x => x.PredstavaZanrs)
+                    .Where(x => x.PredstavaZanrs.Any(pz => pz.PredstavaId == search.PredstavaId));
             }
             if (search?.isDeleted != null)
             {

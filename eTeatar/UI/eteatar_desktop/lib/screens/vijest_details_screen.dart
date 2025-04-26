@@ -50,7 +50,7 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
 
   Future initForm() async {
     try {
-      korisnikResult = await _korisnikProvider.get();
+      korisnikResult = await _korisnikProvider.get(filter: { 'isDeleted': false});
     } catch (e) {
       QuickAlert.show(
         context: context,

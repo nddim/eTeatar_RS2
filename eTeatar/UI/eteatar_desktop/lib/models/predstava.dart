@@ -14,6 +14,8 @@ class Predstava {
   String? scenografija;
   DateTime? trajanjePocetak;
   DateTime? trajanjeKraj;
+  List<int>? zanrovi; 
+  List<int>? glumci; 
 
   Predstava(
     this.predstavaId,

@@ -35,7 +35,10 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
   late GlumacProvider _glumacProvider;
   late ZanrProvider _zanrProvider;
   SearchResult<Glumac>? glumacResult = null;
+  SearchResult<Glumac>? initialGlumacResult = null;
   SearchResult<Zanr>? zanrResult = null;
+  SearchResult<Zanr>? initialZanrResult = null;
+
   bool isLoading = true;
   List<int> _selectedZanrovi = [];
   List<int> _selectedGlumci = [];
@@ -71,7 +74,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
 
   Future initForm() async {
     try {
-      glumacResult = await _glumacProvider.get();
+      glumacResult = await _glumacProvider.get(filter: { 'isDeleted': false});
     } catch (e){
       QuickAlert.show(
         context: context,
@@ -81,7 +84,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
       );
     }
     try {
-      zanrResult = await _zanrProvider.get();
+      zanrResult = await _zanrProvider.get(filter: { 'isDeleted': false});
     } catch (e){
       QuickAlert.show(
         context: context,
@@ -89,6 +92,34 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
         title: "Greška pri dohvatanju zanrova!",
         width: 300
       );
+    }
+    if(widget.predstava != null){
+      try {
+        initialGlumacResult = await _glumacProvider.get(filter: { "predstavaId" : widget.predstava!.predstavaId,'isDeleted': false});
+        if (initialGlumacResult != null) {
+          _selectedGlumci = initialGlumacResult!.resultList.map((e) => e.glumacId!).toList();
+        }
+      } catch (e){
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Greška pri dohvatanju glumaca!",
+          width: 300
+        );
+      }
+      try {
+        initialZanrResult = await _zanrProvider.get( filter: { "predstavaId" : widget.predstava!.predstavaId,'isDeleted': false});
+        if (initialZanrResult != null) {
+          _selectedZanrovi = initialZanrResult!.resultList.map((e) => e.zanrId!).toList();
+        }
+      } catch (e){
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Greška pri dohvatanju zanrova!",
+          width: 300
+        );
+      }
     }
     setState(() {
       isLoading = false;
@@ -196,6 +227,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                       items: zanrResult?.resultList
                           .map((e) => MultiSelectItem<int>(e.zanrId!, e.naziv ?? ""))
                           .toList() ?? [],
+                      initialValue: _selectedZanrovi,
                       title: Text("Odaberi žanrove"),
                       selectedColor: Colors.blue,
                       decoration: BoxDecoration(
@@ -227,6 +259,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                       items: glumacResult?.resultList
                           .map((e) => MultiSelectItem<int>(e.glumacId!, "${e.ime} ${e.prezime}"))
                           .toList() ?? [],
+                      initialValue: _selectedGlumci,
                       title: Text("Odaberi glumce"),
                       selectedColor: Colors.blue,
                       decoration: BoxDecoration(

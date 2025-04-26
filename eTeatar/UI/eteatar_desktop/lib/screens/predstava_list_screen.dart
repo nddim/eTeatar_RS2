@@ -7,9 +7,7 @@ import 'package:eteatar_desktop/providers/utils.dart';
 import 'package:eteatar_desktop/providers/zanr_provider.dart';
 import 'package:eteatar_desktop/screens/predstava_details_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
