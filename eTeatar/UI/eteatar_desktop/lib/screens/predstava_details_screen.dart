@@ -162,7 +162,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                     decoration: InputDecoration(labelText: "Cijena"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
-                      FormBuilderValidators.numeric(),
+                      FormBuilderValidators.numeric(errorText: "Unos mora biti broj!"),
                       FormBuilderValidators.max(10000, errorText: "Cijena ne smije biti veca od 10000 KM!"),
                       FormBuilderValidators.min(1, errorText: "Cijena ne smije biti manja od 1 KM"),
                     ]),

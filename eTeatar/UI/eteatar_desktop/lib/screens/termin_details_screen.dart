@@ -111,7 +111,7 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
-                  inputType: InputType.date,
+                  inputType: InputType.both,
                   format: DateFormat("yyyy-MM-dd"),
                 ),
               ),

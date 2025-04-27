@@ -5,6 +5,7 @@ import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/providers/ocjena_provider.dart';
 import 'package:eteatar_desktop/providers/predstava_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -21,7 +22,7 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
   late OcjenaProvider _ocjenaProvider;
   late PredstavaProvider _predstavaProvider;
   SearchResult<Ocjena>? result = null;
-
+  SearchResult<Predstava>? predstavaResult = null;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -42,6 +43,16 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatanju ocjena!",
+        width: 300
+      );
+    }
+    try {
+      predstavaResult = await _predstavaProvider.get(filter: { 'isDeleted': false});
+    } catch (e){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju predstava!",
         width: 300
       );
     }
@@ -67,6 +78,7 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
   }
 
   int? _selectedVrijednost;
+  int? _selectedPredstavaId;
 
   Widget _buildSearch() {
     return Padding(
@@ -92,11 +104,30 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
             ),
           ),
           const SizedBox(width: 10),
+          Expanded(
+          child: FormBuilderDropdown<int>(
+            name: "predstavaId",
+            decoration: InputDecoration(labelText: "Predstava"),
+            items: predstavaResult?.resultList
+                .map((e) => DropdownMenuItem(
+                      value: e.predstavaId,
+                      child: Text(e.naziv ?? ""),
+                    ))
+                .toList() ?? [],
+            onChanged: (value) {
+              setState(() {
+                _selectedPredstavaId = value;
+              });
+            },
+          ),
+        ),
+        const SizedBox(width: 10),
           ElevatedButton(
             onPressed: () async {
               var filter = {
                 if (_selectedVrijednost != null)
                   "VrijednostGTE": _selectedVrijednost.toString(),
+                  "PredstavaId": _selectedPredstavaId,
                   'isDeleted': false,
               };
               var data;
