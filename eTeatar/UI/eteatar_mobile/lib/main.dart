@@ -1,3 +1,4 @@
+import 'package:eteatar_mobile/layouts/master_screen.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/providers/dvorana_provider.dart';
 import 'package:eteatar_mobile/providers/glumac_provider.dart';
@@ -15,7 +16,6 @@ import 'package:eteatar_mobile/providers/uloga_provider.dart';
 import 'package:eteatar_mobile/providers/uplata_provider.dart';
 import 'package:eteatar_mobile/providers/vijest_provider.dart';
 import 'package:eteatar_mobile/providers/zanr_provider.dart';
-import 'package:eteatar_mobile/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,7 +43,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -62,73 +61,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// class LoginPage extends StatelessWidget {
-//   LoginPage({super.key});
-//   final TextEditingController _usernameController = TextEditingController();
-//   final TextEditingController _passwordController = TextEditingController();
-
-//   @override Widget build(BuildContext context){
-//     return Scaffold(
-//       appBar: AppBar(
-//         centerTitle: true,
-//          title: const Text('Dobrodošli u eTeatar'),
-//          backgroundColor: const Color.fromRGBO(72, 142, 255, 1),
-//          ),
-//       body:  Center(
-//         child: Center(
-//           child:Container(
-//             constraints: const BoxConstraints(maxHeight: 400, maxWidth: 500),
-//             child:Card(
-//               child:Column(
-//                 children: [
-//                   Image.asset("assets/images/logo.png", height: 100, width: 100,),
-//                   const SizedBox(height: 20,),
-//                   const Text('Dobrodošli u eTeatar'),
-//                   const SizedBox(height: 20,),
-//                   TextField(
-//                     controller: _usernameController, 
-//                     decoration: 
-//                     const InputDecoration(
-//                       labelText: "Korisničko ime", 
-//                       hintText: 'Korisničko ime', 
-//                       prefixIcon: Icon(Icons.person)
-//                     ),
-//                   ),
-//                   const SizedBox(height: 20,),
-//                   TextField(
-//                     controller : _passwordController, 
-//                     obscureText: true,
-//                     decoration: 
-//                     const InputDecoration(
-//                       labelText: "Password", 
-//                       hintText: '********', 
-//                       prefixIcon: Icon(Icons.lock)
-//                     ),
-//                   ),
-//                   const SizedBox(height: 20,),
-//                   ElevatedButton(onPressed: () async {
-//                     PredstavaProvider predstavaProvider = PredstavaProvider();
-//                     AuthProvider.username = _usernameController.text;
-//                     AuthProvider.password = _passwordController.text;
-//                     try{
-//                       await predstavaProvider.get();
-//                       Navigator.of(context).push(MaterialPageRoute(builder: (builder) => HomeScreen()));
-
-//                     } on Exception catch (e) {
-//                       showDialog(context: context, builder: (context) => AlertDialog(title: const Text("Error"), 
-//                         actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text("Ok"))], content: Text(e.toString()),));
-//                     }
-//                   }, child: const Text("Login"),),
-//                   ],
-//                 )
-//             ),
-//           ),
-//         ),
-//         ),
-//     );
-//   }
-// }
-
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
   final TextEditingController _usernameController = TextEditingController();
@@ -143,14 +75,14 @@ class LoginPage extends StatelessWidget {
         backgroundColor: const Color.fromRGBO(72, 142, 255, 1),
       ),
       body: Center(
-        child: SingleChildScrollView( // Dodano radi manjeg ekrana/tastature
+        child: SingleChildScrollView( 
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0), // Margine s leva i desna
+            padding: const EdgeInsets.symmetric(horizontal: 24.0), 
             child: Card(
               elevation: 4,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: Padding(
-                padding: const EdgeInsets.all(24.0), // Unutrašnji padding
+                padding: const EdgeInsets.all(24.0), 
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -183,7 +115,7 @@ class LoginPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     SizedBox(
-                      width: double.infinity, // Dugme da bude preko cele širine
+                      width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
                           PredstavaProvider predstavaProvider = PredstavaProvider();
@@ -191,7 +123,9 @@ class LoginPage extends StatelessWidget {
                           AuthProvider.password = _passwordController.text;
                           try {
                             await predstavaProvider.get();
-                            Navigator.of(context).push(MaterialPageRoute(builder: (builder) => HomeScreen()));
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => const MasterScreen()),
+                            );
                           } on Exception catch (e) {
                             showDialog(
                               context: context,

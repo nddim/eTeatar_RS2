@@ -8,8 +8,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
+   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Predstave'),
+        backgroundColor: Colors.lightBlue,
+      ),
+      body: const Center(
+        child: Text(
+          'Ovdje će biti lista predstava',
+          style: TextStyle(fontSize: 18),
+        ),
+      ),
+    );
   }
+  
 }
