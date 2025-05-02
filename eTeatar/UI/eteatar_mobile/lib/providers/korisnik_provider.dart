@@ -22,16 +22,16 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
     try {
       response = await http.post(uri, headers: headers);
     } on Exception catch (e) {
-      throw new Exception("Greška prilikom prijave");
+      throw Exception("Greška prilikom prijave ${e.toString()}");
     }
     if (response.body == "") {
-      throw new Exception("Pogrešan username ili lozinka");
+      throw Exception("Pogrešan username ili lozinka");
     }
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
-      throw new Exception("Unknown error");
+      throw Exception("Unknown error");
     }
   }
 

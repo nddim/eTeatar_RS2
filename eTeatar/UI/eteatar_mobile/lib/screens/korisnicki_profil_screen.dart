@@ -1,6 +1,5 @@
 import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class KorisnickiProfil extends StatefulWidget {
   const KorisnickiProfil({super.key});

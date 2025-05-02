@@ -56,8 +56,6 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
         .toList();
   }
 
-  TextEditingController _searchController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

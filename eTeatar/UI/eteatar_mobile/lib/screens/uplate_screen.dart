@@ -52,6 +52,7 @@ class _UplateScreenState extends State<UplateScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Moje Uplate'),
+        backgroundColor: Colors.lightBlue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

@@ -1,6 +1,7 @@
 import 'package:eteatar_mobile/main.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/screens/korisnicki_profil_screen.dart';
+import 'package:eteatar_mobile/screens/repertoar_screen.dart';
 import 'package:eteatar_mobile/screens/rezervacije_screen.dart';
 import 'package:eteatar_mobile/screens/uplate_screen.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,11 @@ class _MojEteatarScreenState extends State<MojEteatarScreen> {
           _buildSectionTile(context, Icons.event, 'Rezervacije', () {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const RezervacijeScreen()),
+            );
+          }),
+          _buildSectionTile(context, Icons.history, 'Repertoari', () {
+           Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const RepertoarScreen()),
             );
           }),
           _buildSectionTile(context, Icons.history, 'Arhiva predstava', () {
