@@ -1,3 +1,4 @@
+import 'package:eteatar_mobile/models/predstava.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'termin.g.dart';
@@ -9,6 +10,7 @@ class Termin {
   String? status;
   int? predstavaId;
   int? dvoranaId;
+  Predstava? predstava;
 
   Termin(
     this.terminId,

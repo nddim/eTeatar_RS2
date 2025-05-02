@@ -1,3 +1,4 @@
+import 'package:eteatar_mobile/models/termin.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'rezervacija.g.dart';
@@ -9,7 +10,8 @@ class Rezervacija {
   int? terminId;
   int? korisnikId;
   String? stateMachine;
-  
+  Termin? termin;
+
   Rezervacija(
     this.rezervacijaId,
     this.status,

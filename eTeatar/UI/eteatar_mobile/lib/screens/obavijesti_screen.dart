@@ -1,4 +1,5 @@
 import 'package:eteatar_mobile/models/vijest.dart';
+import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/providers/vijest_provider.dart';
 import 'package:eteatar_mobile/screens/obavijesti_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,13 @@ class _ObavijestiScreenState extends State<ObavijestiScreen> {
 
   Future<void> loadData() async {
     try {
-      final vijestiResult = await vijestProvider.get(filter: {'isDeleted': false});
+      print("aaa ${AuthProvider.korisnikId}" );
+      final vijestiResult = await vijestProvider.get(
+          filter: {
+          'korisnikId': AuthProvider.korisnikId,
+          'isDeleted': false
+          }
+        );
       setState(() {
         vijesti = vijestiResult.resultList;
         _isLoading = false;

@@ -12,7 +12,10 @@ Rezervacija _$RezervacijaFromJson(Map<String, dynamic> json) => Rezervacija(
     )
       ..terminId = (json['terminId'] as num?)?.toInt()
       ..korisnikId = (json['korisnikId'] as num?)?.toInt()
-      ..stateMachine = json['stateMachine'] as String?;
+      ..stateMachine = json['stateMachine'] as String?
+      ..termin = json['termin'] == null
+          ? null
+          : Termin.fromJson(json['termin'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$RezervacijaToJson(Rezervacija instance) =>
     <String, dynamic>{
@@ -21,4 +24,5 @@ Map<String, dynamic> _$RezervacijaToJson(Rezervacija instance) =>
       'terminId': instance.terminId,
       'korisnikId': instance.korisnikId,
       'stateMachine': instance.stateMachine,
+      'termin': instance.termin,
     };

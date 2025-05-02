@@ -1,5 +1,6 @@
 import 'package:eteatar_mobile/models/predstava.dart';
 import 'package:eteatar_mobile/providers/predstava_provider.dart';
+import 'package:eteatar_mobile/screens/korisnicki_profil_screen.dart';
 import 'package:eteatar_mobile/screens/obavijesti_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -71,8 +72,15 @@ class _PredstavaScreenState extends State<PredstavaScreen> {
                 children: [
                   Row(
                     children: [
-                      const CircleAvatar(child: Icon(Icons.person)),
-                      const SizedBox(width: 20),
+                      IconButton(
+                        icon: const Icon(Icons.person),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => const KorisnickiProfil()),
+                          );
+                        },
+                      ),
+              const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
                           controller: _searchController,

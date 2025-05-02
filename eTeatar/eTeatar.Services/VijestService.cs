@@ -20,6 +20,10 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.Naziv.StartsWith(search.NazivGTE));
             }
+            if(search?.KorisnikId != null)
+            {
+                query = query.Where(x => x.KorisnikId == search.KorisnikId);
+            }
             if (search?.DatumGTE != null)
             {
                 query = query.Where(x => x.Datum > search.DatumGTE);

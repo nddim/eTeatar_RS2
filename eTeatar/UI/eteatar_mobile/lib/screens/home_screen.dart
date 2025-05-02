@@ -1,5 +1,11 @@
+import 'package:eteatar_mobile/models/rezervacija.dart';
+import 'package:eteatar_mobile/providers/auth_provider.dart';
+import 'package:eteatar_mobile/providers/rezervacija_provider.dart';
+import 'package:eteatar_mobile/screens/korisnicki_profil_screen.dart';
 import 'package:eteatar_mobile/screens/obavijesti_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,7 +15,43 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-   @override
+
+  bool _isLoading = true;
+  late RezervacijaProvider rezervacijaProvider;
+  List<Rezervacija> rezervacije = [];
+
+  @override
+  void initState() {
+    rezervacijaProvider = context.read<RezervacijaProvider>();
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    try {
+      final rezervacijaResult = await rezervacijaProvider.get(
+        filter: {
+          'korisnikId': AuthProvider.korisnikId,
+          'isDeleted': false
+        },
+      );
+      setState(() {
+        rezervacije = rezervacijaResult.resultList;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju predstava!",
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -18,8 +60,15 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Row(
             children: [
-              const CircleAvatar(child: Icon(Icons.person)),
-              const SizedBox(width: 20),
+              IconButton(
+                icon: const Icon(Icons.person),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const KorisnickiProfil()),
+                  );
+                },
+              ),
+              const SizedBox(width: 8),
               Expanded(
                 child: TextField(
                   decoration: InputDecoration(
@@ -36,7 +85,9 @@ class _HomeScreenState extends State<HomeScreen> {
               IconButton(
                 icon: const Icon(Icons.mail_outline),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => ObavijestiScreen()));
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ObavijestiScreen()),
+                  );
                 },
               )
             ],
@@ -63,16 +114,36 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           const SizedBox(height: 8),
-          Card(
-            child: ListTile(
-              title: const Text('Nadrealisti, Opera'),
-              subtitle: const Text('Jun 19 2024.'),
-              trailing: const Text(
-                '18:00h',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : rezervacije.isEmpty
+                  ? const Text('Nemate aktivnih rezervacija.')
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: rezervacije.length,
+                      itemBuilder: (context, index) {
+                        final rez = rezervacije[index];
+                        final datumObj = rez.termin?.datum;
+                        final datum = datumObj != null
+                            ? "${datumObj.day}.${datumObj.month}.${datumObj.year}"
+                            : "Bez datuma";
+                        final vrijeme = datumObj != null
+                            ? TimeOfDay.fromDateTime(datumObj).format(context)
+                            : "Vrijeme nepoznato";
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          child: ListTile(
+                            title: Text('${rez.termin?.predstava?.naziv ?? 'Predstava'}'),
+                            subtitle: Text(datum),
+                            trailing: Text(
+                              vrijeme,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
         ],
       ),
     );

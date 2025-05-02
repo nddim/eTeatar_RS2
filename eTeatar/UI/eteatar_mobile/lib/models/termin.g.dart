@@ -12,7 +12,10 @@ Termin _$TerminFromJson(Map<String, dynamic> json) => Termin(
     )
       ..status = json['status'] as String?
       ..predstavaId = (json['predstavaId'] as num?)?.toInt()
-      ..dvoranaId = (json['dvoranaId'] as num?)?.toInt();
+      ..dvoranaId = (json['dvoranaId'] as num?)?.toInt()
+      ..predstava = json['predstava'] == null
+          ? null
+          : Predstava.fromJson(json['predstava'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$TerminToJson(Termin instance) => <String, dynamic>{
       'terminId': instance.terminId,
@@ -20,4 +23,5 @@ Map<String, dynamic> _$TerminToJson(Termin instance) => <String, dynamic>{
       'status': instance.status,
       'predstavaId': instance.predstavaId,
       'dvoranaId': instance.dvoranaId,
+      'predstava': instance.predstava,
     };

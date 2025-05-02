@@ -1,5 +1,6 @@
 import 'package:eteatar_mobile/main.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
+import 'package:eteatar_mobile/screens/korisnicki_profil_screen.dart';
 import 'package:flutter/material.dart';
 
 class MojEteatarScreen extends StatefulWidget {
@@ -16,7 +17,6 @@ class _MojEteatarScreenState extends State<MojEteatarScreen> {
       appBar: AppBar(
         title: const Text('Moj eTeatar'),
         backgroundColor: Colors.lightBlue,
-        centerTitle: true,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -31,7 +31,9 @@ class _MojEteatarScreenState extends State<MojEteatarScreen> {
             // Navigacija na uplate
           }),
           _buildSectionTile(context, Icons.person, 'Moj profil', () {
-            // Navigacija na profil
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const KorisnickiProfil()),
+            );
           }),
           _buildSectionTile(
             context,
