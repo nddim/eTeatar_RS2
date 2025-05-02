@@ -115,11 +115,6 @@ class _GlumacListScreenState extends State<GlumacListScreen> {
         ],
           rows: result?.resultList.map((e) => 
           DataRow(
-            // onSelectChanged: (selected) => {
-            //   if(selected == true){
-            //   Navigator.of(context).push(MaterialPageRoute(builder: (context) => GlumacDetailsScreen(glumac: e,)))
-            //   }
-            // },
             cells: [
             DataCell(Text(e.ime ?? "")),
             DataCell(Text(e.prezime ?? "")),

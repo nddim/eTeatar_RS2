@@ -113,11 +113,6 @@ class _DvoranaListScreenState extends State<DvoranaListScreen> {
         ],
           rows: result?.resultList.map((e) => 
           DataRow(
-            // onSelectChanged: (selected) => {
-            //   if(selected == true){
-            //   Navigator.of(context).push(MaterialPageRoute(builder: (context) => DvoranaDetailsScreen(dvorana: e,)))
-            //   }
-            // },
             cells: [
             DataCell(Text(e.naziv ?? "")),
             DataCell(Text(e.kapacitet.toString())),
