@@ -32,7 +32,7 @@ class _KorisnickiProfilState extends State<KorisnickiProfil> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Moj profil'),
-         backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

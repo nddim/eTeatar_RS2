@@ -1,6 +1,8 @@
 import 'package:eteatar_mobile/main.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/screens/korisnicki_profil_screen.dart';
+import 'package:eteatar_mobile/screens/rezervacije_screen.dart';
+import 'package:eteatar_mobile/screens/uplate_screen.dart';
 import 'package:flutter/material.dart';
 
 class MojEteatarScreen extends StatefulWidget {
@@ -22,13 +24,17 @@ class _MojEteatarScreenState extends State<MojEteatarScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           _buildSectionTile(context, Icons.event, 'Rezervacije', () {
-            // Navigacija na rezervacije
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const RezervacijeScreen()),
+            );
           }),
           _buildSectionTile(context, Icons.history, 'Arhiva predstava', () {
             // Navigacija na arhivu
           }),
           _buildSectionTile(context, Icons.payment, 'Uplate', () {
-            // Navigacija na uplate
+             Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const UplateScreen()),
+            );
           }),
           _buildSectionTile(context, Icons.person, 'Moj profil', () {
             Navigator.of(context).push(

@@ -80,7 +80,7 @@ class _PredstavaScreenState extends State<PredstavaScreen> {
                           );
                         },
                       ),
-              const SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
                           controller: _searchController,
