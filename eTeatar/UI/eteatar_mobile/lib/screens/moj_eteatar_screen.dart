@@ -1,5 +1,6 @@
 import 'package:eteatar_mobile/main.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
+import 'package:eteatar_mobile/screens/arhiva_predstava_screen.dart';
 import 'package:eteatar_mobile/screens/korisnicki_profil_screen.dart';
 import 'package:eteatar_mobile/screens/repertoar_screen.dart';
 import 'package:eteatar_mobile/screens/rezervacije_screen.dart';
@@ -35,7 +36,9 @@ class _MojEteatarScreenState extends State<MojEteatarScreen> {
             );
           }),
           _buildSectionTile(context, Icons.history, 'Arhiva predstava', () {
-            // Navigacija na arhivu
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const ArhivaPredstavaScreen()),
+            );
           }),
           _buildSectionTile(context, Icons.payment, 'Uplate', () {
              Navigator.of(context).push(

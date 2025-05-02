@@ -128,7 +128,7 @@ namespace eTeatar.Services
                 return null;
             }
 
-            return this.Mapper.Map<Korisnik>(entity);
+            return Mapper.Map<Korisnik>(entity);
 
         }
     }

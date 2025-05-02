@@ -4,6 +4,7 @@ using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.Intrinsics.X86;
 using Predstava = eTeatar.Model.Predstava;
 using PredstavaGlumac = eTeatar.Services.Database.PredstavaGlumac;
 using PredstavaZanr = eTeatar.Services.Database.PredstavaZanr;
@@ -152,6 +153,21 @@ namespace eTeatar.Services
 
                 Context.SaveChanges();
             }
+        }
+
+        public List<Predstava> getProslePredstave(int korisnikId)
+        {
+            var karte = Context.Karta
+                .Where(k => k.KorisnikId == korisnikId && k.Termin.Datum < DateTime.Now)
+                .Include(k => k.Termin.Predstava)
+                .ToList();
+
+            var predstave = karte
+                .Select(k => k.Termin.Predstava)
+                .Distinct()
+            .ToList();
+
+            return Mapper.Map<List<Predstava>>(predstave);
         }
     }
 }

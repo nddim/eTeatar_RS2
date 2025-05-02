@@ -6,7 +6,7 @@ namespace eTeatar.Services
 {
     public interface IPredstavaService : ICRUDService<Predstava, PredstavaSearchObject, PredstavaInsertRequest, PredstavaUpdateRequest>
     {
-
+        List<Predstava> getProslePredstave(int korisnikId);
     }
 }
 
