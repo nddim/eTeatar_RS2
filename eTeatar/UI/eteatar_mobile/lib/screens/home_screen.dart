@@ -1,6 +1,8 @@
 import 'package:eteatar_mobile/models/rezervacija.dart';
+import 'package:eteatar_mobile/models/termin.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/providers/rezervacija_provider.dart';
+import 'package:eteatar_mobile/providers/termin_provider.dart';
 import 'package:eteatar_mobile/screens/korisnicki_profil_screen.dart';
 import 'package:eteatar_mobile/screens/obavijesti_screen.dart';
 import 'package:flutter/material.dart';
@@ -18,25 +20,43 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool _isLoading = true;
   late RezervacijaProvider rezervacijaProvider;
+  late TerminProvider terminProvider;
   List<Rezervacija> rezervacije = [];
-
+  List<Termin> termini = [];
   @override
   void initState() {
     rezervacijaProvider = context.read<RezervacijaProvider>();
+    terminProvider = context.read<TerminProvider>();
     super.initState();
     loadData();
   }
 
   Future<void> loadData() async {
     try {
+      final terminResult = await terminProvider.get(
+        filter: {
+          'isDeleted': false,
+        },
+      );
+
       final rezervacijaResult = await rezervacijaProvider.get(
         filter: {
           'korisnikId': AuthProvider.korisnikId,
           'isDeleted': false
         },
       );
+
+      final Map<int, Termin> terminMap = {
+        for (var t in terminResult.resultList) t.terminId!: t
+      };
+
+      for (var rez in rezervacijaResult.resultList) {
+        rez.termin = terminMap[rez.terminId];
+      }
+
       setState(() {
         rezervacije = rezervacijaResult.resultList;
+        termini = terminResult.resultList;
         _isLoading = false;
       });
     } catch (e) {
@@ -46,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
       QuickAlert.show(
         context: context,
         type: QuickAlertType.error,
-        title: "Greška pri dohvatanju predstava!",
+        title: "Greška pri dohvatanju podataka!",
       );
     }
   }

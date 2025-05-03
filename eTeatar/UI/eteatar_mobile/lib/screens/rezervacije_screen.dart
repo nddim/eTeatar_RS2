@@ -1,6 +1,8 @@
 import 'package:eteatar_mobile/models/rezervacija.dart';
+import 'package:eteatar_mobile/models/termin.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/providers/rezervacija_provider.dart';
+import 'package:eteatar_mobile/providers/termin_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
@@ -15,26 +17,44 @@ class RezervacijeScreen extends StatefulWidget {
 class _RezervacijeScreenState extends State<RezervacijeScreen> {
   bool _isLoading = true;
   late RezervacijaProvider rezervacijaProvider;
+  late TerminProvider terminProvider;
+  List<Termin> termini = [];
   List<Rezervacija> rezervacije = [];
   String searchQuery = '';
 
   @override
   void initState() {
     rezervacijaProvider = context.read<RezervacijaProvider>();
+    terminProvider = context.read<TerminProvider>();
     super.initState();
     loadData();
   }
 
   Future<void> loadData() async {
     try {
+      final terminResult = await terminProvider.get(
+        filter: {
+          'isDeleted': false,
+        },
+      );
+
       final rezervacijaResult = await rezervacijaProvider.get(
         filter: {
           'korisnikId': AuthProvider.korisnikId,
           'isDeleted': false
         },
       );
+
+      final Map<int, Termin> terminMap = {
+        for (var t in terminResult.resultList) t.terminId!: t
+      };
+
+      for (var rez in rezervacijaResult.resultList) {
+        rez.termin = terminMap[rez.terminId];
+      }
       setState(() {
         rezervacije = rezervacijaResult.resultList;
+        termini = terminResult.resultList;
         _isLoading = false;
       });
     } catch (e) {
