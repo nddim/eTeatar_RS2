@@ -41,18 +41,6 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.TrajanjeKraj < search.TrajanjeKrajLTE);
             }
-            if (!string.IsNullOrEmpty(search?.ProdukcijaGTE))
-            {
-                query = query.Where(x => x.Naziv.StartsWith(search.ProdukcijaGTE));
-            }
-            if (!string.IsNullOrEmpty(search?.KoreografijaGTE))
-            {
-                query = query.Where(x => x.Naziv.StartsWith(search.KoreografijaGTE));
-            }
-            if (!string.IsNullOrEmpty(search?.ScenografijaGTE))
-            {
-                query = query.Where(x => x.Naziv.StartsWith(search.ScenografijaGTE));
-            }
             if( search?.CijenaGTE != null)
             {
                 query = query.Where(x => x.Cijena > search.CijenaGTE);
@@ -70,6 +58,18 @@ namespace eTeatar.Services
             {
                 query = query.Include(x => x.PredstavaZanrs)
                     .Where(x => x.PredstavaZanrs.Any(pz => pz.ZanrId == search.ZanrId));
+            }
+            if (!string.IsNullOrWhiteSpace(search.OrderBy))
+            {
+                switch (search.OrderBy.ToLower())
+                {
+                    case "datum":
+                        query = query.OrderBy(p => p.Termins.Min(t => t.Datum));
+                        break;
+                    case "naziv":
+                        query = query.OrderBy(p => p.Naziv);
+                        break;
+                }
             }
             if (search?.isDeleted != null)
             {

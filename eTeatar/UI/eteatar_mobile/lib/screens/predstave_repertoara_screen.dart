@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
 class PredstaveRepertoaraScreen extends StatefulWidget {
-  Repertoar? repertoar;
-  PredstaveRepertoaraScreen({super.key, this.repertoar});
+  final Repertoar? repertoar;
+  const PredstaveRepertoaraScreen({super.key, this.repertoar});
 
   @override
   State<PredstaveRepertoaraScreen> createState() => _PredstaveRepertoaraScreenState();

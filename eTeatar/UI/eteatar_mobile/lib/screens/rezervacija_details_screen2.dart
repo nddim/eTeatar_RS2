@@ -1,8 +1,6 @@
-import 'package:eteatar_mobile/models/dvorana.dart';
 import 'package:eteatar_mobile/models/predstava.dart';
 import 'package:eteatar_mobile/models/sjediste.dart';
 import 'package:eteatar_mobile/providers/dvorana_provider.dart';
-import 'package:eteatar_mobile/providers/predstava_provider.dart';
 import 'package:eteatar_mobile/providers/sjediste_provider.dart';
 import 'package:eteatar_mobile/screens/rezervacija_details_screen3.dart';
 import 'package:flutter/material.dart';

@@ -2,8 +2,8 @@ import 'package:eteatar_mobile/models/vijest.dart';
 import 'package:flutter/material.dart';
 
 class ObavijestDetailsScreen extends StatefulWidget {
-  Vijest? vijest;
-  ObavijestDetailsScreen({super.key, this.vijest});
+  final Vijest? vijest;
+  const ObavijestDetailsScreen({super.key, this.vijest});
 
   @override
   State<ObavijestDetailsScreen> createState() => _ObavijestDetailsScreenState();

@@ -8,8 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
 class PredstavaDetaljiScreen extends StatefulWidget {
-  Predstava? predstava;
-  PredstavaDetaljiScreen({super.key, this.predstava});
+  final Predstava? predstava;
+  const PredstavaDetaljiScreen({super.key, this.predstava});
 
   @override
   State<PredstavaDetaljiScreen> createState() => _PredstavaDetaljiScreenState();

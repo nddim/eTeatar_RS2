@@ -4,8 +4,8 @@ import 'package:eteatar_mobile/screens/rezervacija_details_screen1.dart';
 import 'package:flutter/material.dart';
 
 class PredstavaDetaljiScreen2 extends StatefulWidget {
-  Predstava? predstava;
-  PredstavaDetaljiScreen2({super.key, this.predstava});
+  final Predstava? predstava;
+  const PredstavaDetaljiScreen2({super.key, this.predstava});
 
   @override
   State<PredstavaDetaljiScreen2> createState() => _PredstavaDetaljiScreen2State();

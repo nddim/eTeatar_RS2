@@ -39,9 +39,11 @@ class _PredstavaScreenState extends State<PredstavaScreen> {
     try {
       final predstavaResult = await predstavaProvider.get(
         filter: {
-          'isDeleted': false,
           if (_searchController.text.isNotEmpty)
             'NazivGTE': _searchController.text,
+          if (selectedSort != 'Relevantnost') 
+          'orderBy': selectedSort.toLowerCase(),
+          'isDeleted': false
         },
       );
       setState(() {
@@ -122,11 +124,13 @@ class _PredstavaScreenState extends State<PredstavaScreen> {
                         items: const [
                           DropdownMenuItem(value: 'Relevantnost', child: Text('Relevantnost')),
                           DropdownMenuItem(value: 'Datum', child: Text('Datum')),
+                          DropdownMenuItem(value: 'Naziv', child: Text('Naziv')),
                         ],
                         onChanged: (value) {
                           setState(() {
                             selectedSort = value!;
                           });
+                          loadData(); 
                         },
                       ),
                     ],
