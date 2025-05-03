@@ -1,12 +1,8 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:eteatar_mobile/models/predstava.dart';
 import 'package:eteatar_mobile/providers/predstava_provider.dart';
-import 'package:eteatar_mobile/screens/predstava_detalji_screen.dart';
+import 'package:eteatar_mobile/screens/arhiva_predstava_detalji_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:file_picker/file_picker.dart';
 
 class ArhivaPredstavaScreen extends StatefulWidget {
   const ArhivaPredstavaScreen({super.key});
@@ -83,18 +79,6 @@ class _ArhivaPredstavaScreenState extends State<ArhivaPredstavaScreen> {
                   ),
       ),
     );
-  }
-
-  File? _image;
-  String? _base64Image;
-
-  void getImage() async {
-    var result = await FilePicker.platform.pickFiles(type: FileType.image);
-
-    if (result != null && result.files.single.path != null) {
-      _image = File(result.files.single.path!);
-      _base64Image = base64Encode(_image!.readAsBytesSync());
-    }
   }
 
 }

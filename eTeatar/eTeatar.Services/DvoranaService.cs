@@ -7,7 +7,9 @@ using Dvorana = eTeatar.Services.Database.Dvorana;
 
 namespace eTeatar.Services
 {
-    public class DvoranaService : BaseCRUDService<Model.Dvorana, DvoranaSearchObject, Dvorana, DvoranaUpsertRequest, DvoranaUpsertRequest>, IDvoranaService
+    public class DvoranaService :
+        BaseCRUDService<Model.Dvorana, DvoranaSearchObject, Dvorana, DvoranaUpsertRequest, DvoranaUpsertRequest>,
+        IDvoranaService
     {
         public DvoranaService(ETeatarContext _eTeatarContext, IMapper _mapper) : base(_eTeatarContext, _mapper)
         {
@@ -20,14 +22,17 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.Naziv.StartsWith(search.NazivGTE));
             }
+
             if (search?.KapacitetGTE != null)
             {
                 query = query.Where(x => x.Kapacitet > search.KapacitetGTE);
             }
+
             if (search?.KapacitetLTE != null)
             {
                 query = query.Where(x => x.Kapacitet < search.KapacitetLTE);
             }
+
             if (search?.isDeleted != null)
             {
                 query = query.Where(x => x.IsDeleted == search.isDeleted);
@@ -43,24 +48,78 @@ namespace eTeatar.Services
             {
                 throw new UserException("Već postoji dvorana s tim imenom!");
             }
+
+            if (request.Kapacitet <= 10)
+            {
+                throw new UserException("Kapacitet ne smije biti manji od 10");
+            }
+
+            var (redovi, kolone) = IzracunajMatricu(request.Kapacitet);
+
+            entity.Sjedistes = new List<Database.Sjediste>();
+
+            int brojac = 0;
+            for (int i = 0; i < redovi; i++)
+            {
+                char red = (char)('A' + i);
+                for (int j = 1; j <= kolone; j++)
+                {
+                    if (brojac >= request.Kapacitet)
+                        break;
+
+                    entity.Sjedistes.Add(new Database.Sjediste
+                    {
+                        Red = red.ToString(),
+                        Kolona = j.ToString(),
+                        Status = "Aktivno"
+                    });
+
+                    brojac++;
+                }
+            }
+
+
+        }
+
+        public override void BeforeUpdate(DvoranaUpsertRequest request, Dvorana entity)
+        {
+
+            var dvoranaNaziv = Context.Dvoranas.Where(x => x.Naziv == request.Naziv).FirstOrDefault();
+            if (dvoranaNaziv != null)
+            {
+                throw new UserException("Već postoji dvorana s tim imenom!");
+            }
+
             if (request.Kapacitet <= 10)
             {
                 throw new UserException("Kapacitet ne smije biti manji od 10");
             }
         }
 
-        public override void BeforeUpdate(DvoranaUpsertRequest request, Dvorana entity)
+        (int redovi, int kolone) IzracunajMatricu(int kapacitet)
         {
-            
-            var dvoranaNaziv = Context.Dvoranas.Where(x => x.Naziv == request.Naziv).FirstOrDefault();
-            if (dvoranaNaziv != null)
+            int minRazlika = int.MaxValue;
+            int najboljiRedovi = 1;
+            int najboljiKolone = kapacitet;
+
+            for (int i = 1; i <= 10; i++)
             {
-                throw new UserException("Već postoji dvorana s tim imenom!");
+                for (int j = 1; j <= 10; j++)
+                {
+                    if (i * j >= kapacitet)
+                    {
+                        int razlika = Math.Abs(i - j);
+                        if (razlika < minRazlika)
+                        {
+                            minRazlika = razlika;
+                            najboljiRedovi = i;
+                            najboljiKolone = j;
+                        }
+                    }
+                }
             }
-            if (request.Kapacitet <= 10)
-            {
-                throw new UserException("Kapacitet ne smije biti manji od 10");
-            }
+
+            return (najboljiRedovi, najboljiKolone);
         }
     }
 }

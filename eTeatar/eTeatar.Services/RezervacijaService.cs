@@ -5,6 +5,7 @@ using eTeatar.Services.Database;
 using eTeatar.Services.RezervacijaStateMachine;
 using MapsterMapper;
 using Rezervacija = eTeatar.Services.Database.Rezervacija;
+using RezervacijaSjediste = eTeatar.Services.Database.RezervacijaSjediste;
 
 namespace eTeatar.Services
 {
@@ -53,13 +54,39 @@ namespace eTeatar.Services
             {
                 throw new UserException("Termin je prošao!");
             }
-            bool jeLiSjedisteZauzeto = Context.Karta.Any(x => x.TerminId == request.TerminId && x.SjedisteId == request.SjedisteId);
-            if (jeLiSjedisteZauzeto)
+            foreach (var sjedisteId in request.SjedisteId)
             {
-                throw new Exception("Sjedište je već zauzeto!");
+                bool jeLiZauzeto = Context.Karta.Any(x => x.TerminId == request.TerminId && x.SjedisteId == sjedisteId);
+                if (jeLiZauzeto)
+                {
+                    throw new Exception($"Sjedište {sjedisteId} je već rezervisano!");
+                }
             }
 
             entity.Status = "Rezervisano";
+        }
+
+        public override void AfterInsert(RezervacijaInsertRequest request, Rezervacija entity)
+        {
+            var rezervacija = Context.Rezervacijas.Find(entity.RezervacijaId);
+            if (rezervacija == null)
+            {
+                throw new UserException("Rezervacija ne postoji!");
+            }
+
+            foreach (var sjedisteId in request.SjedisteId)
+            {
+                var rezervacijaSjediste = new RezervacijaSjediste
+                {
+                    RezervacijaId = entity.RezervacijaId,
+                    SjedisteId = sjedisteId
+                };
+
+                Context.RezervacijaSjedistes.Add(rezervacijaSjediste);
+            }
+
+            Context.SaveChanges();
+
         }
 
         public Model.Rezervacija Odobri(int rezervacijaId)

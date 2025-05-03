@@ -1,6 +1,7 @@
 import 'package:eteatar_mobile/models/predstava.dart';
 import 'package:eteatar_mobile/models/repertoar.dart';
 import 'package:eteatar_mobile/providers/predstava_provider.dart';
+import 'package:eteatar_mobile/screens/predstava_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
@@ -111,6 +112,15 @@ class _PredstaveRepertoaraScreenState extends State<PredstaveRepertoaraScreen> {
                             subtitle: Text(item.trajanjePocetak != null
                                 ? '${item.trajanjePocetak!.day}.${item.trajanjePocetak!.month}.${item.trajanjePocetak!.year}'
                                 : 'Bez datuma'),
+                            onTap: () {
+                              // Navigacija na ekran detalja predstave
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PredstavaDetaljiScreen2(predstava: item),
+                                ),
+                              );
+                            },
                           ),
                         );
                       },
