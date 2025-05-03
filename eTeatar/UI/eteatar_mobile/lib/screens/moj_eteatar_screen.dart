@@ -51,16 +51,15 @@ class _MojEteatarScreenState extends State<MojEteatarScreen> {
             );
           }),
           _buildSectionTile(
-            context,
-            Icons.logout,
-            'Odjavi se',
-            () {
+            context, 
+            Icons.logout, 
+            'Odjavi se', () {
               Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                  (Route<dynamic> route) => false,
-                );
-                AuthProvider.username = "";
-                AuthProvider.password = "";
+                MaterialPageRoute(builder: (context) => LoginPage()),
+                (Route<dynamic> route) => false,
+              );
+              AuthProvider.username = "";
+              AuthProvider.password = "";
             },
             color: Colors.redAccent,
             iconColor: Colors.red,

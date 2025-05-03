@@ -130,6 +130,7 @@ class LoginPage extends StatelessWidget {
                             AuthProvider.prezime = korisnik.prezime;
                             AuthProvider.telefon = korisnik.telefon;
                             AuthProvider.email = korisnik.email;
+                            AuthProvider.slika = korisnik.slika;
                             await predstavaProvider.get();
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => const MasterScreen()),

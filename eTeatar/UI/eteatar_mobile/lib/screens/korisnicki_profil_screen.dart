@@ -1,5 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:eteatar_mobile/main.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
+import 'package:eteatar_mobile/providers/korisnik_provider.dart';
+import 'package:eteatar_mobile/providers/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class KorisnickiProfil extends StatefulWidget {
   const KorisnickiProfil({super.key});
@@ -10,11 +19,16 @@ class KorisnickiProfil extends StatefulWidget {
 
 class _KorisnickiProfilState extends State<KorisnickiProfil> {
   final _formKey = GlobalKey<FormState>();
+  File? _selectedImageFile;
+  String? _base64Image;
+  final ImagePicker _picker = ImagePicker();
+  late KorisnikProvider korisnikProvider;
 
   @override
   void initState() {
+    korisnikProvider = context.read<KorisnikProvider>();
     super.initState();
-
+    _base64Image = AuthProvider.slika;
     _imeController.text = AuthProvider.ime ?? '';
     _prezimeController.text = AuthProvider.prezime ?? '';
     _telefonController.text = AuthProvider.telefon ?? '';
@@ -39,10 +53,20 @@ class _KorisnickiProfilState extends State<KorisnickiProfil> {
           key: _formKey,
           child: Column(
             children: [
-              const CircleAvatar(
-                radius: 50,
-                child: Icon(Icons.person, size: 50),
+              GestureDetector(
+                onTap: _pickImage,
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.grey.shade300,
+                  child: _selectedImageFile != null
+                      ? ClipOval(child: Image.file(_selectedImageFile!, fit: BoxFit.cover, width: 100, height: 100))
+                      : (_base64Image != null
+                          ? ClipOval(child: imageFromString(_base64Image!))
+                          : const Icon(Icons.person, size: 50)),
+                ),
               ),
+              const SizedBox(height: 8),
+              const Text("Dodirnite sliku za promjenu", style: TextStyle(fontSize: 12, color: Colors.grey)),
               const SizedBox(height: 24),
               _buildTextField(_imeController, 'Ime'),
               const SizedBox(height: 12),
@@ -62,12 +86,73 @@ class _KorisnickiProfilState extends State<KorisnickiProfil> {
                   minimumSize: const Size.fromHeight(50),
                 ),
               ),
+              const SizedBox(height: 24),
+              ElevatedButton.icon(
+                onPressed: _saveChanges,
+                icon: const Icon(Icons.save),
+                label: const Text("Sačuvaj izmjene"),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(50),
+                  
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
+
+  Future<void> _pickImage() async {
+    final picked = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (picked != null) {
+      final bytes = await picked.readAsBytes();
+      setState(() {
+        _selectedImageFile = File(picked.path);
+        _base64Image = base64Encode(bytes);
+      });
+    }
+  }
+
+  Future<void> _saveChanges() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    try {
+      final Map<String, dynamic> updateData = {
+        'ime': _imeController.text,
+        'prezime': _prezimeController.text,
+        'telefon': _telefonController.text,
+        'email': _emailController.text,
+        if (_base64Image != null) 'slika': _base64Image
+      };
+
+      await korisnikProvider.update(AuthProvider.korisnikId!, updateData);
+
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.success,
+        text: 'Profil uspješno ažuriran',
+        confirmBtnText: 'OK',
+        onConfirmBtnTap: () {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => LoginPage()),
+            (Route<dynamic> route) => false,
+          );
+          AuthProvider.username = "";
+          AuthProvider.password = "";
+        },
+      );
+
+      
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        text: 'Greška pri ažuriranju profila',
+      );
+    }
+}
 
   Widget _buildTextField(TextEditingController controller, String label) {
     return TextFormField(
