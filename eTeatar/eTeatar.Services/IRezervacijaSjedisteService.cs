@@ -6,6 +6,6 @@ namespace eTeatar.Services
 {
     public interface IRezervacijaSjedisteService : ICRUDService<RezervacijaSjediste, RezervacijaSjedisteSearchObject, RezervacijaSjedisteUpsertRequest, RezervacijaSjedisteUpsertRequest>
     {
-
+        public List<int> GetRezervisanaSjedistaByTermin(int terminId);
     }
 }

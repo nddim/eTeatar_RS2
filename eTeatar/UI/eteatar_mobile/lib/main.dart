@@ -10,6 +10,7 @@ import 'package:eteatar_mobile/providers/ocjena_provider.dart';
 import 'package:eteatar_mobile/providers/predstava_provider.dart';
 import 'package:eteatar_mobile/providers/repertoar_provider.dart';
 import 'package:eteatar_mobile/providers/rezervacija_provider.dart';
+import 'package:eteatar_mobile/providers/rezervacija_sjediste_provider.dart';
 import 'package:eteatar_mobile/providers/sjediste_provider.dart';
 import 'package:eteatar_mobile/providers/stavka_uplate_provider.dart';
 import 'package:eteatar_mobile/providers/termin_provider.dart';
@@ -38,6 +39,7 @@ void main() {
     ChangeNotifierProvider(create: (_) => UplataProvider()),
     ChangeNotifierProvider(create: (_) => VijestProvider()),
     ChangeNotifierProvider(create: (_) => ZanrProvider()),
+    ChangeNotifierProvider(create: (_) => RezervacijaSjedisteProvider()),
   ], child: const MyApp(),));
 }
 

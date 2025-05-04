@@ -9,6 +9,8 @@ class Sjediste {
   String? kolona;
   String? status;
   int? dvoranaId;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool isZauzeto = false;
 
   Sjediste(
     this.sjedisteId,

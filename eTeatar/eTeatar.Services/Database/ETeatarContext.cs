@@ -379,12 +379,14 @@ public partial class ETeatarContext : DbContext
 
             entity.ToTable("RezervacijaSjediste");
 
-            entity.HasOne(d => d.Rezervacija).WithMany(p => p.RezervacijaSjedistes)
-                .HasForeignKey(d => d.RezervacijaSjedisteId)
+            entity.HasOne(d => d.Rezervacija)
+                .WithMany(p => p.RezervacijaSjedistes) 
+                .HasForeignKey(d => d.RezervacijaId)   
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            entity.HasOne(d => d.Sjediste).WithMany(p => p.RezervacijaSjedistes)
-                .HasForeignKey(d => d.RezervacijaSjedisteId)
+            entity.HasOne(d => d.Sjediste)
+                .WithMany(p => p.RezervacijaSjedistes)  
+                .HasForeignKey(d => d.SjedisteId)  
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 

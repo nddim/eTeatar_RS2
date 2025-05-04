@@ -83,7 +83,7 @@ class _RezervacijaDetailsScreen1State extends State<RezervacijaDetailsScreen1> {
                 ),
                 ElevatedButton(
                   onPressed: _odabraniTermin == null ? null : () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => RezervacijaDetailsScreen2(predstava: widget.predstava, dvoranaId: _odabraniTermin!.dvoranaId!)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => RezervacijaDetailsScreen2(predstava: widget.predstava, dvoranaId: _odabraniTermin!.dvoranaId!, termin: _odabraniTermin)));
                   },
                   child: const Text('Nastavi'),
                 )

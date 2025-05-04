@@ -15,6 +15,12 @@ namespace eTeatar.API.Controllers
         {
 
         }
+
+        [HttpGet("GetRezervisanaSjedistaByTermin/{terminId}")]
+        public List<int> GetRezervisanaSjedistaByTermin(int terminId)
+        {
+            return ((IRezervacijaSjedisteService)_service).GetRezervisanaSjedistaByTermin(terminId);
+        }
     }
 
 }

@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace eTeatar.Services.Database;
 
 public class RezervacijaSjediste : ISoftDelete
 {
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int RezervacijaSjedisteId { get; set; }
 
     public int RezervacijaId { get; set; }

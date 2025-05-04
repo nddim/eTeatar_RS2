@@ -70,13 +70,13 @@ class _RezervacijaDetailsScreen3State extends State<RezervacijaDetailsScreen3> {
   void _rezervisi(BuildContext context) async {
     try {
       List<int> sjedistaIds = widget.odabranaSjedista.map((s) => s.sjedisteId!).toList();
-      await rezervacijaProvider.insert({
-        "status": "Rezervisano",
+      var request = {
+         "status": "Rezervisano",
         "terminId": 1,
-        "sjedisteId": sjedistaIds,
+        "sjedista": sjedistaIds,
         "korisnikId": AuthProvider.korisnikId,
-      });
-
+      };
+      await rezervacijaProvider.insert(request);
       QuickAlert.show(
         context: context,
         type: QuickAlertType.success,

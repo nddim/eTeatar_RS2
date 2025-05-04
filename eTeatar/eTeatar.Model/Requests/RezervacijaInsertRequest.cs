@@ -8,7 +8,7 @@ namespace eTeatar.Model.Requests
     {
         public string Status { get; set; }
 
-        public List<int> SjedisteId { get; set; }
+        public List<int> Sjedista { get; set; }
 
         public int TerminId { get; set; }
 

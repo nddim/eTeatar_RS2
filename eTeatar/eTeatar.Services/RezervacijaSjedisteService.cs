@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace eTeatar.Services
 {
@@ -32,6 +33,21 @@ namespace eTeatar.Services
             }
 
             return query;
+        }
+
+        public List<int> GetRezervisanaSjedistaByTermin(int terminId)
+        {
+            var termin = Context.Termins.Find(terminId);
+            if (termin == null)
+            {
+                throw new Exception("Termin nije pronaden!");
+            }
+
+            var zauzetaSjedista = Context.RezervacijaSjedistes.Where(x => x.Rezervacija.TerminId == terminId)
+                .Include(s => s.Sjediste)
+                .Select(rs => rs.SjedisteId).ToList();
+
+            return zauzetaSjedista;
         }
     }
 }

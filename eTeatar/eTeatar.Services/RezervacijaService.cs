@@ -43,6 +43,8 @@ namespace eTeatar.Services
 
         public override Model.Rezervacija Insert(RezervacijaInsertRequest request)
         {
+            var entity = Mapper.Map<Database.Rezervacija>(request);
+
             var state = BaseRezervacijaState.CreateState("Initial");
             return state.Insert(request);
         }
@@ -54,12 +56,12 @@ namespace eTeatar.Services
             {
                 throw new UserException("Termin je prošao!");
             }
-            foreach (var sjedisteId in request.SjedisteId)
+            foreach (var sjedisteId in request.Sjedista)
             {
                 bool jeLiZauzeto = Context.Karta.Any(x => x.TerminId == request.TerminId && x.SjedisteId == sjedisteId);
                 if (jeLiZauzeto)
                 {
-                    throw new Exception($"Sjedište {sjedisteId} je već rezervisano!");
+                    throw new UserException($"Sjedište {sjedisteId} je već rezervisano!");
                 }
             }
 
@@ -68,24 +70,31 @@ namespace eTeatar.Services
 
         public override void AfterInsert(RezervacijaInsertRequest request, Rezervacija entity)
         {
-            var rezervacija = Context.Rezervacijas.Find(entity.RezervacijaId);
-            if (rezervacija == null)
-            {
-                throw new UserException("Rezervacija ne postoji!");
-            }
 
-            foreach (var sjedisteId in request.SjedisteId)
+            if (request.Sjedista != null)
             {
-                var rezervacijaSjediste = new RezervacijaSjediste
+                foreach (var sjedisteId in request.Sjedista)
                 {
-                    RezervacijaId = entity.RezervacijaId,
-                    SjedisteId = sjedisteId
-                };
-
-                Context.RezervacijaSjedistes.Add(rezervacijaSjediste);
+                    Context.RezervacijaSjedistes.Add(new RezervacijaSjediste()
+                    {
+                        RezervacijaId = entity.RezervacijaId,
+                        SjedisteId = sjedisteId
+                    });
+                }
+            }
+            else
+            {
+                throw new UserException("Nema sjedista za rezervaciju.");
             }
 
-            Context.SaveChanges();
+            try
+            {
+                Context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new UserException($"Greška prilikom spremanja sjedista: {ex.Message}");
+            }
 
         }
 

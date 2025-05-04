@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eTeatar.Services.Database;
 
@@ -11,9 +12,11 @@ using eTeatar.Services.Database;
 namespace eTeatar.Services.Migrations
 {
     [DbContext(typeof(ETeatarContext))]
-    partial class ETeatarContextModelSnapshot : ModelSnapshot
+    [Migration("20250504085452_izmjenaRezervacijaSjediste")]
+    partial class izmjenaRezervacijaSjediste
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,7 +163,7 @@ namespace eTeatar.Services.Migrations
 
                     b.HasIndex("TerminId");
 
-                    b.ToTable("Karta", (string)null);
+                    b.ToTable("Karta");
                 });
 
             modelBuilder.Entity("eTeatar.Services.Database.Korisnik", b =>
@@ -743,7 +746,7 @@ namespace eTeatar.Services.Migrations
 
                     b.HasIndex("KorisnikId");
 
-                    b.ToTable("Uplata", (string)null);
+                    b.ToTable("Uplata");
                 });
 
             modelBuilder.Entity("eTeatar.Services.Database.Vijest", b =>

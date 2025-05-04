@@ -1,15 +1,18 @@
 import 'package:eteatar_mobile/models/predstava.dart';
 import 'package:eteatar_mobile/models/sjediste.dart';
+import 'package:eteatar_mobile/models/termin.dart';
 import 'package:eteatar_mobile/providers/dvorana_provider.dart';
+import 'package:eteatar_mobile/providers/rezervacija_sjediste_provider.dart';
 import 'package:eteatar_mobile/providers/sjediste_provider.dart';
 import 'package:eteatar_mobile/screens/rezervacija_details_screen3.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RezervacijaDetailsScreen2 extends StatefulWidget {
+  final Termin? termin;
   final Predstava? predstava;
   final int? dvoranaId;
-  const RezervacijaDetailsScreen2({super.key, required this.predstava, required this.dvoranaId });
+  const RezervacijaDetailsScreen2({super.key, required this.predstava, required this.dvoranaId, required this.termin });
 
   @override
   State<RezervacijaDetailsScreen2> createState() => _RezervacijaDetailsScreen2State();
@@ -19,6 +22,7 @@ class _RezervacijaDetailsScreen2State extends State<RezervacijaDetailsScreen2> {
 
   late DvoranaProvider dvoranaProvider;
   late SjedisteProvider sjedisteProvider;
+  late RezervacijaSjedisteProvider rezervacijaSjedisteProvider;
   List<Sjediste> sjedista = [];
   final Set<Sjediste> odabrana = {};
 
@@ -27,6 +31,7 @@ class _RezervacijaDetailsScreen2State extends State<RezervacijaDetailsScreen2> {
     super.initState();
     dvoranaProvider = context.read<DvoranaProvider>();
     sjedisteProvider = context.read<SjedisteProvider>();
+    rezervacijaSjedisteProvider = context.read<RezervacijaSjedisteProvider>();
     _loadData();
   }
 
@@ -37,9 +42,21 @@ class _RezervacijaDetailsScreen2State extends State<RezervacijaDetailsScreen2> {
         'isDeleted': false
       }
     );
+
+    var zauzetaSjedistaIds = await rezervacijaSjedisteProvider.getZauzetaSjedista(widget.termin!.terminId!);
+
+    var svi = result.resultList;
+
+    for (var s in svi) {
+      if (zauzetaSjedistaIds.contains(s.sjedisteId)) {
+        s.status = "Rezervisano";
+        s.isZauzeto = true; // samo ako koristiš to interno
+      }
+    }
+
     setState(() {
-    sjedista = result.resultList;
-  });
+      sjedista = svi;
+    });
   }
 
   @override
