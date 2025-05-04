@@ -17,11 +17,15 @@ class PredstavaDetaljiScreen extends StatefulWidget {
 
 class _PredstavaDetaljiScreenState extends State<PredstavaDetaljiScreen> {
   late OcjenaProvider ocjenaProvider;
+  double? _prosjekOcjena;
+  bool _isRatingLoading = true;
+
 
   @override
   void initState() {
     super.initState();
     ocjenaProvider = context.read<OcjenaProvider>();
+    fetchAverageRating();
   }
 
   final _komentarController = TextEditingController();
@@ -32,7 +36,24 @@ class _PredstavaDetaljiScreenState extends State<PredstavaDetaljiScreen> {
     _komentarController.dispose();
     super.dispose();
   }
-
+  Future<void> fetchAverageRating() async {
+  try {
+    final result = await ocjenaProvider.getProsjecnaOcjena(widget.predstava!.predstavaId!);
+      setState(() {
+        _prosjekOcjena = result.toDouble(); // očekuješ double
+        _isRatingLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isRatingLoading = false;
+      });
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju prosječne ocjene!",
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final p = widget.predstava;
@@ -68,6 +89,24 @@ class _PredstavaDetaljiScreenState extends State<PredstavaDetaljiScreen> {
             Text("Produkcija: ${p.produkcija ?? 'Nepoznato'}"),
             Text("Koreografija: ${p.koreografija ?? 'Nepoznato'}"),
             Text("Scenografija: ${p.scenografija ?? 'Nepoznato'}"),
+            const SizedBox(height: 12),
+            _isRatingLoading ? const CircularProgressIndicator()
+              : _prosjekOcjena != null ? 
+              Row( 
+                children: [
+                  const Text("Prosječna ocjena: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                  RatingBarIndicator(
+                    rating: _prosjekOcjena!,
+                    itemBuilder: (context, index) => const Icon(Icons.star, color: Colors.amber),
+                    itemCount: 5,
+                    itemSize: 24.0,
+                    direction: Axis.horizontal,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(_prosjekOcjena!.toStringAsFixed(1)),
+                ],
+              )
+            : const Text("Još nema ocjena za ovu predstavu."),
             const SizedBox(height: 24),
             _buildRatingCard()
           ],

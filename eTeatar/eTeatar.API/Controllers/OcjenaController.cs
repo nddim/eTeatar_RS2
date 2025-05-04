@@ -13,5 +13,11 @@ namespace eTeatar.API.Controllers
         public OcjenaController(IOcjenaService service) : base(service)
         {
         }
+
+        [HttpGet("Prosjek")]
+        public virtual double GetProsjekOcjena(int predstavaId)
+        {
+            return ((IOcjenaService)_service).getProsjekOcjena(predstavaId);
+        }
     }
 }

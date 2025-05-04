@@ -23,7 +23,7 @@ class PredstavaProvider extends BaseProvider<Predstava> {
     try {
       response = await http.get(uri, headers: headers);
     } on Exception catch (e) {
-      throw Exception("Greška prilikom prijave");
+      throw Exception("Greška prilikom dohvatanja arhive predstave : $e");
     }
     if (isValidResponse(response)) {
       var obj = jsonDecode(response.body);
