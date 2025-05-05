@@ -4,6 +4,7 @@ import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/providers/dvorana_provider.dart';
 import 'package:eteatar_mobile/providers/glumac_provider.dart';
 import 'package:eteatar_mobile/providers/hrana_provider.dart';
+import 'package:eteatar_mobile/providers/karta_dto_provider.dart';
 import 'package:eteatar_mobile/providers/karta_provider.dart';
 import 'package:eteatar_mobile/providers/korisnik_provider.dart';
 import 'package:eteatar_mobile/providers/ocjena_provider.dart';
@@ -40,6 +41,7 @@ void main() {
     ChangeNotifierProvider(create: (_) => VijestProvider()),
     ChangeNotifierProvider(create: (_) => ZanrProvider()),
     ChangeNotifierProvider(create: (_) => RezervacijaSjedisteProvider()),
+    ChangeNotifierProvider(create: (_) => KartaDtoProvider()),
   ], child: const MyApp(),));
 }
 

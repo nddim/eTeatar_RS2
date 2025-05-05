@@ -28,7 +28,6 @@ class _ObavijestiScreenState extends State<ObavijestiScreen> {
 
   Future<void> loadData() async {
     try {
-      print("aaa ${AuthProvider.korisnikId}" );
       final vijestiResult = await vijestProvider.get(
           filter: {
           'korisnikId': AuthProvider.korisnikId,

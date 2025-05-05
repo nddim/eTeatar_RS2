@@ -13,5 +13,10 @@ namespace eTeatar.API.Controllers
         public KartaController(IKartaService service) : base(service)
         {
         }
+        [HttpGet("getKartasByKorisnik/{korisnikId}")]
+        public List<KartaDTO> getKartasByKorisnik(int korisnikId)
+        {
+            return ((IKartaService)_service).getKartasByKorisnik(korisnikId);
+        }
     }
 }

@@ -106,59 +106,24 @@ class _RezervacijaDetailsScreen2State extends State<RezervacijaDetailsScreen2> {
   }
 
   Widget _buildSeatGrid() {
-  if (sjedista.isEmpty) {
-    return const Center(child: CircularProgressIndicator());
+    if (sjedista.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return SingleChildScrollView(
+      child: Center(
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 6,
+          runSpacing: 6,
+          children: sjedista.map((s) {
+            return _buildSeat(s);
+          }).toList(),
+        ),
+      ),
+    );
   }
 
-  return SingleChildScrollView(
-    child: Center(
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 6,
-        runSpacing: 6,
-        children: sjedista.map((s) {
-          return _buildSeat(s);
-        }).toList(),
-      ),
-    ),
-  );
-}
-
-//   Widget _buildSeat(String oznaka, String status) {
-//   Color boja;
-//   if (status == "Rezervisano") {
-//     boja = Colors.yellow;
-//   } else if (odabrana.contains(oznaka)) {
-//     boja = Colors.blue;
-//   } else {
-//     boja = Colors.grey[400]!;
-//   }
-
-//   return GestureDetector(
-//     onTap: status == "Rezervisano"
-//         ? null
-//         : () {
-//             setState(() {
-//               if (odabrana.contains(oznaka)) {
-//                 odabrana.remove(oznaka);
-//               } else {
-//                 odabrana.add(oznaka);
-//               }
-//             });
-//           },
-//     child: Container(
-//       width: 40,
-//       height: 40,
-//       alignment: Alignment.center,
-//       decoration: BoxDecoration(
-//         color: boja,
-//         borderRadius: BorderRadius.circular(4),
-//         border: Border.all(color: Colors.black26),
-//       ),
-//       child: Text(oznaka, style: const TextStyle(fontSize: 12)),
-//     ),
-//   );
-// }
   Widget _buildSeat(Sjediste s) {
     String oznaka = "${s.red}${s.kolona}";
     Color boja;
@@ -196,6 +161,7 @@ class _RezervacijaDetailsScreen2State extends State<RezervacijaDetailsScreen2> {
       ),
     );
   }
+
   Widget _buildNavigationButtons() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
@@ -216,7 +182,8 @@ class _RezervacijaDetailsScreen2State extends State<RezervacijaDetailsScreen2> {
                         builder: (context) => RezervacijaDetailsScreen3(
                           predstava: widget.predstava!,
                           dvoranaId: widget.dvoranaId!,
-                          odabranaSjedista: odabrana.toList(), // sada je List<Sjediste>
+                          odabranaSjedista: odabrana.toList(),
+                          termin: widget.termin, // sada je List<Sjediste>
                         ),
                       ),
                     );

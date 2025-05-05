@@ -1,5 +1,6 @@
 import 'package:eteatar_mobile/models/predstava.dart';
 import 'package:eteatar_mobile/models/sjediste.dart';
+import 'package:eteatar_mobile/models/termin.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/providers/rezervacija_provider.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +8,12 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
 class RezervacijaDetailsScreen3 extends StatefulWidget {
+  final Termin? termin;
   final Predstava? predstava;
   final int? dvoranaId;
    final List<Sjediste> odabranaSjedista;
 
-  const RezervacijaDetailsScreen3({super.key, required this.predstava, required this.dvoranaId, required this.odabranaSjedista});
+  const RezervacijaDetailsScreen3({super.key, required this.predstava, required this.dvoranaId, required this.odabranaSjedista, required this.termin});
 
   @override
   State<RezervacijaDetailsScreen3> createState() => _RezervacijaDetailsScreen3State();
@@ -72,7 +74,7 @@ class _RezervacijaDetailsScreen3State extends State<RezervacijaDetailsScreen3> {
       List<int> sjedistaIds = widget.odabranaSjedista.map((s) => s.sjedisteId!).toList();
       var request = {
          "status": "Rezervisano",
-        "terminId": 1,
+        "terminId": widget.termin!.terminId!,
         "sjedista": sjedistaIds,
         "korisnikId": AuthProvider.korisnikId,
       };

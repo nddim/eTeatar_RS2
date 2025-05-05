@@ -45,6 +45,8 @@ dependencies:
   file_picker: ^8.0.5
   flutter_rating_bar: ^4.0.1
   image_picker: ^1.1.2
+  flutter_dotenv: ^5.2.1
+  flutter_paypal_payment: ^1.0.6
 
 dev_dependencies:
   flutter_test:

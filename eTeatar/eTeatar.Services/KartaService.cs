@@ -3,6 +3,7 @@ using eTeatar.Model.Requests;
 using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace eTeatar.Services
 {
@@ -69,5 +70,23 @@ namespace eTeatar.Services
             base.BeforeInsert(request, entity);
         }
 
+        public List<Model.KartaDTO> getKartasByKorisnik(int korisnikId)
+        {
+            var query = Context.Karta
+                .Where(x => x.KorisnikId == korisnikId && !x.IsDeleted)
+                .Select(x => new KartaDTO
+                {
+                    KartaId = x.KartaId,
+                    Cijena = x.Cijena,
+                    SjedisteId = x.Sjediste.SjedisteId,
+                    Red = x.Sjediste.Red,
+                    Kolona = x.Sjediste.Kolona,
+                    TerminId = x.Termin.TerminId,
+                    DatumVrijeme = x.Termin.Datum,
+                    NazivPredstave = x.Termin.Predstava.Naziv
+                });
+
+            return query.ToList();
+        }
     }
 }
