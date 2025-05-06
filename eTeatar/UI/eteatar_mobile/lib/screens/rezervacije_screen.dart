@@ -4,6 +4,8 @@ import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/providers/rezervacija_provider.dart';
 import 'package:eteatar_mobile/providers/termin_provider.dart';
 import 'package:eteatar_mobile/providers/predstava_provider.dart';
+import 'package:eteatar_mobile/providers/uplata_provider.dart';
+import 'package:eteatar_mobile/screens/uplate_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
@@ -30,6 +32,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
   late RezervacijaProvider rezervacijaProvider;
   late TerminProvider terminProvider;
   late PredstavaProvider predstavaProvider;
+  late UplataProvider uplataProvider;
   List<Termin> termini = [];
   List<Rezervacija> rezervacije = [];
   String searchQuery = '';
@@ -39,6 +42,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
     rezervacijaProvider = context.read<RezervacijaProvider>();
     terminProvider = context.read<TerminProvider>();
     predstavaProvider = context.read<PredstavaProvider>();
+    uplataProvider = context.read<UplataProvider>();
     super.initState();
     loadData();
   }
@@ -150,6 +154,15 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                                               );
                                               return;
                                             }
+                                            if (rez.stateMachine == "Ponistena"){
+                                              QuickAlert.show(
+                                                context: context,
+                                                type: QuickAlertType.error,
+                                                title: "Greška",
+                                                text: "Rezervacija je ponistena!",
+                                              );
+                                              return;
+                                            }
                                             if (rez.stateMachine != "Odobrena"){
                                               QuickAlert.show(
                                                 context: context,
@@ -178,7 +191,9 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
       ),
     );
   }
+  Future<void> kreirajUplatu() async {
 
+  }
   Future<void> makePayment(Rezervacija rezervacija) async {
     final secret = dotenv.env['_paypalSecret'];
     final public = dotenv.env['_paypalPublic'];
@@ -246,12 +261,23 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
               }
             ],
             note: "Hvala na rezervaciji!",
-            onSuccess: (Map params) {
-              rezervacijaProvider.zavrsiRezervaciju(rezervacija.rezervacijaId!);
+            onSuccess: (Map params) async {
+              await rezervacijaProvider.zavrsiRezervaciju(rezervacija.rezervacijaId!);
+              var data = params['data'];
+              var placanje = data['payer'];
+              var request = {
+                'Iznos': cijena,
+                'korisnikId': AuthProvider.korisnikId,
+                'transakcijaId' : data['id'],
+                'nacinPlacanja': placanje['payment_method'],
+                'status': data['state'],
+              };
+              await uplataProvider.insert(request);
               QuickAlert.show(
                 context: context,
                 type: QuickAlertType.success,
                 title: "Uspješno plaćanje!",
+                text: "Uplata je uspjesno izvršena!",
               );
             },
             onError: (error) {

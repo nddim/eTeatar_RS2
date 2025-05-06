@@ -25,22 +25,6 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.Naziv.StartsWith(search.NazivGTE));
             }
-            if (search?.TrajanjePocetakGTE != null)
-            {
-                query = query.Where(x => x.TrajanjePocetak > search.TrajanjePocetakGTE);
-            }
-            if(search?.TrajanjePocetakLTE != null)
-            {
-                query = query.Where(x => x.TrajanjePocetak < search.TrajanjePocetakLTE);
-            }
-            if (search?.TrajanjeKrajGTE != null)
-            {
-                query = query.Where(x => x.TrajanjeKraj > search.TrajanjeKrajGTE);
-            }
-            if (search?.TrajanjeKrajLTE != null)
-            {
-                query = query.Where(x => x.TrajanjeKraj < search.TrajanjeKrajLTE);
-            }
             if( search?.CijenaGTE != null)
             {
                 query = query.Where(x => x.Cijena > search.CijenaGTE);
@@ -85,11 +69,6 @@ namespace eTeatar.Services
             if (predstavaNaziv != null)
             {
                 throw new UserException("Već postoji predstava s tim imenom!");
-            }
-
-            if (request.TrajanjeKraj < request.TrajanjePocetak)
-            {
-                throw new UserException("Datum kraja ne smije biti manji od datuma početka!");
             }
         }
 

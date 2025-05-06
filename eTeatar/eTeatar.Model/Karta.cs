@@ -10,6 +10,8 @@ namespace eTeatar.Model
 
         public decimal Cijena { get; set; }
 
+        public bool ukljucenaHrana { get; set; }
+
         public int SjedisteId { get; set; }
 
         public int TerminId { get; set; }

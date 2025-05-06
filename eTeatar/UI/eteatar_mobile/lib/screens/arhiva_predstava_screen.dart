@@ -65,7 +65,7 @@ class _ArhivaPredstavaScreenState extends State<ArhivaPredstavaScreen> {
                         child: ListTile(
                           title: Text(predstava.naziv ?? 'Bez naziva'),
                           subtitle: Text(predstava.opis ?? 'Bez opisa'),
-                          trailing: Text('${predstava.trajanjePocetak} min'),
+                          trailing: Text('${predstava.trajanje} min'),
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(

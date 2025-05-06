@@ -5,7 +5,6 @@ import 'package:eteatar_mobile/models/korisnik.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/providers/dvorana_provider.dart';
 import 'package:eteatar_mobile/providers/glumac_provider.dart';
-import 'package:eteatar_mobile/providers/hrana_provider.dart';
 import 'package:eteatar_mobile/providers/karta_dto_provider.dart';
 import 'package:eteatar_mobile/providers/karta_provider.dart';
 import 'package:eteatar_mobile/providers/korisnik_provider.dart';
@@ -35,7 +34,6 @@ void main() {
     runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => DvoranaProvider()),
     ChangeNotifierProvider(create: (_) => GlumacProvider()),
-    ChangeNotifierProvider(create: (_) => HranaProvider()),
     ChangeNotifierProvider(create: (_) => KartaProvider()),
     ChangeNotifierProvider(create: (_) => KorisnikProvider()),
     ChangeNotifierProvider(create: (_) => OcjenaProvider()),

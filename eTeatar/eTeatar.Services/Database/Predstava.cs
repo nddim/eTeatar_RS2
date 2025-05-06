@@ -11,9 +11,7 @@ public partial class Predstava : ISoftDelete
 
     public string Opis { get; set; } = null!;
 
-    public DateTime TrajanjePocetak { get; set; }
-
-    public DateTime TrajanjeKraj { get; set; }
+    public int? Trajanje { get; set; }
 
     public string Produkcija { get; set; } = null!;
 

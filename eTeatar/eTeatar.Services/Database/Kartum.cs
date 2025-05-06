@@ -21,6 +21,8 @@ public partial class Kartum : ISoftDelete
 
     public int KorisnikId { get; set; }
 
+    public bool? ukljucenaHrana { get; set; }
+
     public virtual Korisnik Korisnik { get; set; } = null!;
 
     public virtual Rezervacija? Rezervacija { get; set; } = null!;

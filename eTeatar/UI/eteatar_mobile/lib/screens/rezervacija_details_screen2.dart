@@ -94,8 +94,7 @@ class _RezervacijaDetailsScreen2State extends State<RezervacijaDetailsScreen2> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(widget.predstava!.naziv ?? '', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Text("Datum: ${_formatDatum(widget.predstava!.trajanjePocetak!)}"),
-                Text("Vrijeme: ${_formatVrijeme(widget.predstava!.trajanjePocetak!)}"),
+                Text("Trajanje: ${widget.predstava!.trajanje!}"),
                 Text("Dvorana: ${widget.dvoranaId}"),
               ],
             ),
@@ -193,18 +192,5 @@ class _RezervacijaDetailsScreen2State extends State<RezervacijaDetailsScreen2> {
         ],
       ),
     );
-  }
-
-  String _formatDatum(DateTime d) {
-    return "${_danUNedjelji(d.weekday)}, ${d.day}.${d.month}.${d.year}";
-  }
-
-  String _formatVrijeme(DateTime d) {
-    return "${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}h";
-  }
-
-  String _danUNedjelji(int broj) {
-    const dani = ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota", "Nedjelja"];
-    return dani[(broj - 1) % 7];
   }
 }

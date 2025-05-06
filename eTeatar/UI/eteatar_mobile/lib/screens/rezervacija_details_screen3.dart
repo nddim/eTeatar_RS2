@@ -43,8 +43,7 @@ class _RezervacijaDetailsScreen3State extends State<RezervacijaDetailsScreen3> {
           children: [
             Text("Predstava: ${widget.predstava!.naziv}", style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 8),
-            Text("Datum: ${_formatDatum(widget.predstava!.trajanjePocetak!)}"),
-            Text("Vrijeme: ${_formatVrijeme(widget.predstava!.trajanjePocetak!)}"),
+            Text("Datum: ${widget.predstava!.trajanje!}"),
             Text("Dvorana: ${widget.dvoranaId}"),
             const SizedBox(height: 16),
             const Text("Odabrana sjedišta:", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -96,13 +95,5 @@ class _RezervacijaDetailsScreen3State extends State<RezervacijaDetailsScreen3> {
         text: "Došlo je do greške pri rezervaciji. Pokušajte ponovo.",
       );
     }
-  }
-
-  String _formatDatum(DateTime d) {
-    return "${d.day}.${d.month}.${d.year}";
-  }
-
-  String _formatVrijeme(DateTime d) {
-    return "${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}h";
   }
 }

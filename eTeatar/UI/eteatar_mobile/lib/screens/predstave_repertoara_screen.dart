@@ -79,7 +79,7 @@ class _PredstaveRepertoaraScreenState extends State<PredstaveRepertoaraScreen> {
                         value: selectedSort,
                         items: const [
                           DropdownMenuItem(value: 'Relevantnost', child: Text('Relevantnost')),
-                          DropdownMenuItem(value: 'Datum', child: Text('Datum')),
+                          DropdownMenuItem(value: 'Trajanje', child: Text('Trajanje')),
                         ],
                         onChanged: (value) {
                           setState(() {
@@ -109,9 +109,9 @@ class _PredstaveRepertoaraScreenState extends State<PredstaveRepertoaraScreen> {
                               child: const Icon(Icons.theater_comedy_outlined),
                             ),
                             title: Text(item.naziv ?? 'Bez naziva'),
-                            subtitle: Text(item.trajanjePocetak != null
-                                ? '${item.trajanjePocetak!.day}.${item.trajanjePocetak!.month}.${item.trajanjePocetak!.year}'
-                                : 'Bez datuma'),
+                            subtitle: Text(item.trajanje != null
+                                ? 'Trajanje: ${item.trajanje} min'
+                                : 'Bez trajanja'),
                             onTap: () {
                               // Navigacija na ekran detalja predstave
                               Navigator.push(

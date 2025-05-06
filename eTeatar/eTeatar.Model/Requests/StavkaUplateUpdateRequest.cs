@@ -8,6 +8,5 @@ namespace eTeatar.Model.Requests
     {
         public int Kolicina { get; set; }
         public decimal Cijena { get; set; }
-        public int HranaId { get; set; }
     }
 }

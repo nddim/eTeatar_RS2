@@ -43,5 +43,10 @@ namespace eTeatar.Services
 
             return query;
         }
+
+        public override void BeforeInsert(UplataInsertRequest request, Uplatum entity)
+        {
+            entity.Datum = DateTime.Now;
+        }
     }
 }

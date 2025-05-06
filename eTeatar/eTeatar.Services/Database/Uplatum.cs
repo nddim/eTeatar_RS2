@@ -11,6 +11,12 @@ public partial class Uplatum : ISoftDelete
 
     public DateTime Datum { get; set; }
 
+    public string? TransakcijaId { get; set; }
+
+    public string? NacinPlacanja { get; set; }
+
+    public string? Status { get; set; }
+
     public bool IsDeleted { get; set; }
 
     public DateTime? VrijemeBrisanja { get; set; }

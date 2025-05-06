@@ -13,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddTransient<IDvoranaService, DvoranaService>();
 builder.Services.AddTransient<IGlumacService, GlumacService>();
-builder.Services.AddTransient<IHranaService, HranaService>();
 builder.Services.AddTransient<IKartaService, KartaService>();
 builder.Services.AddTransient<IKorisnikService, KorisnikService>();
 builder.Services.AddTransient<IOcjenaService, OcjenaService>();

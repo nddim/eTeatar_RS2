@@ -15,11 +15,7 @@ public partial class StavkaUplate : ISoftDelete
 
     public DateTime? VrijemeBrisanja { get; set; }
 
-    public int HranaId { get; set; }
-
     public int UplataId { get; set; }
-
-    public virtual Hrana Hrana { get; set; } = null!;
 
     public virtual Uplatum Uplata { get; set; } = null!;
 }

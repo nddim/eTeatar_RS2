@@ -155,9 +155,9 @@ class _PredstavaScreenState extends State<PredstavaScreen> {
                               child: const Icon(Icons.theater_comedy_outlined),
                             ),
                             title: Text(item.naziv ?? 'Bez naziva'),
-                            subtitle: Text(item.trajanjePocetak != null
-                                ? '${item.trajanjePocetak!.day}.${item.trajanjePocetak!.month}.${item.trajanjePocetak!.year}'
-                                : 'Bez datuma'),
+                            subtitle: Text(item.trajanje != null
+                                ? 'Trajanje: ${item.trajanje} min'
+                                : 'Bez trajanja'),
                             onTap: () {
                               // Navigacija na ekran detalja predstave
                               Navigator.push(

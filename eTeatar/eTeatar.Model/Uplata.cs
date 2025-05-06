@@ -10,6 +10,12 @@ namespace eTeatar.Model
 
         public decimal Iznos { get; set; }
 
+        public string TransakcijaId { get; set; }
+
+        public string NacinPlacanja { get; set; }
+
+        public string Status { get; set; }
+
         public DateTime Datum { get; set; }
 
         public int KorisnikId { get; set; }

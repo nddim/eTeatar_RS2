@@ -19,8 +19,6 @@ public partial class ETeatarContext : DbContext
 
     public virtual DbSet<Glumac> Glumacs { get; set; }
 
-    public virtual DbSet<Hrana> Hranas { get; set; }
-
     public virtual DbSet<Kartum> Karta { get; set; }
 
     public virtual DbSet<Korisnik> Korisniks { get; set; }
@@ -93,22 +91,6 @@ public partial class ETeatarContext : DbContext
             entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<Hrana>(entity =>
-        {
-            entity.HasKey(e => e.HranaId).HasName("PK__Hrana__19AD0AEA4B1C6010");
-
-            entity.ToTable("Hrana");
-
-            entity.Property(e => e.Naziv)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-
-            entity.Property(e => e.Cijena)
-                .HasPrecision(18, 2);
-
-            entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
-        });
-
         modelBuilder.Entity<Kartum>(entity =>
         {
             entity.HasKey(e => e.KartaId).HasName("PK__Karta__EC3FA9EEAD399E80");
@@ -138,6 +120,9 @@ public partial class ETeatarContext : DbContext
                 .HasForeignKey(d => d.TerminId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKKarta684934");
+
+            entity.Property(e => e.ukljucenaHrana)
+                .HasColumnType("bit");
         });
 
         modelBuilder.Entity<Korisnik>(entity =>
@@ -242,8 +227,7 @@ public partial class ETeatarContext : DbContext
                 .HasPrecision(18, 2);
 
             entity.Property(e => e.Slika).HasMaxLength(2000);
-            entity.Property(e => e.TrajanjeKraj).HasColumnType("datetime");
-            entity.Property(e => e.TrajanjePocetak).HasColumnType("datetime");
+            entity.Property(e => e.Trajanje);
             entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
             entity.HasMany(e=> e.PredstavaRepertoars).WithOne(pr=> pr.Predstava).HasForeignKey(pr => pr.PredstavaId);
         });
@@ -401,11 +385,6 @@ public partial class ETeatarContext : DbContext
             entity.Property(e => e.Cijena)
                 .HasPrecision(18, 2);
 
-            entity.HasOne(d => d.Hrana).WithMany(p => p.StavkaUplates)
-                .HasForeignKey(d => d.HranaId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKStavkaUpla569574");
-
             entity.HasOne(d => d.Uplata).WithMany(p => p.StavkaUplates)
                 .HasForeignKey(d => d.UplataId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -465,6 +444,18 @@ public partial class ETeatarContext : DbContext
                 .HasForeignKey(d => d.KorisnikId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKUplata894550");
+
+            entity.Property(e => e.TransakcijaId)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
+
+            entity.Property(e => e.NacinPlacanja)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
+
+            entity.Property(e => e.Status)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false);
         });
 
         modelBuilder.Entity<Vijest>(entity =>

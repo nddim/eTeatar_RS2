@@ -12,9 +12,7 @@ namespace eTeatar.Model
 
         public string Opis { get; set; }
 
-        public DateTime TrajanjePocetak { get; set; }
-
-        public DateTime TrajanjeKraj { get; set; }
+        public int Trajanje { get; set; }
 
         public string Produkcija { get; set; }
 

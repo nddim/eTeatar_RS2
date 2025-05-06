@@ -12,10 +12,9 @@ class Predstava {
   String? produkcija;
   String? koreografija;
   String? scenografija;
-  DateTime? trajanjePocetak;
-  DateTime? trajanjeKraj;
   List<int>? zanrovi; 
   List<int>? glumci; 
+  int? trajanje;
 
   Predstava(
     this.predstavaId,
