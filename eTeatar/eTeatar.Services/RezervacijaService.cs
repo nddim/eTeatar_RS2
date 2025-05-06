@@ -4,6 +4,7 @@ using eTeatar.Model.SearchObjects;
 using eTeatar.Services.Database;
 using eTeatar.Services.RezervacijaStateMachine;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Rezervacija = eTeatar.Services.Database.Rezervacija;
 using RezervacijaSjediste = eTeatar.Services.Database.RezervacijaSjediste;
 
@@ -136,14 +137,19 @@ namespace eTeatar.Services
 
         public Model.Rezervacija Zavrsi(int rezervacijaId)
         {
-            var rezervacija = Context.Rezervacijas.Find(rezervacijaId);
+            var rezervacija = Context.Rezervacijas
+                .Include(r => r.RezervacijaSjedistes)
+                .FirstOrDefault(r => r.RezervacijaId == rezervacijaId);
+
             if (rezervacija == null)
             {
                 throw new UserException("Rezervacija ne postoji!");
             }
 
             var state = BaseRezervacijaState.CreateState(rezervacija.StateMachine);
-            return state.Zavrsi(rezervacijaId);
+            var rezultat = state.Zavrsi(rezervacijaId);
+
+            return rezultat;
         }
     }
 }

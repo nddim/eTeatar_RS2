@@ -141,7 +141,7 @@ class _KarteScreenState extends State<KarteScreen> {
                             Text('Cijena: ${karta.cijena} KM'),
                             Text('Predstava: ${karta.nazivPredstave}'),
                             Text('Datum: ${termin?.datum?.toLocal().toString() ?? 'Nema datuma'}'),
-                            Text('Sjediste: R${karta.sjedisteId}, K${karta.sjedisteId}'),
+                            Text('Sjediste: Red ${karta.red}, Kolona ${karta.kolona}'),
                           ],
                         ),
                       ),

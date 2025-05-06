@@ -28,7 +28,7 @@ class _MojEteatarScreenState extends State<MojEteatarScreen> {
         children: [
           _buildSectionTile(context, Icons.event, 'Rezervacije', () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const RezervacijeScreen()),
+              MaterialPageRoute(builder: (context) => RezervacijeScreen()),
             );
           }),
           _buildSectionTile(context, Icons.event, 'Karte', () {

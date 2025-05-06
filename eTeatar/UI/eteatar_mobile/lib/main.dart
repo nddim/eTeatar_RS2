@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:eteatar_mobile/layouts/master_screen.dart';
 import 'package:eteatar_mobile/models/korisnik.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
@@ -20,10 +22,17 @@ import 'package:eteatar_mobile/providers/uplata_provider.dart';
 import 'package:eteatar_mobile/providers/vijest_provider.dart';
 import 'package:eteatar_mobile/providers/zanr_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MultiProvider(providers: [
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    FlutterError.onError = (FlutterErrorDetails errorDetails) {
+      print("ON error error: ${errorDetails.exception.toString()}");
+    };
+    await dotenv.load(fileName: ".env");
+    runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => DvoranaProvider()),
     ChangeNotifierProvider(create: (_) => GlumacProvider()),
     ChangeNotifierProvider(create: (_) => HranaProvider()),
@@ -43,6 +52,11 @@ void main() {
     ChangeNotifierProvider(create: (_) => RezervacijaSjedisteProvider()),
     ChangeNotifierProvider(create: (_) => KartaDtoProvider()),
   ], child: const MyApp(),));
+  }, (error, stack) {
+    print("Error from OUT_SIDE Framerwork");
+    print("--------------------------------");
+    print("Error : $error");
+  });
 }
 
 class MyApp extends StatelessWidget {

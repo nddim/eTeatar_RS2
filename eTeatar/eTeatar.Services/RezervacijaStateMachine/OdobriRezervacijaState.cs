@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using eTeatar.Model;
+using eTeatar.Model.Requests;
 using eTeatar.Services.Database;
 using MapsterMapper;
 using Rezervacija = eTeatar.Services.Database.Rezervacija;
@@ -11,9 +12,11 @@ using Rezervacija = eTeatar.Services.Database.Rezervacija;
 namespace eTeatar.Services.RezervacijaStateMachine
 {
     public class OdobriRezervacijaState : BaseRezervacijaState
-    {
-        public OdobriRezervacijaState(ETeatarContext context, IMapper mapper, IServiceProvider service) : base(context, mapper, service)
+    {   
+        private readonly IKartaService _kartaService;
+        public OdobriRezervacijaState(ETeatarContext context, IMapper mapper, IServiceProvider service, IKartaService kartaService) : base(context, mapper, service)
         {
+            _kartaService = kartaService;
         }
         public override Model.Rezervacija Ponisti(int id)
         {
@@ -36,7 +39,23 @@ namespace eTeatar.Services.RezervacijaStateMachine
                 throw new UserException("Rezervacija nije pronađena!");
             }
             entity.StateMachine = "Zavrsena";
+            foreach (var rs in entity.RezervacijaSjedistes)
+            {
+                var kartaInsert = new KartaInsertRequest
+                {
+                    SjedisteId = rs.SjedisteId,
+                    TerminId = entity.TerminId,
+                    KorisnikId = entity.KorisnikId,
+                    RezervacijaId = entity.RezervacijaId
+                };
+
+                _kartaService.Insert(kartaInsert);
+            }
             Context.SaveChanges();
+            entity.Korisnik = null;
+            entity.Termin = null;
+            entity.RezervacijaSjedistes = null;
+            entity.Karta = null;
             return Mapper.Map<Model.Rezervacija>(entity);
         }
         public override List<string> AllowedActions(Rezervacija entity)

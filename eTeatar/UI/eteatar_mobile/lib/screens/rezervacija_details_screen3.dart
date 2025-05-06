@@ -11,7 +11,7 @@ class RezervacijaDetailsScreen3 extends StatefulWidget {
   final Termin? termin;
   final Predstava? predstava;
   final int? dvoranaId;
-   final List<Sjediste> odabranaSjedista;
+  final List<Sjediste> odabranaSjedista;
 
   const RezervacijaDetailsScreen3({super.key, required this.predstava, required this.dvoranaId, required this.odabranaSjedista, required this.termin});
 
