@@ -12,6 +12,7 @@ class KartaDTO {
   final int terminId;
   final DateTime datumVrijeme;
   final String nazivPredstave;
+  final bool?  ukljucenaHrana;
   KartaDTO(
     this.kartaId,
     this.cijena,
@@ -21,6 +22,7 @@ class KartaDTO {
     this.terminId,
     this.datumVrijeme,
     this.nazivPredstave,
+    this.ukljucenaHrana,
   );
 
   factory KartaDTO.fromJson(Map<String, dynamic> json) => _$KartaDTOFromJson(json);

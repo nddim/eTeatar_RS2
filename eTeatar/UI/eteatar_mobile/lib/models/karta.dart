@@ -10,6 +10,8 @@ class Karta {
   int? terminId;
   int? rezervacijaId;
   int? korisnikId;
+  bool? ukljucenaHrana;
+  
   Karta(
     this.kartaId,
     this.cijena,

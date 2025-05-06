@@ -2,6 +2,7 @@ import 'package:eteatar_mobile/models/karta_dto.dart';
 import 'package:eteatar_mobile/models/termin.dart';
 import 'package:eteatar_mobile/providers/karta_dto_provider.dart';
 import 'package:eteatar_mobile/providers/termin_provider.dart';
+import 'package:eteatar_mobile/screens/karta_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
@@ -56,49 +57,6 @@ class _KarteScreenState extends State<KarteScreen> {
     }
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: const Text('Karte'),
-  //       leading: IconButton(
-  //         icon: const Icon(Icons.arrow_back),
-  //         onPressed: () => Navigator.pop(context),
-  //       ),
-  //       backgroundColor: Colors.lightBlue,
-  //     ),
-  //     body: _isLoading
-  //         ? const Center(child: CircularProgressIndicator())
-  //         : karte.isEmpty
-  //           ? const Center(child: Text("Nema dostupnih karata."))
-  //           : ListView.separated(
-  //               padding: const EdgeInsets.all(16),
-  //               itemCount: karte.length,
-  //               separatorBuilder: (_, __) => const SizedBox(height: 12),
-  //               itemBuilder: (context, index) {
-  //                 final karta = karte[index];
-
-  //                 final termin = terminiMap[karta.terminId];
-
-  //                 return ListTile(
-  //                   tileColor: Colors.grey[100],
-  //                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-  //                   leading: const Icon(Icons.message_outlined),
-  //                   title: Text('Karta ID: ${karta.kartaId}'),
-  //                   subtitle: Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       Text('Cijena: ${karta.cijena} KM'),
-  //                       Text('Predstava: ${karta.nazivPredstave }'),
-  //                       Text('Datum: ${termin?.datum?.toLocal() ?? 'Nema datuma'}'),
-  //                       Text('Sjediste: R${karta.sjedisteId}, K${karta.sjedisteId}')
-  //                     ],
-  //                   ),
-  //                 );
-  //               },
-  //             ),
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,6 +88,14 @@ class _KarteScreenState extends State<KarteScreen> {
                       elevation: 4,
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => KartaDetailsScreen(karta: karta),
+                            ),
+                          );
+                        },
                         contentPadding: const EdgeInsets.all(12),
                         title: Text(
                           'Karta ID: ${karta.kartaId}',

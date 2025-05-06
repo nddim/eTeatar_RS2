@@ -14,5 +14,6 @@ namespace eTeatar.Model
         public int TerminId { get; set; }
         public DateTime DatumVrijeme { get; set; }
         public string NazivPredstave { get; set; }
+        public bool? UkljucenaHrana { get; set; }
     }
 }

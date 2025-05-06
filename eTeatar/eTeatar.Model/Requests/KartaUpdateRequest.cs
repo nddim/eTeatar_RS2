@@ -9,6 +9,6 @@ namespace eTeatar.Model.Requests
         public decimal Cijena { get; set; }
         public int SjedisteId { get; set; }
         public int TerminId { get; set; }
-        public int? RezervacijaId { get; set; }
+        public bool UkljucenaHrana { get; set; }
     }
 }

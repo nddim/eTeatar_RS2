@@ -70,6 +70,11 @@ namespace eTeatar.Services
             base.BeforeInsert(request, entity);
         }
 
+        public override void BeforeUpdate(KartaUpdateRequest request, Kartum entity)
+        {
+            entity.ukljucenaHrana = request.UkljucenaHrana;
+        }
+
         public List<Model.KartaDTO> getKartasByKorisnik(int korisnikId)
         {
             var query = Context.Karta
@@ -83,7 +88,8 @@ namespace eTeatar.Services
                     Kolona = x.Sjediste.Kolona,
                     TerminId = x.Termin.TerminId,
                     DatumVrijeme = x.Termin.Datum,
-                    NazivPredstave = x.Termin.Predstava.Naziv
+                    NazivPredstave = x.Termin.Predstava.Naziv,
+                    UkljucenaHrana = x.ukljucenaHrana
                 });
 
             return query.ToList();

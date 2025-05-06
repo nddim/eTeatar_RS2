@@ -15,6 +15,7 @@ KartaDTO _$KartaDTOFromJson(Map<String, dynamic> json) => KartaDTO(
       (json['terminId'] as num).toInt(),
       DateTime.parse(json['datumVrijeme'] as String),
       json['nazivPredstave'] as String,
+      json['ukljucenaHrana'] as bool?,
     );
 
 Map<String, dynamic> _$KartaDTOToJson(KartaDTO instance) => <String, dynamic>{
@@ -26,4 +27,5 @@ Map<String, dynamic> _$KartaDTOToJson(KartaDTO instance) => <String, dynamic>{
       'terminId': instance.terminId,
       'datumVrijeme': instance.datumVrijeme.toIso8601String(),
       'nazivPredstave': instance.nazivPredstave,
+      'ukljucenaHrana': instance.ukljucenaHrana,
     };

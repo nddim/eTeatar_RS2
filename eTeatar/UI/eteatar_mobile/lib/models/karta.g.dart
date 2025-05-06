@@ -12,7 +12,9 @@ Karta _$KartaFromJson(Map<String, dynamic> json) => Karta(
       (json['sjedisteId'] as num?)?.toInt(),
       (json['terminId'] as num?)?.toInt(),
       (json['korisnikId'] as num?)?.toInt(),
-    )..rezervacijaId = (json['rezervacijaId'] as num?)?.toInt();
+    )
+      ..rezervacijaId = (json['rezervacijaId'] as num?)?.toInt()
+      ..ukljucenaHrana = json['ukljucenaHrana'] as bool?;
 
 Map<String, dynamic> _$KartaToJson(Karta instance) => <String, dynamic>{
       'kartaId': instance.kartaId,
@@ -21,4 +23,5 @@ Map<String, dynamic> _$KartaToJson(Karta instance) => <String, dynamic>{
       'terminId': instance.terminId,
       'rezervacijaId': instance.rezervacijaId,
       'korisnikId': instance.korisnikId,
+      'ukljucenaHrana': instance.ukljucenaHrana,
     };
