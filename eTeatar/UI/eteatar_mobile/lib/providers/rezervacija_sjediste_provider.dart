@@ -5,7 +5,7 @@ import 'package:eteatar_mobile/providers/base_provider.dart';
 import 'package:http/http.dart' as http;
 
 class RezervacijaSjedisteProvider extends BaseProvider<RezervacijaSjediste> {
-  RezervacijaSjedisteProvider() :super("Rezervacija");
+  RezervacijaSjedisteProvider() :super("RezervacijaSjediste");
 
   @override
   RezervacijaSjediste fromJson(data) {

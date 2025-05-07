@@ -2,10 +2,11 @@ import 'package:eteatar_mobile/models/rezervacija.dart';
 import 'package:eteatar_mobile/models/termin.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/providers/rezervacija_provider.dart';
+import 'package:eteatar_mobile/providers/rezervacija_sjediste_provider.dart';
 import 'package:eteatar_mobile/providers/termin_provider.dart';
 import 'package:eteatar_mobile/providers/predstava_provider.dart';
 import 'package:eteatar_mobile/providers/uplata_provider.dart';
-import 'package:eteatar_mobile/screens/uplate_screen.dart';
+import 'package:eteatar_mobile/providers/stavka_uplate_provider.dart'; 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
@@ -33,9 +34,12 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
   late TerminProvider terminProvider;
   late PredstavaProvider predstavaProvider;
   late UplataProvider uplataProvider;
+  late StavkaUplateProvider stavkaUplateProvider;
+  late RezervacijaSjedisteProvider rezervacijaSjedisteProvider;
   List<Termin> termini = [];
   List<Rezervacija> rezervacije = [];
   String searchQuery = '';
+  Map<int, int> brojSjedistaPoRezervaciji = {};
 
   @override
   void initState() {
@@ -43,6 +47,8 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
     terminProvider = context.read<TerminProvider>();
     predstavaProvider = context.read<PredstavaProvider>();
     uplataProvider = context.read<UplataProvider>();
+    stavkaUplateProvider = context.read<StavkaUplateProvider>();
+    rezervacijaSjedisteProvider = context.read<RezervacijaSjedisteProvider>();
     super.initState();
     loadData();
   }
@@ -66,8 +72,23 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
         for (var t in terminResult.resultList) t.terminId!: t
       };
 
+      for (var termin in terminMap.values) {
+        if (termin.predstava == null && termin.predstavaId != null) {
+          try {
+            final predstava = await predstavaProvider.getById(termin.predstavaId!);
+            termin.predstava = predstava;
+          } catch (e) {
+            debugPrint('Greška pri dohvaćanju predstave za terminId ${termin.terminId}: $e');
+          }
+        }
+      }
+      
       for (var rez in rezervacijaResult.resultList) {
         rez.termin = terminMap[rez.terminId];
+        var sjedistaResult = await rezervacijaSjedisteProvider.get(
+          filter: {'RezervacijaId': rez.rezervacijaId}
+        );
+        brojSjedistaPoRezervaciji[rez.rezervacijaId!] = sjedistaResult.resultList.length;
       }
       setState(() {
         rezervacije = rezervacijaResult.resultList;
@@ -141,6 +162,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                                           children: [
                                             Text('Datum: $datum'),
                                             Text('Vrijeme: $vrijeme'),
+                                            Text('Broj sjedišta: ${brojSjedistaPoRezervaciji[rez.rezervacijaId] ?? 0}'),
                                           ],
                                         ),
                                         ElevatedButton(
@@ -191,9 +213,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
       ),
     );
   }
-  Future<void> kreirajUplatu() async {
 
-  }
   Future<void> makePayment(Rezervacija rezervacija) async {
     final secret = dotenv.env['_paypalSecret'];
     final public = dotenv.env['_paypalPublic'];
@@ -227,8 +247,9 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
       }
 
       final naziv = predstava.naziv ?? 'Predstava';
-      final cijena = predstava.cijena!.toStringAsFixed(2); // npr. "10.00"
-
+      final brojSjedista = brojSjedistaPoRezervaciji[rezervacija.rezervacijaId] ?? 0;
+      final ukupnaCijena = (predstava.cijena! * brojSjedista).toStringAsFixed(2);
+      
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -239,10 +260,10 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
             transactions: [
               {
                 "amount": {
-                  "total": cijena,
+                  "total": ukupnaCijena,
                   "currency": "USD",
                   "details": {
-                    "subtotal": cijena,
+                    "subtotal": ukupnaCijena,
                     "shipping": '0',
                     "shipping_discount": 0
                   }
@@ -253,7 +274,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                     {
                       "name": naziv,
                       "quantity": 1,
-                      "price": cijena,
+                      "price": ukupnaCijena,
                       "currency": "USD"
                     }
                   ],
@@ -266,13 +287,19 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
               var data = params['data'];
               var placanje = data['payer'];
               var request = {
-                'Iznos': cijena,
+                'Iznos': ukupnaCijena,
                 'korisnikId': AuthProvider.korisnikId,
                 'transakcijaId' : data['id'],
                 'nacinPlacanja': placanje['payment_method'],
                 'status': data['state'],
               };
-              await uplataProvider.insert(request);
+              var uplata = await uplataProvider.insert(request);
+              var stavkaUplateRequest = {
+                'cijena': ukupnaCijena,
+                'uplataId': uplata.uplataId,
+                'kolicina': brojSjedista
+              };
+              await stavkaUplateProvider.insert(stavkaUplateRequest);
               QuickAlert.show(
                 context: context,
                 type: QuickAlertType.success,

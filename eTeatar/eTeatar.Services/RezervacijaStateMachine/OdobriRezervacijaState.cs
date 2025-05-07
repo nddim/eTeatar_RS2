@@ -7,6 +7,7 @@ using eTeatar.Model;
 using eTeatar.Model.Requests;
 using eTeatar.Services.Database;
 using MapsterMapper;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Rezervacija = eTeatar.Services.Database.Rezervacija;
 
 namespace eTeatar.Services.RezervacijaStateMachine
@@ -14,9 +15,11 @@ namespace eTeatar.Services.RezervacijaStateMachine
     public class OdobriRezervacijaState : BaseRezervacijaState
     {   
         private readonly IKartaService _kartaService;
-        public OdobriRezervacijaState(ETeatarContext context, IMapper mapper, IServiceProvider service, IKartaService kartaService) : base(context, mapper, service)
+        private readonly IStavkaUplateService _stavkaUplateService;
+        public OdobriRezervacijaState(ETeatarContext context, IMapper mapper, IServiceProvider service, IKartaService kartaService, IStavkaUplateService stavkaUplateService) : base(context, mapper, service)
         {
             _kartaService = kartaService;
+            _stavkaUplateService = stavkaUplateService;
         }
         public override Model.Rezervacija Ponisti(int id)
         {

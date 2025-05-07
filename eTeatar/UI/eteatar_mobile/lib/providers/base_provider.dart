@@ -22,7 +22,6 @@ abstract class BaseProvider<T> with ChangeNotifier {
       var queryString = getQueryString(filter);
       url = "$url?$queryString";
     }
-
     var uri = Uri.parse(url);
     var headers = createHeaders();
 
