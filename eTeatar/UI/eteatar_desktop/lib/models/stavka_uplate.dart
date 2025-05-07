@@ -7,7 +7,6 @@ class StavkaUplate {
   int? stavkaUplateId;
   int? kolicina;
   double? cijena;
-  int? hranaId;
   int? uplataId;
 
   StavkaUplate(

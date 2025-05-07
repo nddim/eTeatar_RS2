@@ -2,7 +2,6 @@ import 'package:eteatar_desktop/main.dart';
 import 'package:eteatar_desktop/providers/auth_provider.dart';
 import 'package:eteatar_desktop/screens/dvorana_list_screen.dart';
 import 'package:eteatar_desktop/screens/glumac_list_screen.dart';
-import 'package:eteatar_desktop/screens/hrana_list_screen.dart';
 import 'package:eteatar_desktop/screens/karta_list_screen.dart';
 import 'package:eteatar_desktop/screens/korisnik_list_screen.dart';
 import 'package:eteatar_desktop/screens/ocjena_list_screen.dart';
@@ -69,13 +68,6 @@ class _MasterScreenState extends State<MasterScreen> {
                     label: "Glumci",
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(builder: (context) => GlumacListScreen()));
-                    }
-                  ),
-                  _buildDrawerItem(
-                    icon: Icons.fastfood,
-                    label: "Hrana",
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => HranaListScreen()));
                     }
                   ),
                   _buildDrawerItem(

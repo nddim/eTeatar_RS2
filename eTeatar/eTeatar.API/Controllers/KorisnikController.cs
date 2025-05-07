@@ -23,5 +23,9 @@ public class KorisnikController : BaseCRUDController<Korisnik, KorisnikSearchObj
     {
         return (_service as IKorisnikService).Login(username, password);
     }
-
+    [HttpGet("recommend")]
+    public List<Model.Predstava> Recommend(int korisnikId)
+    {
+        return (_service as IKorisnikService).Recommend(korisnikId);
+    }
 }

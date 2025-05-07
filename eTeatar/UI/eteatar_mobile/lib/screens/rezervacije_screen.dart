@@ -72,17 +72,24 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
         for (var t in terminResult.resultList) t.terminId!: t
       };
 
+      final Map<int, dynamic> predstavaCache = {}; 
+
       for (var termin in terminMap.values) {
-        if (termin.predstava == null && termin.predstavaId != null) {
-          try {
-            final predstava = await predstavaProvider.getById(termin.predstavaId!);
-            termin.predstava = predstava;
-          } catch (e) {
-            debugPrint('Greška pri dohvaćanju predstave za terminId ${termin.terminId}: $e');
+        final pid = termin.predstavaId;
+        if (termin.predstava == null && pid != null) {
+          if (!predstavaCache.containsKey(pid)) {
+            try {
+              final predstava = await predstavaProvider.getById(pid);
+              predstavaCache[pid] = predstava;
+            } catch (e) {
+              debugPrint('Greška pri dohvaćanju predstave za ID $pid: $e');
+              predstavaCache[pid] = null; 
+            }
           }
+          termin.predstava = predstavaCache[pid];
         }
       }
-      
+
       for (var rez in rezervacijaResult.resultList) {
         rez.termin = terminMap[rez.terminId];
         var sjedistaResult = await rezervacijaSjedisteProvider.get(

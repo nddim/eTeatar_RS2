@@ -13,14 +13,17 @@ using Korisnik = eTeatar.Model.Korisnik;
 using System.Linq.Dynamic.Core;
 using System.Text.RegularExpressions;
 using eTeatar.Model;
+using eTeatar.Services.Recommender;
+using Predstava = eTeatar.Model.Predstava;
 
 namespace eTeatar.Services
 {
     public class KorisnikService : BaseCRUDService<Korisnik, KorisnikSearchObject, Database.Korisnik, KorisnikInsertRequest, KorisnikUpdateRequest>, IKorisnikService
     {
-        public KorisnikService(ETeatarContext _eTeatarContext, IMapper _mapper) : base(_eTeatarContext, _mapper)
+        private IRecommenderService recommenderService;
+        public KorisnikService(ETeatarContext _eTeatarContext, IMapper _mapper, IRecommenderService _recommenderService) : base(_eTeatarContext, _mapper)
         {
-  
+            this.recommenderService = _recommenderService;
         }
 
         public override IQueryable<Database.Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Database.Korisnik> query)
@@ -130,6 +133,17 @@ namespace eTeatar.Services
 
             return Mapper.Map<Korisnik>(entity);
 
+        }
+
+        public List<Predstava> Recommend(int korisnikId)
+        {
+            var predstave = recommenderService.getRecommendedPredstave(korisnikId);
+            return predstave;
+        }
+
+        public void TrainData()
+        {
+            recommenderService.TrainData();
         }
     }
 }

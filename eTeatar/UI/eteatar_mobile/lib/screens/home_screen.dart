@@ -1,6 +1,8 @@
+import 'package:eteatar_mobile/models/predstava.dart';
 import 'package:eteatar_mobile/models/rezervacija.dart';
 import 'package:eteatar_mobile/models/termin.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
+import 'package:eteatar_mobile/providers/korisnik_provider.dart';
 import 'package:eteatar_mobile/providers/rezervacija_provider.dart';
 import 'package:eteatar_mobile/providers/termin_provider.dart';
 import 'package:eteatar_mobile/screens/korisnicki_profil_screen.dart';
@@ -19,12 +21,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   bool _isLoading = true;
+  late KorisnikProvider korisnikProvider;
   late RezervacijaProvider rezervacijaProvider;
   late TerminProvider terminProvider;
   List<Rezervacija> rezervacije = [];
   List<Termin> termini = [];
+  List<Predstava> preporucenePredstave = [];
   @override
   void initState() {
+    korisnikProvider = context.read<KorisnikProvider>();
     rezervacijaProvider = context.read<RezervacijaProvider>();
     terminProvider = context.read<TerminProvider>();
     super.initState();
@@ -38,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
           'isDeleted': false,
         },
       );
-
+      
       final rezervacijaResult = await rezervacijaProvider.get(
         filter: {
           'korisnikId': AuthProvider.korisnikId,
@@ -46,6 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       );
 
+      final korisnikResult = await korisnikProvider.recommend();
+      preporucenePredstave = korisnikResult;
       final Map<int, Termin> terminMap = {
         for (var t in terminResult.resultList) t.terminId!: t
       };
@@ -120,13 +127,21 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 8),
           SizedBox(
             height: 180,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                _buildRecommendedCard('Seljačka opera', 'Drama'),
-                _buildRecommendedCard('Realisti', 'Opera'),
-              ],
-            ),
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : preporucenePredstave.isEmpty
+                    ? const Center(child: Text("Nema preporučenih predstava."))
+                    : ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: preporucenePredstave.length,
+                        itemBuilder: (context, index) {
+                          final predstava = preporucenePredstave[index];
+                          return _buildRecommendedCard(
+                            predstava.naziv ?? "Bez naziva",
+                            predstava.zanrovi,
+                          );
+                        },
+                      ),
           ),
           const SizedBox(height: 20),
           const Text(
@@ -169,7 +184,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildRecommendedCard(String title, String genre) {
+  Widget _buildRecommendedCard(String title, List<int>? zanrovi) {
+    final zanrText = (zanrovi == null || zanrovi.isEmpty)
+        ? "Nepoznato"
+        : zanrovi.length == 1
+            ? "Žanr ID: ${zanrovi.first}"
+            : "Više žanrova";
+
     return Container(
       width: 140,
       margin: const EdgeInsets.only(right: 12),
@@ -179,10 +200,18 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.image, size: 80, color: Colors.grey),
+            const Icon(Icons.theaters, size: 80, color: Colors.grey),
             const SizedBox(height: 8),
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-            Text(genre, style: const TextStyle(color: Colors.grey)),
+            Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              zanrText,
+              style: const TextStyle(color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
