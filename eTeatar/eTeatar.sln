@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35806.99 d17.13
+VisualStudioVersion = 17.13.35806.99
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTeatar.API", "eTeatar.API\eTeatar.API.csproj", "{3FE7C751-3BFE-4B56-AC8A-A40E15A03920}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTeatar.Model", "eTeatar.Model\eTeatar.Model.csproj", "{376466A6-E836-4397-9348-0934CE7C55EC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTeatar.Services", "eTeatar.Services\eTeatar.Services.csproj", "{77EA719A-B6AA-461D-B4CD-270C96C65851}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTeatar.Subscriber", "eTeatar.Subscriber\eTeatar.Subscriber.csproj", "{2CFED735-290B-41B7-9832-85D8077E4592}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{77EA719A-B6AA-461D-B4CD-270C96C65851}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77EA719A-B6AA-461D-B4CD-270C96C65851}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77EA719A-B6AA-461D-B4CD-270C96C65851}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CFED735-290B-41B7-9832-85D8077E4592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CFED735-290B-41B7-9832-85D8077E4592}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CFED735-290B-41B7-9832-85D8077E4592}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CFED735-290B-41B7-9832-85D8077E4592}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

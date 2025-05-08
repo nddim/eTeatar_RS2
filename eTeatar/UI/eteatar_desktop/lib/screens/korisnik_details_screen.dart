@@ -17,8 +17,8 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
 class KorisnikDetailsScreen extends StatefulWidget {
-  Korisnik? korisnik;
-  KorisnikDetailsScreen({super.key, this.korisnik});
+  final Korisnik? korisnik;
+  const KorisnikDetailsScreen({super.key, this.korisnik});
 
   @override
   State<KorisnikDetailsScreen> createState() => _KorisnikDetailsScreenState();
@@ -173,27 +173,6 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
               ),
             ],
             ),
-            Row(children: [
-              Expanded(
-                child: FormBuilderTextField(
-                  name: "Lozinka",
-                  decoration: InputDecoration(labelText: "Lozinka"),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
-                  ]),
-                ),
-              ),
-              SizedBox(width: 10,),  // Razmak između polja
-              Expanded(
-                child: FormBuilderTextField(
-                  name: "LozinkaPotvrda",
-                  decoration: InputDecoration(labelText: "Lozinka potvrda"),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
-                  ]),
-                ),
-              ),
-            ],),
             Row(children: [
               Expanded(
                 child: FormBuilderField(

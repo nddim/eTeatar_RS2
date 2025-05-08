@@ -20,8 +20,8 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:quickalert/quickalert.dart';
 
 class PredstavaDetailsScreen extends StatefulWidget {
-  Predstava? predstava;
-  PredstavaDetailsScreen({super.key, this.predstava});
+  final Predstava? predstava;
+  const PredstavaDetailsScreen({super.key, this.predstava});
 
   @override
   State<PredstavaDetailsScreen> createState() => _PredstavaDetailsScreenState();

@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
 class ZanrDetailsScreen extends StatefulWidget {
-  Zanr? zanr;
-  ZanrDetailsScreen({super.key, this.zanr});
+  final Zanr? zanr;
+  const ZanrDetailsScreen({super.key, this.zanr});
 
   @override
   State<ZanrDetailsScreen> createState() => _ZanrDetailsScreenState();

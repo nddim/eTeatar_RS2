@@ -14,8 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
 class RepertoarDetailsScreen extends StatefulWidget {
-  Repertoar? repertoar;
-  RepertoarDetailsScreen({super.key, this.repertoar});
+  final Repertoar? repertoar;
+  const RepertoarDetailsScreen({super.key, this.repertoar});
 
   @override
   State<RepertoarDetailsScreen> createState() => _RepertoarDetailsScreenState();

@@ -13,6 +13,7 @@ using Korisnik = eTeatar.Model.Korisnik;
 using System.Linq.Dynamic.Core;
 using System.Text.RegularExpressions;
 using eTeatar.Model;
+using eTeatar.Services.RabbitMq;
 using eTeatar.Services.Recommender;
 using Predstava = eTeatar.Model.Predstava;
 
@@ -21,9 +22,11 @@ namespace eTeatar.Services
     public class KorisnikService : BaseCRUDService<Korisnik, KorisnikSearchObject, Database.Korisnik, KorisnikInsertRequest, KorisnikUpdateRequest>, IKorisnikService
     {
         private IRecommenderService recommenderService;
-        public KorisnikService(ETeatarContext _eTeatarContext, IMapper _mapper, IRecommenderService _recommenderService) : base(_eTeatarContext, _mapper)
+        private IRabbitMqService rabbitMqService;
+        public KorisnikService(ETeatarContext _eTeatarContext, IMapper _mapper, IRecommenderService _recommenderService, IRabbitMqService rabbitMqService) : base(_eTeatarContext, _mapper)
         {
             this.recommenderService = _recommenderService;
+            this.rabbitMqService = rabbitMqService;
         }
 
         public override IQueryable<Database.Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Database.Korisnik> query)
@@ -62,15 +65,27 @@ namespace eTeatar.Services
 
         public override void BeforeInsert(KorisnikInsertRequest request, Database.Korisnik entity)
         {
-            if (request.Lozinka != request.LozinkaPotvrda)
+            var entitet = Context.Korisniks.FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
+            if (entitet != null)
             {
-                throw new UserException("Lozinke se ne podudaraju!");
+                throw new UserException("Korisnicko ime je zauzeto!");
             }
+            var lozinka = GenerateRandomString(8);
 
             entity.LozinkaSalt = GenerateSalt();
-            entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
+            entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, lozinka);
             entity.DatumRegistracije = DateTime.Now;
-
+            rabbitMqService.SendEmail(new MailDTO()
+            {
+                EmailTo = entity.Email,
+                Message = $"Poštovani, <br>" +
+                          $"{entity.Ime} {entity.Prezime} <br>" +
+                          $"Korisnicko ime: {entity.KorisnickoIme}<br>" +
+                          $"Lozinka: {lozinka}<br><br>" +
+                          $"Lijep pozdrav",
+                ReceiverName = entity.Ime + " " + entity.Prezime,
+                Subject = "Registracija na aplikaciji"
+            });
             base.BeforeInsert(request, entity);
         }
 
@@ -109,6 +124,26 @@ namespace eTeatar.Services
 
             byte[] inArray = algorithm.ComputeHash(dst);
             return Convert.ToBase64String(inArray);
+        }
+        public string GenerateRandomString(int size)
+        {
+            // Characters except I, l, O, 1, and 0 to decrease confusion when hand typing tokens
+            var charSet = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@_-$#";
+            var chars = charSet.ToCharArray();
+            var data = new byte[1];
+#pragma warning disable SYSLIB0023 // Type or member is obsolete
+            var crypto = new RNGCryptoServiceProvider();
+#pragma warning restore SYSLIB0023 // Type or member is obsolete
+            crypto.GetNonZeroBytes(data);
+            data = new byte[size];
+            crypto.GetNonZeroBytes(data);
+            var result = new StringBuilder(size);
+            foreach (var b in data)
+            {
+                result.Append(chars[b % (chars.Length)]);
+            }
+
+            return result.ToString();
         }
 
         public Korisnik Login(string username, string password)

@@ -2,6 +2,7 @@ using eTeatar.API.Auth;
 using eTeatar.API.Filters;
 using eTeatar.Services;
 using eTeatar.Services.Database;
+using eTeatar.Services.RabbitMq;
 using eTeatar.Services.Recommender;
 using eTeatar.Services.RezervacijaStateMachine;
 using Mapster;
@@ -39,6 +40,7 @@ builder.Services.AddTransient<PonistiRezervacijaState>();
 builder.Services.AddTransient<OdobriRezervacijaState>();
 builder.Services.AddTransient<ZavrsiRezervacijaState>();
 
+builder.Services.AddTransient<IRabbitMqService, RabbitMqService>();
 builder.Services.AddScoped<IRecommenderService, RecommenderService>();
 
 builder.Services.AddControllers(x =>

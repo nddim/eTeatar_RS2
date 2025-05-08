@@ -12,8 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
 class VijestDetailsScreen extends StatefulWidget {
-  Vijest? vijest;
-  VijestDetailsScreen({super.key, this.vijest});
+  final Vijest? vijest;
+  const VijestDetailsScreen({super.key, this.vijest});
 
   @override
   State<VijestDetailsScreen> createState() => _VijestDetailsScreenState();

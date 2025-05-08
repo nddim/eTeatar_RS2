@@ -15,8 +15,8 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
 class TerminDetailsScreen extends StatefulWidget {
-  Termin? termin;
-  TerminDetailsScreen({super.key, this.termin});
+  final Termin? termin;
+  const TerminDetailsScreen({super.key, this.termin});
 
   @override
   State<TerminDetailsScreen> createState() => _TerminDetailsScreenState();
@@ -32,9 +32,7 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
   SearchResult<Predstava>? predstavaResult = null;
   SearchResult<Dvorana>? dvoranaResult = null;
   bool isLoading = true;
-  List<int> _selectedPredstave = [];
-  List<int> _selectedDvorane = [];
-
+  
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

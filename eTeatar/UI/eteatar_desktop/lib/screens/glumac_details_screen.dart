@@ -8,8 +8,8 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 class GlumacDetailsScreen extends StatefulWidget {
-  Glumac? glumac;
-  GlumacDetailsScreen({super.key, this.glumac});
+  final Glumac? glumac;
+  const GlumacDetailsScreen({super.key, this.glumac});
 
   @override
   State<GlumacDetailsScreen> createState() => _GlumacDetailsScreenState();
