@@ -12,8 +12,7 @@ class Predstava {
   String? produkcija;
   String? koreografija;
   String? scenografija;
-  DateTime? trajanjePocetak;
-  DateTime? trajanjeKraj;
+  int? trajanje;
   List<int>? zanrovi; 
   List<int>? glumci; 
 

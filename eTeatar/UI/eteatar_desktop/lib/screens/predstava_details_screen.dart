@@ -14,7 +14,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:quickalert/quickalert.dart';
@@ -34,10 +33,10 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
   late PredstavaProvider _predstavaProvider;
   late GlumacProvider _glumacProvider;
   late ZanrProvider _zanrProvider;
-  SearchResult<Glumac>? glumacResult = null;
-  SearchResult<Glumac>? initialGlumacResult = null;
-  SearchResult<Zanr>? zanrResult = null;
-  SearchResult<Zanr>? initialZanrResult = null;
+  SearchResult<Glumac>? glumacResult;
+  SearchResult<Glumac>? initialGlumacResult;
+  SearchResult<Zanr>? zanrResult;
+  SearchResult<Zanr>? initialZanrResult ;
 
   bool isLoading = true;
   List<int> _selectedZanrovi = [];
@@ -65,8 +64,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
       "Produkcija" : widget.predstava?.produkcija ?? "",
       "Koreografija" : widget.predstava?.koreografija ?? "",
       "Scenografija" : widget.predstava?.scenografija ?? "",
-      "TrajanjePocetak" : widget.predstava?.trajanjePocetak,
-      "TrajanjeKraj" : widget.predstava?.trajanjeKraj,
+      "Trajanje" : widget.predstava?.trajanje.toString() ?? "",
     };
 
     initForm();
@@ -148,18 +146,18 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                 Expanded(
                   child: FormBuilderTextField(
                     name: "Naziv",
-                    decoration: InputDecoration(labelText: "Naziv"),
+                    decoration: const InputDecoration(labelText: "Naziv"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
                       FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
                 ),
-                SizedBox(width: 10,),
+                const SizedBox(width: 10,),
                 Expanded(
                   child: FormBuilderTextField(
                     name: "Cijena",
-                    decoration: InputDecoration(labelText: "Cijena"),
+                    decoration:const InputDecoration(labelText: "Cijena"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
                       FormBuilderValidators.numeric(errorText: "Unos mora biti broj!"),
@@ -168,25 +166,38 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                     ]),
                     )
                 ),
-                SizedBox(width: 10,),
+                const SizedBox(width: 10,),
                 Expanded(
                   child: FormBuilderTextField(
-                    name: "Opis",
-                    decoration: InputDecoration(labelText: "Opis"),
+                    name: "Trajanje",
+                    decoration: const InputDecoration(labelText: "Trajanje (min)"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
-                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
-
+                      FormBuilderValidators.numeric(errorText: "Unos mora biti broj!"),
+                      FormBuilderValidators.max(10000, errorText: "Trajanje ne smije biti veca od 600 min!"),
+                      FormBuilderValidators.min(1, errorText: "Trajanje ne smije biti manja od 1 min"),
                     ]),
-                  ),
+                    )
                 ),
               ]
             ),
             Row(children: [
               Expanded(
+                  child: FormBuilderTextField(
+                    name: "Opis",
+                    decoration: const InputDecoration(labelText: "Opis"),
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
+                    ]),
+                  ),
+                ),
+            ],),
+            Row(children: [
+              Expanded(
                 child: FormBuilderTextField(
                   name: "Produkcija",
-                  decoration: InputDecoration(labelText: "Produkcija"),
+                  decoration: const InputDecoration(labelText: "Produkcija"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
@@ -194,22 +205,22 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                   ]),
                 ),
               ),
-              SizedBox(width: 10,),  // Razmak između polja
+              const SizedBox(width: 10,),  // Razmak između polja
               Expanded(
                 child: FormBuilderTextField(
                   name: "Koreografija",
-                  decoration: InputDecoration(labelText: "Koreografija"),
+                  decoration: const InputDecoration(labelText: "Koreografija"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                   ]),
                 ),
               ),
-              SizedBox(width: 10,),  // Razmak između polja
+              const SizedBox(width: 10,),  // Razmak između polja
               Expanded(
                 child: FormBuilderTextField(
                   name: "Scenografija",
-                  decoration: InputDecoration(labelText: "Scenografija"),
+                  decoration: const InputDecoration(labelText: "Scenografija"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
@@ -228,16 +239,16 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                           .map((e) => MultiSelectItem<int>(e.zanrId!, e.naziv ?? ""))
                           .toList() ?? [],
                       initialValue: _selectedZanrovi,
-                      title: Text("Odaberi žanrove"),
+                      title: const Text("Odaberi žanrove"),
                       selectedColor: Colors.blue,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius: const BorderRadius.all(Radius.circular(5)),
                         border: Border.all(
                           color: Colors.grey,
                           width: 1,
                         ),
                       ),
-                      buttonText: Text("Žanrovi"),
+                      buttonText: const Text("Žanrovi"),
                       onConfirm: (values) {
                         _selectedZanrovi = values.cast<int>();
                       },
@@ -250,7 +261,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                     ),
                   )
                 ),
-                SizedBox(width: 10,),
+                const SizedBox(width: 10,),
                 Expanded(
                   child: 
                   Padding(
@@ -260,16 +271,16 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                           .map((e) => MultiSelectItem<int>(e.glumacId!, "${e.ime} ${e.prezime}"))
                           .toList() ?? [],
                       initialValue: _selectedGlumci,
-                      title: Text("Odaberi glumce"),
+                      title: const Text("Odaberi glumce"),
                       selectedColor: Colors.blue,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        borderRadius: const BorderRadius.all(Radius.circular(5)),
                         border: Border.all(
                           color: Colors.grey,
                           width: 1,
                         ),
                       ),
-                      buttonText: Text("Glumci"),
+                      buttonText: const Text("Glumci"),
                       onConfirm: (values) {
                         _selectedGlumci = values.cast<int>();
                       },
@@ -285,57 +296,17 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
               ]
             ),
             Row(children: [
-              Expanded(child: 
-                FormBuilderDateTimePicker(
-                  name: "TrajanjePocetak",
-                  decoration: InputDecoration(labelText: "Trajanje početak"),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    (value) {
-                      if (value == null) return null;
-                      if (value.isBefore(DateTime(1900, 1, 1))) {
-                        return "Datum rođenja ne može biti manji od 1900.01.01.";
-                      }
-                      return null;
-                    }
-                  ]),
-                  inputType: InputType.date,
-                  format: DateFormat("yyyy-MM-dd"),
-                ),
-              ),
-              SizedBox(width: 10,),
-              Expanded(child: 
-                FormBuilderDateTimePicker(
-                  name: "TrajanjeKraj",
-                  decoration: InputDecoration(labelText: "Trajanje kraj"),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    (value) {
-                      if (value == null) return null;
-                      if (value.isBefore(DateTime(1900, 1, 1))) {
-                        return "Datum rođenja ne može biti manji od 1900.01.01.";
-                      }
-                      return null;
-                    }
-                  ]),
-                  inputType: InputType.date,
-                  format: DateFormat("yyyy-MM-dd"),
-                ),
-              )
-            ],
-            ),
-            Row(children: [
               Expanded(
                 child: FormBuilderField(
                   name: "Slika",
                   builder: (field) {
                     return InputDecorator(decoration: 
-                    InputDecoration(
+                    const InputDecoration(
                       labelText: "Odaberite sliku"),
                       child: ListTile(
-                        leading:Icon(Icons.image),
-                        title: Text("Upload image"),
-                        trailing: Icon(Icons.file_upload),
+                        leading: const Icon(Icons.image),
+                        title: const Text("Upload image"),
+                        trailing: const Icon(Icons.file_upload),
                         onTap: getImage,
                       )
                     );
@@ -362,8 +333,6 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
 
               final requestData = {
                 ...formData,
-                'TrajanjePocetak': DateFormat('yyyy-MM-dd').format(formData['TrajanjePocetak']),
-                'TrajanjeKraj': DateFormat('yyyy-MM-dd').format(formData['TrajanjeKraj']),
                 'Slika': _base64Image ?? widget.predstava?.slika,
                 'Zanrovi': _selectedZanrovi,
                 'Glumci': _selectedGlumci,

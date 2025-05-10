@@ -16,12 +16,7 @@ Predstava _$PredstavaFromJson(Map<String, dynamic> json) => Predstava(
       ..produkcija = json['produkcija'] as String?
       ..koreografija = json['koreografija'] as String?
       ..scenografija = json['scenografija'] as String?
-      ..trajanjePocetak = json['trajanjePocetak'] == null
-          ? null
-          : DateTime.parse(json['trajanjePocetak'] as String)
-      ..trajanjeKraj = json['trajanjeKraj'] == null
-          ? null
-          : DateTime.parse(json['trajanjeKraj'] as String)
+      ..trajanje = (json['trajanje'] as num?)?.toInt()
       ..zanrovi = (json['zanrovi'] as List<dynamic>?)
           ?.map((e) => (e as num).toInt())
           .toList()
@@ -38,8 +33,7 @@ Map<String, dynamic> _$PredstavaToJson(Predstava instance) => <String, dynamic>{
       'produkcija': instance.produkcija,
       'koreografija': instance.koreografija,
       'scenografija': instance.scenografija,
-      'trajanjePocetak': instance.trajanjePocetak?.toIso8601String(),
-      'trajanjeKraj': instance.trajanjeKraj?.toIso8601String(),
+      'trajanje': instance.trajanje,
       'zanrovi': instance.zanrovi,
       'glumci': instance.glumci,
     };

@@ -20,7 +20,7 @@ namespace eTeatar.Services.RezervacijaStateMachine
             
             var set = Context.Set<Database.Rezervacija>();
             var entity = Mapper.Map<Database.Rezervacija>(request);
-            entity.StateMachine = "Kreirana";
+            entity.StateMachine = "Kreirano";
 
             BeforeInsert(request, entity);
 
@@ -56,7 +56,7 @@ namespace eTeatar.Services.RezervacijaStateMachine
                     throw new UserException($"Sjedište {sjedisteId} je već rezervisano!");
             }
 
-            entity.Status = "Rezervisano";
+            entity.Status = "Kreirano";
         }
         public virtual void AfterInsert(RezervacijaInsertRequest request, Database.Rezervacija entity)
         {

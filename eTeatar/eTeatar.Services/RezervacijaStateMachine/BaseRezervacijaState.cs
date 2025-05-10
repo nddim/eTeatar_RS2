@@ -49,13 +49,13 @@ namespace eTeatar.Services.RezervacijaStateMachine
             {
                 case "Initial":
                     return service.GetService<InitialRezervacijaState>();
-                case "Kreirana":
+                case "Kreirano":
                     return service.GetService<KreiranaRezervacijaState>();
-                case "Odobrena":
+                case "Odobreno":
                     return service.GetService<OdobriRezervacijaState>();
-                case "Ponistena":
+                case "Ponisteno":
                     return service.GetService<PonistiRezervacijaState>();
-                case "Zavrsena":
+                case "Zavrseno":
                     return service.GetService<ZavrsiRezervacijaState>();
                 default: throw new Exception("State ne postoji");
             }

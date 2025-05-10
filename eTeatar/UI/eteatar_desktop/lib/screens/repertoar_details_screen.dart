@@ -25,10 +25,13 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
 
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
-  SearchResult<Predstava>? predstavaResult = null;
+  SearchResult<Predstava>? predstavaResult;
+  SearchResult<Predstava>? initialPredstavaResult;
+
   late RepertoarProvider _repertoarProvider;
   late PredstavaProvider _predstavaProvider;
   bool isLoading = true;
+
   List<int> _selectedPredstave = [];
   
   @override
@@ -49,6 +52,7 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
       "Opis" : widget.repertoar?.opis ?? "",
       "DatumPocetka" : widget.repertoar?.datumPocetka ?? DateTime.now(),
       "DatumKraja" : widget.repertoar?.datumKraja ?? DateTime.now(),
+      
     };
 
     initForm();
@@ -65,6 +69,23 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
         width: 300
       );
     }
+
+    if(widget.repertoar != null){
+      try {
+        initialPredstavaResult = await _predstavaProvider.get(filter: { "repertoarId" : widget.repertoar!.repertoarId, 'isDeleted': false});
+        if (initialPredstavaResult != null) {
+          _selectedPredstave = initialPredstavaResult!.resultList.map((e) => e.predstavaId!).toList();
+        }
+      } catch (e){
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Greška pri dohvatanju glumaca!",
+          width: 300
+        );
+      }
+    }
+
     setState(() {
       isLoading = false;
     });
@@ -162,6 +183,7 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                       items: predstavaResult?.resultList
                           .map((e) => MultiSelectItem<int>(e.predstavaId!, e.naziv ?? ""))
                           .toList() ?? [],
+                      initialValue: _selectedPredstave,
                       title: Text("Odaberi predstave"),
                       selectedColor: Colors.blue,
                       decoration: BoxDecoration(

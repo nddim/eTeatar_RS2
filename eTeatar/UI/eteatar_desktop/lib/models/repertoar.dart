@@ -9,7 +9,7 @@ class Repertoar {
   String? opis;
   DateTime? datumPocetka;
   DateTime? datumKraja;
-
+  
   Repertoar(
     this.repertoarId,
     this.naziv

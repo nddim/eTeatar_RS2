@@ -8,7 +8,9 @@ class Uplata {
   double? iznos;
   DateTime? datum;
   int? korisnikId;
-
+  String? transakcijaId;
+  String? nacinPlacanja;  
+  String? status;
 
   Uplata(
     this.uplataId,

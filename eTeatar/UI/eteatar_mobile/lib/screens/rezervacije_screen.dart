@@ -174,7 +174,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                                         ),
                                         ElevatedButton(
                                           onPressed: () {
-                                            if (rez.stateMachine == "Zavrsena"){
+                                            if (rez.stateMachine == "Zavrseno"){
                                               QuickAlert.show(
                                                 context: context,
                                                 type: QuickAlertType.error,
@@ -183,7 +183,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                                               );
                                               return;
                                             }
-                                            if (rez.stateMachine == "Ponistena"){
+                                            if (rez.stateMachine == "Ponisteno"){
                                               QuickAlert.show(
                                                 context: context,
                                                 type: QuickAlertType.error,
@@ -192,7 +192,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                                               );
                                               return;
                                             }
-                                            if (rez.stateMachine != "Odobrena"){
+                                            if (rez.stateMachine != "Odobreno"){
                                               QuickAlert.show(
                                                 context: context,
                                                 type: QuickAlertType.error,

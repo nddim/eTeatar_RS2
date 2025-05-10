@@ -71,7 +71,6 @@ namespace eTeatar.Services
                         RepertoarId = entity.RepertoarId,
                     });
                 }
-
                 Context.SaveChanges();
             }
             base.AfterInsert(request, entity);
@@ -79,6 +78,10 @@ namespace eTeatar.Services
 
         public override void AfterUpdate(RepertoarUpdateRequest request, Repertoar entity)
         {
+            var starePredstave = Context.PredstavaRepertoars.Where(pz => pz.RepertoarId == entity.RepertoarId).ToList();
+
+            Context.PredstavaRepertoars.RemoveRange(starePredstave);
+
             if (request?.Predstave != null)
             {
                 foreach (var predstavaId in request.Predstave)
@@ -89,9 +92,10 @@ namespace eTeatar.Services
                         RepertoarId = entity.RepertoarId,
                     });
                 }
-
                 Context.SaveChanges();
+
             }
+
         }
     }
 }

@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
 class DvoranaDetailsScreen extends StatefulWidget {
-  Dvorana? dvorana;
-  DvoranaDetailsScreen({super.key, this.dvorana});
+  final Dvorana? dvorana;
+  const DvoranaDetailsScreen({super.key, this.dvorana});
 
   @override
   State<DvoranaDetailsScreen> createState() => _DvoranaDetailsScreenState();

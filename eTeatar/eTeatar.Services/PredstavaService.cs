@@ -105,6 +105,10 @@ namespace eTeatar.Services
 
         public override void AfterUpdate(PredstavaUpdateRequest request, Database.Predstava entity)
         {
+            var stariZanrovi = Context.PredstavaZanrs.Where(pz => pz.PredstavaId == entity.PredstavaId).ToList();
+
+            Context.PredstavaZanrs.RemoveRange(stariZanrovi);
+
             if (request?.Zanrovi != null)
             {
                 foreach (var zanrId in request.Zanrovi)
@@ -115,9 +119,11 @@ namespace eTeatar.Services
                         PredstavaId = entity.PredstavaId,
                     });
                 }
-
-                Context.SaveChanges();
             }
+
+            var stariGlumci = Context.PredstavaGlumacs.Where(pg => pg.PredstavaId == entity.PredstavaId).ToList();
+
+            Context.PredstavaGlumacs.RemoveRange(stariGlumci);
 
             if (request?.Glumci != null)
             {
@@ -129,9 +135,10 @@ namespace eTeatar.Services
                         PredstavaId = entity.PredstavaId,
                     });
                 }
-
-                Context.SaveChanges();
             }
+
+            Context.SaveChanges();
+
         }
 
         public List<Predstava> getProslePredstave(int korisnikId)

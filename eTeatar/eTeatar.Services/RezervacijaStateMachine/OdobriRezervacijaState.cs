@@ -29,7 +29,7 @@ namespace eTeatar.Services.RezervacijaStateMachine
             {
                 throw new UserException("Rezervacija nije pronađena!");
             }
-            entity.StateMachine = "Ponistena";
+            entity.StateMachine = "Ponisteno";
             Context.SaveChanges();
             return Mapper.Map<Model.Rezervacija>(entity);
         }
@@ -41,7 +41,7 @@ namespace eTeatar.Services.RezervacijaStateMachine
             {
                 throw new UserException("Rezervacija nije pronađena!");
             }
-            entity.StateMachine = "Zavrsena";
+            entity.StateMachine = "Zavrseno";
             foreach (var rs in entity.RezervacijaSjedistes)
             {
                 var kartaInsert = new KartaInsertRequest

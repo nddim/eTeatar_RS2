@@ -116,12 +116,14 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
           DataColumn(label: Text("Status")),
           DataColumn(label: Text("Vrijeme termina")),
           DataColumn(label: Text("Korisnik")),
+          DataColumn(label: Text('Odobri')),
+          DataColumn(label: Text('Ponisti')),
           DataColumn(label: Text('Obriši')),
         ],
           rows: result?.resultList.map((e) => 
           DataRow(
             cells: [
-            DataCell(Text(e.status ?? "")),
+            DataCell(Text(e.stateMachine ?? "")),
             DataCell(
               FutureBuilder(
                 future: fetchTermin(e.terminId!),
@@ -149,6 +151,22 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
                     var korisnik = snapshot.data!;
                     return Text("${korisnik.ime} ${korisnik.prezime}");
                   }
+                },
+              )
+            ),
+            DataCell(
+              IconButton(
+                icon: const Icon(Icons.check_circle, color: Colors.green ),
+                onPressed: () {
+                  openOdobriModal(e.rezervacijaId!);
+                },
+              )
+            ),
+            DataCell(
+              IconButton(
+                icon: const Icon(Icons.cancel, color: Colors.orange),
+                onPressed: () {
+                  openPonistiModal(e.rezervacijaId!);
                 },
               )
             ),
@@ -214,7 +232,7 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
                 Navigator.pop(context);
               }, 
               child: const Text(
-                'Poništi',
+                'Poništi akciju',
                 style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
               ),
             ),
@@ -241,6 +259,112 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
               child: const Text(
                 'Obriši',
                 style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void openOdobriModal(int rezervacijaId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Odobravanje'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Da li ste sigurni da želite da odobrite rezervaciju?'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, 
+              child: const Text(
+                'Poništi akciju',
+                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _rezervacijaProvider.odobri(rezervacijaId);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                  await _loadData();
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: "Greška pri odobravanju rezervacije!",
+                      width: 300
+                    );
+                  }
+                }
+              },
+              child: const Text(
+                'Odobri',
+                style: TextStyle(color: Colors.green),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void openPonistiModal(int rezervacijaId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Poništavanje'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Da li ste sigurni da želite da poništite rezervaciju?'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, 
+              child: const Text(
+                'Poništi akciju',
+                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _rezervacijaProvider.ponisti(rezervacijaId);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                  await _loadData();
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: "Greška pri poništavanju rezervacije!",
+                      width: 300
+                    );
+                  }
+                }
+              },
+              child: const Text(
+                'Poništi',
+                style: TextStyle(color: Colors.orange),
               ),
             ),
           ],

@@ -8,8 +8,7 @@ namespace eTeatar.Model.Requests
     {
         public string Naziv { get; set; } = null!;
         public string Opis { get; set; } = null!;
-        public DateTime TrajanjePocetak { get; set; }
-        public DateTime TrajanjeKraj { get; set; }
+        public int Trajanje { get; set; }
         public string Produkcija { get; set; } = null!;
         public string Koreografija { get; set; } = null!;
         public string Scenografija { get; set; } = null!;

@@ -150,6 +150,7 @@ class _PredstavaListScreenState extends State<PredstavaListScreen> {
         columns: const [
           DataColumn(label: Text("Naziv")),
           DataColumn(label: Text("Cijena")),
+          DataColumn(label: Text("Trajanje")),
           DataColumn(label: Text("Slika")),
           DataColumn(label: Text('Uredi')),
           DataColumn(label: Text('Obriši')),
@@ -158,7 +159,8 @@ class _PredstavaListScreenState extends State<PredstavaListScreen> {
           DataRow(
             cells: [
             DataCell(Text(e.naziv ?? "")),
-            DataCell(Text(e.cijena.toString())),
+            DataCell(Text("${e.cijena.toString()} KM")),
+            DataCell(Text("${e.trajanje.toString()} min")),
             DataCell(e.slika != null ? Container(width: 100, height: 100, child: imageFromString(e.slika!),): Text("")),
             DataCell(
               IconButton(
