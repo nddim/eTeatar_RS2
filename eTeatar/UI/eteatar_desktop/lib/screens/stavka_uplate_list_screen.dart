@@ -158,6 +158,7 @@ class StavkaUplateDataSource extends AdvancedDataTableSource<StavkaUplate> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju dvorane!",
+                    text: "$e",
                   );
                 }
               },
@@ -193,6 +194,7 @@ class StavkaUplateDataSource extends AdvancedDataTableSource<StavkaUplate> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

@@ -149,6 +149,7 @@ class VijestDataSource extends AdvancedDataTableSource<Vijest> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška prilikom dohvata korisnika!",
+        text: "$e",
         width: 300
       );
       throw Exception("Greška prilikom dohvata korisnika!");
@@ -224,6 +225,7 @@ class VijestDataSource extends AdvancedDataTableSource<Vijest> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju vijesti!",
+                    text: "$e",
                   );
                 }
               },
@@ -259,6 +261,7 @@ class VijestDataSource extends AdvancedDataTableSource<Vijest> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

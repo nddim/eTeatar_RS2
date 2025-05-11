@@ -65,6 +65,7 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatanju predstava!",
+        text: "$e",
         width: 300
       );
     }
@@ -75,6 +76,7 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatanju dvorana!",
+        text: "$e",
         width: 300
       );
     }
@@ -193,6 +195,7 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri dodavanju termina!",
+                    text: "$e",
                     width: 300
                   );
                 }
@@ -217,6 +220,7 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri ažuriranju termina!",
+                    text: "$e",
                     width: 300
                   );
                 }

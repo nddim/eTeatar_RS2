@@ -44,6 +44,7 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu predstava!",
+        text: "$e",
       );
     }
   }
@@ -222,6 +223,7 @@ class OcjenaDataSource extends AdvancedDataTableSource<Ocjena> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška prilikom dohvatanja predstava!",
+        text: "$e",
         width: 300
       );
       throw Exception("Greška prilikom dohvatanja predstava!");
@@ -252,6 +254,7 @@ class OcjenaDataSource extends AdvancedDataTableSource<Ocjena> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju dvorane!",
+                    text: "$e",
                   );
                 }
               },
@@ -288,6 +291,7 @@ class OcjenaDataSource extends AdvancedDataTableSource<Ocjena> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

@@ -67,6 +67,7 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatanju uloga!",
+        text: "$e",
         width: 300
       );
     }
@@ -236,6 +237,7 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri dodavanju korisnika!",
+                    text: "$e",
                     width: 300
                   );
                 }
@@ -260,6 +262,7 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri ažuriranju korisnika!",
+                    text: "$e",
                     width: 300
                   );
                 }

@@ -56,6 +56,7 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatanju korisnika!",
+        text: "$e",
         width: 300
       );
     }
@@ -162,6 +163,7 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri dodavanju vijesti!",
+                    text: "$e",
                     width: 300
                   );
                 }
@@ -186,6 +188,7 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri ažuriranju vijesti!",
+                    text: "$e",
                     width: 300
                   );
                 }

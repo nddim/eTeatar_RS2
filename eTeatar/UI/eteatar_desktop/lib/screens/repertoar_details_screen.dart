@@ -66,6 +66,7 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatanju predstava!",
+        text: "$e",
         width: 300
       );
     }
@@ -81,6 +82,7 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
           context: context,
           type: QuickAlertType.error,
           title: "Greška pri dohvatanju glumaca!",
+          text: "$e",
           width: 300
         );
       }
@@ -252,6 +254,7 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri dodavanju repertoara!",
+                    text: "$e",
                     width: 300
                   );
                 }
@@ -276,6 +279,7 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri ažuriranju repertoara!",
+                    text: "$e",
                     width: 300
                   );
                 }

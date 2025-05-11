@@ -208,6 +208,7 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška prilikom dohvata korisnika!",
+        text: "$e",
         width: 300
       );
       throw Exception("Greška prilikom dohvata korisnika!");
@@ -223,6 +224,7 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška prilikom dohvata termina!",
+        text: "$e",
         width: 300
       );
       throw Exception("Greška prilikom dohvata termina!");
@@ -238,6 +240,7 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška prilikom dohvata sjedista!",
+        text: "$e",
         width: 300
       );
       throw Exception("Greška prilikom dohvata sjedista!");
@@ -269,6 +272,7 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju dvorane!",
+                    text: "$e",
                   );
                 }
               },
@@ -304,6 +308,7 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

@@ -11,8 +11,6 @@ namespace eTeatar.Model
 
         public int UlogaId { get; set; }
 
-        public virtual Korisnik Korisnik { get; set; } 
-
         public virtual Uloga Uloga { get; set; }
     }
 }

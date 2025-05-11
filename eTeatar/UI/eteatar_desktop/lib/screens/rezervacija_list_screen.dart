@@ -211,6 +211,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška prilikom dohvata korisnika!",
+        text: "$e",
         width: 300
       );
       throw Exception("Greška prilikom dohvata korisnika!");
@@ -225,6 +226,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška prilikom dohvata termina!",
+        text: "$e",
         width: 300
       );
       throw Exception("Greška prilikom dohvata termina!");
@@ -256,6 +258,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju dvorane!",
+                    text: "$e",
                   );
                 }
               },
@@ -304,6 +307,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
                       context: context,
                       type: QuickAlertType.error,
                       title: "Greška pri odobravanju rezervacije!",
+                      text: "$e",
                       width: 300
                     );
                   }
@@ -357,6 +361,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
                       context: context,
                       type: QuickAlertType.error,
                       title: "Greška pri poništavanju rezervacije!",
+                      text: "$e",
                       width: 300
                     );
                   }
@@ -397,6 +402,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

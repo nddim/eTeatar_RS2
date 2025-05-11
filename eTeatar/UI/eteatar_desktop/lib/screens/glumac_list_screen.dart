@@ -185,6 +185,7 @@ class GlumacDataSource extends AdvancedDataTableSource<Glumac> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju glumca!",
+                    text: "$e",
                   );
                 }
               },
@@ -220,6 +221,7 @@ class GlumacDataSource extends AdvancedDataTableSource<Glumac> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

@@ -216,6 +216,7 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju korisnika!",
+                    text: "$e",
                   );
                 }
               },
@@ -251,6 +252,7 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

@@ -135,6 +135,7 @@ class _DvoranaDetailsScreenState extends State<DvoranaDetailsScreen> {
                   context: context,
                   type: QuickAlertType.error,
                   title: "Greška pri kreiranju dvorane!",
+                  text: "$e",
                   width: 300);
               }
               } else {
@@ -158,6 +159,7 @@ class _DvoranaDetailsScreenState extends State<DvoranaDetailsScreen> {
                   context: context,
                   type: QuickAlertType.error,
                   title: "Greška pri azuriranju dvorane!",
+                  text: "$e",
                   width: 300);
               }
               }

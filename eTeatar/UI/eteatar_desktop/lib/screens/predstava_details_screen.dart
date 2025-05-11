@@ -358,6 +358,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri azuriranju predstave!",
+                    text: "$e",
                     width: 300
                   );
                 }
@@ -382,6 +383,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri ažuriranju predstave!",
+                    text: "$e",
                     width: 300
                   );
                 }

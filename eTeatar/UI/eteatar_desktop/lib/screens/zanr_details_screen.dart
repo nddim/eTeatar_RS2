@@ -121,6 +121,7 @@ class _ZanrDetailsScreenState extends State<ZanrDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri dodavanju žanrova!",
+                    text: "$e",
                     width: 300
                   );
                 }
@@ -145,6 +146,7 @@ class _ZanrDetailsScreenState extends State<ZanrDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri ažuriranju žanrova!",
+                    text: "$e",
                     width: 300
                   );
                 }

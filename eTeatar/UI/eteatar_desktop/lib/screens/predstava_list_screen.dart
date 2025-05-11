@@ -53,6 +53,7 @@ class _PredstavaListScreenState extends State<PredstavaListScreen> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatanju zanrova!",
+        text: "$e",
         width: 300
       );
     }
@@ -237,6 +238,7 @@ class PredstavaDataSource extends AdvancedDataTableSource<Predstava> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju predstave!",
+                    text: "$e",
                   );
                 }
               },
@@ -273,6 +275,7 @@ class PredstavaDataSource extends AdvancedDataTableSource<Predstava> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

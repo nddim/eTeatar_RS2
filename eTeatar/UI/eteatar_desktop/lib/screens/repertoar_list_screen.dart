@@ -188,6 +188,7 @@ class RepertoarDataSource extends AdvancedDataTableSource<Repertoar> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju repertoara!",
+                    text: "$e",
                   );
                 }
               },
@@ -223,6 +224,7 @@ class RepertoarDataSource extends AdvancedDataTableSource<Repertoar> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

@@ -52,6 +52,7 @@ class _UplataListScreenState extends State<UplataListScreen> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatanju uplata!",
+        text: "$e",
         width: 300
       );
     }
@@ -231,6 +232,7 @@ class UplataDataSource extends AdvancedDataTableSource<Uplata> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška prilikom dohvata korisnika!",
+        text: "$e",
         width: 300
       );
       throw Exception("Greška prilikom dohvata korisnika!");
@@ -262,6 +264,7 @@ class UplataDataSource extends AdvancedDataTableSource<Uplata> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju dvorane!",
+                    text: "$e",
                   );
                 }
               },
@@ -298,6 +301,7 @@ class UplataDataSource extends AdvancedDataTableSource<Uplata> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

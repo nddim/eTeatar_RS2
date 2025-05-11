@@ -59,6 +59,7 @@ class _TerminListScreenState extends State<TerminListScreen> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatanju termina!",
+        text: "$e",
         width: 300
       );
     }
@@ -70,6 +71,7 @@ class _TerminListScreenState extends State<TerminListScreen> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatanju termina!",
+        text: "$e",
         width: 300
       );
     }
@@ -294,6 +296,7 @@ class TerminDataSource extends AdvancedDataTableSource<Termin> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška prilikom dohvata dvorane!",
+        text: "$e",
         width: 300
       );
       throw Exception("Greška prilikom dohvata dvorane!");
@@ -309,6 +312,7 @@ class TerminDataSource extends AdvancedDataTableSource<Termin> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška prilikom dohvata predstave!",
+        text: "$e",
         width: 300
       );
       throw Exception("Greška prilikom dohvata predstave!");
@@ -339,6 +343,7 @@ class TerminDataSource extends AdvancedDataTableSource<Termin> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju dvorane!",
+                    text: "$e",
                   );
                 }
               },
@@ -376,6 +381,7 @@ class TerminDataSource extends AdvancedDataTableSource<Termin> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

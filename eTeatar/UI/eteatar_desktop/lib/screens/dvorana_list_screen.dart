@@ -186,6 +186,7 @@ class DvoranaDataSource extends AdvancedDataTableSource<Dvorana> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju dvorane!",
+                    text: "$e",
                   );
                 }
               },
@@ -221,6 +222,7 @@ class DvoranaDataSource extends AdvancedDataTableSource<Dvorana> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

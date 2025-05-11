@@ -148,6 +148,7 @@ class _GlumacDetailsScreenState extends State<GlumacDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri kreiranju glumca!",
+                    text: "$e",
                     width: 300);
                 }
               } else {
@@ -171,6 +172,7 @@ class _GlumacDetailsScreenState extends State<GlumacDetailsScreen> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri ažuriranju glumca!",
+                    text: "$e",
                     width: 300);
                 }
               }

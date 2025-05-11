@@ -180,6 +180,7 @@ class ZanrDataSource extends AdvancedDataTableSource<Zanr> {
                     context: context,
                     type: QuickAlertType.error,
                     title: "Greška pri brisanju dvorane!",
+                    text: "$e",
                   );
                 }
               },
@@ -215,6 +216,7 @@ class ZanrDataSource extends AdvancedDataTableSource<Zanr> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatu podataka!",
+        text: "$e",
       );
       return RemoteDataSourceDetails(0, []);
     }

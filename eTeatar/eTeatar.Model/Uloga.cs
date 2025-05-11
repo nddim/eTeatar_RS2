@@ -11,6 +11,5 @@ namespace eTeatar.Model
 
         public string Opis { get; set; } 
 
-        public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; set; } = new List<KorisnikUloga>();
     }
 }
