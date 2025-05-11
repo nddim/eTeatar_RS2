@@ -6,8 +6,6 @@ namespace eTeatar.Model.Requests
 {
     public class RezervacijaUpdateRequest
     {
-        public string? Status { get; set; }
-
         public int? TerminId { get; set; }
 
         public int? KorisnikId { get; set; }

@@ -72,7 +72,6 @@ class _RezervacijaDetailsScreen3State extends State<RezervacijaDetailsScreen3> {
     try {
       List<int> sjedistaIds = widget.odabranaSjedista.map((s) => s.sjedisteId!).toList();
       var request = {
-         "status": "Rezervisano",
         "terminId": widget.termin!.terminId!,
         "sjedista": sjedistaIds,
         "korisnikId": AuthProvider.korisnikId,

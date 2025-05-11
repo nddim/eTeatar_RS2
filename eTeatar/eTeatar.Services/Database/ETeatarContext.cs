@@ -138,10 +138,10 @@ public partial class ETeatarContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Ime)
                 .HasMaxLength(255)
-                .IsUnicode(false);
+                .IsUnicode(true);
             entity.Property(e => e.KorisnickoIme)
                 .HasMaxLength(255)
-                .IsUnicode(false);
+                .IsUnicode(true);
             entity.Property(e => e.LozinkaHash)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -150,7 +150,7 @@ public partial class ETeatarContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Prezime)
                 .HasMaxLength(255)
-                .IsUnicode(false);
+                .IsUnicode(true);
             entity.Property(e => e.Slika).HasMaxLength(2000);
             entity.Property(e => e.Telefon)
                 .HasMaxLength(255)
@@ -313,9 +313,6 @@ public partial class ETeatarContext : DbContext
 
             entity.ToTable("Rezervacija");
 
-            entity.Property(e => e.Status)
-                .HasMaxLength(255)
-                .IsUnicode(false);
             entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
 
             entity.HasOne(d => d.Korisnik).WithMany(p => p.Rezervacijas)

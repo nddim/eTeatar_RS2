@@ -10,8 +10,7 @@ StavkaUplate _$StavkaUplateFromJson(Map<String, dynamic> json) => StavkaUplate(
       (json['stavkaUplateId'] as num?)?.toInt(),
       (json['kolicina'] as num?)?.toInt(),
       (json['cijena'] as num?)?.toDouble(),
-    )
-      ..uplataId = (json['uplataId'] as num?)?.toInt();
+    )..uplataId = (json['uplataId'] as num?)?.toInt();
 
 Map<String, dynamic> _$StavkaUplateToJson(StavkaUplate instance) =>
     <String, dynamic>{

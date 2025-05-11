@@ -6,7 +6,6 @@ part 'rezervacija.g.dart';
 @JsonSerializable()
 class Rezervacija {
   int? rezervacijaId;
-  String? status;
   int? terminId;
   int? korisnikId;
   String? stateMachine;
@@ -14,7 +13,7 @@ class Rezervacija {
 
   Rezervacija(
     this.rezervacijaId,
-    this.status,
+    this.stateMachine,
   );
 
   factory Rezervacija.fromJson(Map<String, dynamic> json) => _$RezervacijaFromJson(json);

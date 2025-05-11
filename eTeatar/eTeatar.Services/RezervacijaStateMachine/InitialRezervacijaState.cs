@@ -55,8 +55,6 @@ namespace eTeatar.Services.RezervacijaStateMachine
                 if (jeLiZauzeto)
                     throw new UserException($"Sjedište {sjedisteId} je već rezervisano!");
             }
-
-            entity.Status = "Kreirano";
         }
         public virtual void AfterInsert(RezervacijaInsertRequest request, Database.Rezervacija entity)
         {

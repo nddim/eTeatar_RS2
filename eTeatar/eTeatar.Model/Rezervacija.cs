@@ -8,14 +8,11 @@ namespace eTeatar.Model
     {
         public int RezervacijaId { get; set; }
 
-        public string Status { get; set; }
-
         public string? StateMachine { get; set; }
 
         public int TerminId { get; set; }
 
         public int KorisnikId { get; set; }
-
 
         public virtual ICollection<RezervacijaSjediste> RezervacijaSjedistes { get; set; } = new List<RezervacijaSjediste>();
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eTeatar.Services.Database;
 
@@ -11,9 +12,11 @@ using eTeatar.Services.Database;
 namespace eTeatar.Services.Migrations
 {
     [DbContext(typeof(ETeatarContext))]
-    partial class ETeatarContextModelSnapshot : ModelSnapshot
+    [Migration("20250510212752_izmjenaStatusKorisnik")]
+    partial class izmjenaStatusKorisnik
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

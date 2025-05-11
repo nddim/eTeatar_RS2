@@ -22,10 +22,6 @@ namespace eTeatar.Services
         {
             query = base.AddFilter(search, query);
            
-            if (!string.IsNullOrEmpty(search?.Status))
-            {
-                query = query.Where(x => x.Status == search.Status);
-            }
             if (search?.TerminId != null)
             {
                 query = query.Where(x => x.TerminId == search.TerminId);
@@ -65,8 +61,6 @@ namespace eTeatar.Services
                     throw new UserException($"Sjedište {sjedisteId} je već rezervisano!");
                 }
             }
-
-            entity.Status = "Rezervisano";
         }
 
         public override void AfterInsert(RezervacijaInsertRequest request, Rezervacija entity)

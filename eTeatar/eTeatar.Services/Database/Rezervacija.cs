@@ -7,8 +7,6 @@ public partial class Rezervacija : ISoftDelete
 {
     public int RezervacijaId { get; set; }
 
-    public string Status { get; set; } = null!;
-
     public bool IsDeleted { get; set; }
 
     public DateTime? VrijemeBrisanja { get; set; }

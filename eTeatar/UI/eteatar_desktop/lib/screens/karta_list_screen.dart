@@ -172,7 +172,7 @@ class _KartaListScreenState extends State<KartaListScreen> {
                     return Text("Greška");
                   } else {
                     var rezervacija = snapshot.data!;
-                    return Text("${rezervacija.status}");
+                    return Text("${rezervacija.stateMachine}");
                   }
                 },
               )
