@@ -1,6 +1,7 @@
+import 'package:advanced_datatable/advanced_datatable_source.dart';
+import 'package:advanced_datatable/datatable.dart';
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/repertoar.dart';
-import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/providers/repertoar_provider.dart';
 import 'package:eteatar_desktop/screens/repertoar_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -15,183 +16,182 @@ class RepertoarListScreen extends StatefulWidget {
 }
 
 class _RepertoarListScreenState extends State<RepertoarListScreen> {
-  bool _isInit = true;
-  bool _isLoading = true;
   late RepertoarProvider _repertoarProvider;
-  SearchResult<Repertoar>? result = null;
+  late RepertoarDataSource _dataSource;
+  bool _isLoading = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_isInit) {
-      _repertoarProvider = context.read<RepertoarProvider>();
-      _loadData();
-      _isInit = false;
-    }
-  }
-
-  Future<void> _loadData() async {
-    var data;
-    try {
-      data = await _repertoarProvider.get(filter: { 'isDeleted': false});
-    } catch (e){
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: "Greška pri dohvatanju repertoara!",
-        width: 300
-      );
-    }
-    setState(() {
-      result = data;
-      _isLoading = false;
-    });
   }
 
   @override
+  void initState() {
+    super.initState();
+    _repertoarProvider = context.read<RepertoarProvider>();
+    _dataSource = RepertoarDataSource(provider: _repertoarProvider, context: context);
+    setState(() {});
+  }
+
+ @override
   Widget build(BuildContext context) {
     return MasterScreen(
       "Lista repertoara",
-      _isLoading 
-      ? Center(child: CircularProgressIndicator())
-      : Column(
-          children: [
-            _buildSearch(),
-            _buildResultView(),
-          ],
-        ),
-    );
-  }
-
-  TextEditingController _nazivEditingController = TextEditingController();
-
-  Widget _buildSearch(){
-    return Padding(padding: const EdgeInsets.all(8.0),
-    child: Row(
-      children:[
-        Expanded( child: TextField(controller: _nazivEditingController, decoration: InputDecoration(labelText: "Naziv"))),
-        ElevatedButton(onPressed: () async{
-        
-        var filter = {
-          "NazivGTE": _nazivEditingController.text,
-          'isDeleted': false
-        };
-        var data;
-        try {
-          data = await _repertoarProvider.get(filter: filter);
-        } catch (e) {
-          QuickAlert.show(
-            context: context,
-            type: QuickAlertType.error,
-            title: "Greška pri dohvatanju repertoara!",
-            width: 300
-          );
-        }
-        setState(() {
-          result = data;
-        });
-
-        }, child: Text("Pretraga")),
-
-        SizedBox(width: 10,),
-        ElevatedButton(onPressed: () async{
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => RepertoarDetailsScreen()));
-        }, child: Text("Dodaj"))
+      Column(
+        children: [
+          _buildSearch(),
+          _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
         ],
       ),
     );
   }
 
-  Widget _buildResultView(){
-    return Expanded(
-      child: Container(
-        width: double.infinity,
-        child: SingleChildScrollView(
-        child: DataTable(
-        columns: const [
-          DataColumn(label: Text("Naziv")),
-          DataColumn(label: Text("Datum Pocetka")),
-          DataColumn(label: Text("Datum Kraja")),
-          DataColumn(label: Text('Uredi')),
-          DataColumn(label: Text('Obriši')),
+  TextEditingController _nazivEditingController = TextEditingController();
 
-        ],
-          rows: result?.resultList.map((e) => 
-          DataRow(
-            cells: [
-            DataCell(Text(e.naziv ?? "")),
-            DataCell(Text(e.datumPocetka.toString())),
-            DataCell(Text(e.datumKraja.toString())),
-            DataCell(
-              IconButton(
-                icon: Icon(Icons.edit,
-                    color: Theme.of(context).primaryColor),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => RepertoarDetailsScreen(repertoar: e,)));
-                },
-              )
+  Widget _buildSearch() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _nazivEditingController,
+              decoration: const InputDecoration(labelText: "Naziv", hintText: "Naziv dvorane"),
             ),
-            DataCell(
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  openDeleteModal(e.repertoarId!);
-                },
-              )
-            ),
-          ])).toList().cast<DataRow>() ?? [],
           ),
-      )
-      )
+          ElevatedButton(
+            onPressed: () {
+              _dataSource.filterServerSide(_nazivEditingController.text);
+            },
+            child: const Text("Pretraga"),
+          ),
+          const SizedBox(width: 10),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const RepertoarDetailsScreen()),
+              );
+            },
+            child: const Text("Dodaj"),
+          ),
+        ],
+      ),
     );
   }
+  Widget _buildPaginatedTable() {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: SizedBox(
+              width: double.infinity,
+              child: AdvancedPaginatedDataTable(
+                columns: [
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Naziv"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Datum pocetka"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Datum kraja"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Uredi"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Obriši"),
+                  )),
+                ],
+                source: _dataSource,
+                addEmptyRows: false,
+              )),
+        ),
+      ),
+    );
+  }
+}
 
-  void openDeleteModal(int repertoarId) {
+class RepertoarDataSource extends AdvancedDataTableSource<Repertoar> {
+  List<Repertoar> data = [];
+  final RepertoarProvider provider;
+  BuildContext context;
+  int count = 10;
+  int page = 1;
+  int pageSize = 10;
+  String nazivGTE = "";
+  dynamic filter;
+  RepertoarDataSource({required this.provider, required this.context});
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= data.length) return null;
+    final e = data[index];
+
+    return DataRow(cells: [
+      DataCell(Text(e.naziv ?? "")),
+      DataCell(Text(e.datumPocetka.toString())),
+      DataCell(Text(e.datumKraja.toString())),
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.edit, color: Colors.lightBlue),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => RepertoarDetailsScreen(repertoar: e),
+              ),
+            );
+          },
+        ),
+      ),
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.delete, color: Colors.red),
+          onPressed: () => _showDeleteDialog(e.repertoarId!),
+        ),
+      ),
+    ]);
+  }
+
+  void _showDeleteDialog(int dvoranaId) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Brisanje'),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Da li ste sigurni da želite da obrišete repertoar?'),
-            ],
-          ),
+          content: const Text('Da li ste sigurni da želite da obrišete repertoar?'),
           actions: [
-            ElevatedButton(
+            TextButton(
               onPressed: () {
-                Navigator.pop(context);
-              }, 
-              child: const Text(
-                'Poništi',
-                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
-              ),
+                Navigator.pop(dialogContext);
+              },
+              child: const Text('Poništi'),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () async {
+                Navigator.pop(dialogContext);
                 try {
-                  await _repertoarProvider.delete(repertoarId);
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
-                  await _loadData();
+                  await provider.delete(dvoranaId);
+                  filterServerSide(nazivGTE);
                 } catch (e) {
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                    QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.error,
-                      title: "Greška pri brisanju repertoara!",
-                      width: 300
-                    );
-                  }
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri brisanju repertoara!",
+                  );
                 }
               },
-              child: const Text(
-                'Obriši',
-                style: TextStyle(color: Colors.red),
-              ),
+              child: const Text('Obriši', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -199,4 +199,46 @@ class _RepertoarListScreenState extends State<RepertoarListScreen> {
     );
   }
 
+  @override
+  Future<RemoteDataSourceDetails<Repertoar>> getNextPage(NextPageRequest request) async {
+    final page = (request.offset ~/ pageSize).toInt() + 1;
+
+    final filter = {
+      'NazivGTE': nazivGTE,
+      'isDeleted': false
+    };
+
+    try {
+      final result = await provider.get(
+        filter: filter,
+        page: page,
+        pageSize: pageSize
+        );
+      data = result.resultList;
+      count = result.count;
+      notifyListeners();
+      return RemoteDataSourceDetails(count, data);
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatu podataka!",
+      );
+      return RemoteDataSourceDetails(0, []);
+    }
+  }
+
+  void filterServerSide(String naziv) {
+    nazivGTE = naziv;
+    setNextView();
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => count;
+
+  @override
+  int get selectedRowCount => 0;
 }

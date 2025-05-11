@@ -1,3 +1,5 @@
+import 'package:advanced_datatable/advanced_datatable_source.dart';
+import 'package:advanced_datatable/datatable.dart';
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/ocjena.dart';
 import 'package:eteatar_desktop/models/predstava.dart';
@@ -17,49 +19,43 @@ class OcjenaListScreen extends StatefulWidget {
 }
 
 class _OcjenaListScreenState extends State<OcjenaListScreen> {
-  bool _isInit = true;
-  bool _isLoading = true;
   late OcjenaProvider _ocjenaProvider;
+  late OcjenaDataSource _dataSource;
   late PredstavaProvider _predstavaProvider;
-  SearchResult<Ocjena>? result = null;
-  SearchResult<Predstava>? predstavaResult = null;
+  bool _isLoading = false;
+  SearchResult<Predstava>? predstavaResult;
+
+  @override
+  BuildContext get context => super.context;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_isInit) {
-      _ocjenaProvider = context.read<OcjenaProvider>();
-      _predstavaProvider = context.read<PredstavaProvider>();
-      _loadData();
-      _isInit = false;
+  }
+
+  Future<void> _loadPredstave() async {
+    try {
+      var result = await _predstavaProvider.get(filter: { 'isDeleted': false});
+      setState(() {
+      predstavaResult = result;
+    });
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatu predstava!",
+      );
     }
   }
 
-  Future<void> _loadData() async {
-    var data ;
-    try {
-      data = await _ocjenaProvider.get(filter: { 'isDeleted': false});
-    } catch (e){
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: "Greška pri dohvatanju ocjena!",
-        width: 300
-      );
-    }
-    try {
-      predstavaResult = await _predstavaProvider.get(filter: { 'isDeleted': false});
-    } catch (e){
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: "Greška pri dohvatanju predstava!",
-        width: 300
-      );
-    }
-    setState(() {
-      result = data;
-      _isLoading = false;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _ocjenaProvider = context.read<OcjenaProvider>();
+    _predstavaProvider = context.read<PredstavaProvider>();
+    _loadPredstave();
+    _dataSource = OcjenaDataSource(provider: _ocjenaProvider, context: context);
+    setState(() {});
   }
 
   @override
@@ -71,7 +67,7 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
       : Column(
           children: [
             _buildSearch(),
-            _buildResultView(),
+            _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
           ],
         ),
     );
@@ -85,65 +81,46 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          Expanded(
-            child: DropdownButtonFormField<int>(
-              value: _selectedVrijednost,
-              decoration: const InputDecoration(labelText: "Vrijednost"),
-              items: const[
-                DropdownMenuItem(value: 1, child: Text("1")),
-                DropdownMenuItem(value: 2, child: Text("2")),
-                DropdownMenuItem(value: 3, child: Text("3")),
-                DropdownMenuItem(value: 4, child: Text("4")),
-                DropdownMenuItem(value: 5, child: Text("5")),
-              ],
+            Expanded(
+              child: DropdownButtonFormField<int>(
+                value: _selectedVrijednost,
+                decoration: const InputDecoration(labelText: "Vrijednost"),
+                items: const[
+                  DropdownMenuItem(value: 1, child: Text("1")),
+                  DropdownMenuItem(value: 2, child: Text("2")),
+                  DropdownMenuItem(value: 3, child: Text("3")),
+                  DropdownMenuItem(value: 4, child: Text("4")),
+                  DropdownMenuItem(value: 5, child: Text("5")),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _selectedVrijednost = value;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+            child: FormBuilderDropdown<int>(
+              name: "predstavaId",
+              decoration: InputDecoration(labelText: "Predstava"),
+              items: predstavaResult?.resultList
+                  .map((e) => DropdownMenuItem(
+                        value: e.predstavaId,
+                        child: Text(e.naziv ?? "")
+                      ))
+                  .toList() ?? [],
               onChanged: (value) {
                 setState(() {
-                  _selectedVrijednost = value;
+                  _selectedPredstavaId = value;
                 });
               },
             ),
           ),
           const SizedBox(width: 10),
-          Expanded(
-          child: FormBuilderDropdown<int>(
-            name: "predstavaId",
-            decoration: InputDecoration(labelText: "Predstava"),
-            items: predstavaResult?.resultList
-                .map((e) => DropdownMenuItem(
-                      value: e.predstavaId,
-                      child: Text(e.naziv ?? ""),
-                    ))
-                .toList() ?? [],
-            onChanged: (value) {
-              setState(() {
-                _selectedPredstavaId = value;
-              });
-            },
-          ),
-        ),
-        const SizedBox(width: 10),
           ElevatedButton(
-            onPressed: () async {
-              var filter = {
-                if (_selectedVrijednost != null)
-                  "VrijednostGTE": _selectedVrijednost.toString(),
-                  "PredstavaId": _selectedPredstavaId,
-                  'isDeleted': false,
-              };
-              var data;
-              try {
-                data = await _ocjenaProvider.get(filter: filter);
-              } catch (e) {
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.error,
-                  title: "Greška pri dohvatanju ocjena!",
-                  width: 300,
-                );
-              }
-              setState(() {
-                result = data;
-              });
+            onPressed: () {
+              _dataSource.filterServerSide(_selectedVrijednost, _selectedPredstavaId);
             },
             child: const Text("Pretraga"),
           ),
@@ -151,52 +128,90 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
       ),
     );
   }
-
-   Widget _buildResultView(){
+  Widget _buildPaginatedTable() {
     return Expanded(
-      child: Container(
-        width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
-        child: DataTable(
-        columns: const [
-          DataColumn(label: Text("Vrijednost")),
-          DataColumn(label: Text("Komentar")),
-          DataColumn(label: Text("Predstava")),
-          DataColumn(label: Text('Obriši')),
-        ],
-          rows: result?.resultList.map((e) => 
-          DataRow(
-            cells: [
-            DataCell(Text(e.vrijednost.toString())),
-            DataCell(Text(e.komentar ?? "")),
-            DataCell(
-              FutureBuilder(
-                future: fetchPredstava(e.predstavaId!),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text("Učitavanje...");
-                  } else if (snapshot.hasError) {
-                    return Text("Greška");
-                  } else {
-                    var predstava = snapshot.data!;
-                    return Text("${predstava.naziv}");
-                  }
-                },
-              )
-            ),
-            DataCell(
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  openDeleteModal(e.ocjenaId!);
-                },
-              )
-            ),
-          ])).toList().cast<DataRow>() ?? [],
-          ),
-      )
-      )
+          child: SizedBox(
+              width: double.infinity,
+              child: AdvancedPaginatedDataTable(
+                columns: [
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Vrijednost"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Komentar"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Predstava"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Obriši"),
+                  )),
+                ],
+                source: _dataSource,
+                addEmptyRows: false,
+              )),
+        ),
+      ),
     );
+  }
+}
+
+class OcjenaDataSource extends AdvancedDataTableSource<Ocjena> {
+  List<Ocjena> data = [];
+  late PredstavaProvider _predstavaProvider;
+  final OcjenaProvider provider;
+  BuildContext context;
+  int count = 10;
+  int page = 1;
+  int pageSize = 10;
+  int vrijednostGTE = 0;
+  int predstavaIdEQ = 0;
+  dynamic filter;
+  OcjenaDataSource({required this.provider, required this.context}){
+    _predstavaProvider = context.read<PredstavaProvider>();
+  }
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= data.length) return null;
+    final e = data[index];
+
+    return DataRow(cells: [
+      DataCell(Text(e.vrijednost.toString())),
+      DataCell(Text(e.komentar ?? "")),
+      DataCell(
+        FutureBuilder(
+          future: fetchPredstava(e.predstavaId!),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text("Učitavanje...");
+            } else if (snapshot.hasError) {
+              return Text("Greška");
+            } else {
+              var predstava = snapshot.data!;
+              return Text("${predstava.naziv}");
+            }
+          },
+        )
+      ),
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.delete, color: Colors.red),
+          onPressed: () => _showDeleteDialog(e.ocjenaId!),
+        ),
+      ),
+    ]);
   }
   Future<Predstava> fetchPredstava(int predstavaId) async {
     try {
@@ -212,53 +227,35 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
       throw Exception("Greška prilikom dohvatanja predstava!");
     }
   }
-
-  void openDeleteModal(int ocjenaId) {
+  void _showDeleteDialog(int dvoranaId) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Brisanje'),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Da li ste sigurni da želite da obrišete ocjenu?'),
-            ],
-          ),
+          content: const Text('Da li ste sigurni da želite da obrišete dvoranu?'),
           actions: [
-            ElevatedButton(
+            TextButton(
               onPressed: () {
-                Navigator.pop(context);
-              }, 
-              child: const Text(
-                'Poništi',
-                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
-              ),
+                Navigator.pop(dialogContext);
+              },
+              child: const Text('Poništi'),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () async {
+                Navigator.pop(dialogContext);
                 try {
-                  await _ocjenaProvider.delete(ocjenaId);
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
-                  await _loadData();
+                  await provider.delete(dvoranaId);
+                  filterServerSide(vrijednostGTE, predstavaIdEQ);
                 } catch (e) {
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                    QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.error,
-                      title: "Greška pri brisanju ocjene!",
-                      width: 300
-                    );
-                  }
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri brisanju dvorane!",
+                  );
                 }
               },
-              child: const Text(
-                'Obriši',
-                style: TextStyle(color: Colors.red),
-              ),
+              child: const Text('Obriši', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -266,4 +263,48 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
     );
   }
 
+  @override
+  Future<RemoteDataSourceDetails<Ocjena>> getNextPage(NextPageRequest request) async {
+    final page = (request.offset ~/ pageSize).toInt() + 1;
+
+    final filter = {
+      'isDeleted': false,
+      if (vrijednostGTE > 0) 'VrijednostGTE': vrijednostGTE.toString(),
+      if (predstavaIdEQ > 0) 'PredstavaId': predstavaIdEQ.toString(),
+    };
+
+    try {
+      final result = await provider.get(
+        filter: filter,
+        page: page,
+        pageSize: pageSize
+        );
+      data = result.resultList;
+      count = result.count;
+      notifyListeners();
+      return RemoteDataSourceDetails(count, data);
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatu podataka!",
+      );
+      return RemoteDataSourceDetails(0, []);
+    }
+  }
+
+  void filterServerSide(int? vrijednost, int? predstavaId) {
+    vrijednostGTE = vrijednost ?? 0;
+    predstavaIdEQ = predstavaId ?? 0;
+    setNextView();
+}
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => count;
+
+  @override
+  int get selectedRowCount => 0;
 }

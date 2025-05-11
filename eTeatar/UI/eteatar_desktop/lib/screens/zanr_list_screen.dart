@@ -1,5 +1,6 @@
+import 'package:advanced_datatable/advanced_datatable_source.dart';
+import 'package:advanced_datatable/datatable.dart';
 import 'package:eteatar_desktop/layouts/master_screen.dart';
-import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/models/zanr.dart';
 import 'package:eteatar_desktop/providers/zanr_provider.dart';
 import 'package:eteatar_desktop/screens/zanr_details_screen.dart';
@@ -15,177 +16,174 @@ class ZanrListScreen extends StatefulWidget {
 }
 
 class _ZanrListScreenState extends State<ZanrListScreen> {
-  bool _isInit = true;
-  bool _isLoading = true;
   late ZanrProvider _zanrProvider;
-  SearchResult<Zanr>? result = null;
+  late ZanrDataSource _dataSource;
+  bool _isLoading = false;
+  @override
+  BuildContext get context => super.context;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_isInit) {
-      _zanrProvider = context.read<ZanrProvider>();
-      _loadData();
-      _isInit = false;
-    }
   }
 
-  Future<void> _loadData() async {
-    var data;
-    try {
-      data = await _zanrProvider.get(filter: { 'isDeleted': false});
-    } catch (e) {
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: "Greška pri dohvatanju žanrova!",
-        width: 300
-      );
-    }
-    setState(() {
-      result = data;
-      _isLoading = false;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _zanrProvider = context.read<ZanrProvider>();
+    _dataSource = ZanrDataSource(provider: _zanrProvider, context: context);
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return MasterScreen(
-      "Lista zanrovi",
-      _isLoading 
-      ? Center(child: CircularProgressIndicator())
-      : Column(
-          children: [
-            _buildSearch(),
-            _buildResultView(),
-          ],
-        ),
-    );
-  }
-
-  TextEditingController _nazivEditingController = TextEditingController();
-
-  Widget _buildSearch(){
-    return Padding(padding: const EdgeInsets.all(8.0),
-    child: Row(
-      children:[
-        Expanded( child: TextField(controller: _nazivEditingController, decoration: InputDecoration(labelText: "Naziv"))),
-        ElevatedButton(onPressed: () async{
-        
-        var filter = {
-          "NazivGTE": _nazivEditingController.text,
-          'isDeleted': false
-        };
-        var data;
-        try {
-          data = await _zanrProvider.get(filter: filter);
-        } catch (e) {
-          QuickAlert.show(
-            context: context,
-            type: QuickAlertType.error,
-            title: "Greška pri dohvatanju žanrova!",
-            width: 300
-          );
-        }
-        setState(() {
-          result = data;
-        });
-
-        }, child: Text("Pretraga")),
-        SizedBox(width: 10,),
-        ElevatedButton(onPressed: () async{
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ZanrDetailsScreen()));
-        }, child: Text("Dodaj"))
+      "Lista zanrova",
+      Column(
+        children: [
+          _buildSearch(),
+          _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
         ],
       ),
     );
   }
 
-  Widget _buildResultView(){
-    return Expanded(
-      child: Container(
-        width: double.infinity,
-        child: SingleChildScrollView(
-        child: DataTable(
-        columns: const [
-          DataColumn(label: Text("Naziv")),
-          DataColumn(label: Text('Uredi')),
-          DataColumn(label: Text('Obriši')),
-        ],
-          rows: result?.resultList.map((e) => 
-          DataRow(
-            cells: [
-            DataCell(Text(e.naziv ?? "")),
-            DataCell(
-              IconButton(
-                icon: Icon(Icons.edit,
-                    color: Theme.of(context).primaryColor),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => ZanrDetailsScreen(zanr: e,)));
-                },
-              )
+  TextEditingController _nazivEditingController = TextEditingController();
+  Widget _buildSearch() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _nazivEditingController,
+              decoration: const InputDecoration(labelText: "Naziv", hintText: "Naziv dvorane"),
             ),
-            DataCell(
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  openDeleteModal(e.zanrId!);
-                },
-              )
-            ),
-          ])).toList().cast<DataRow>() ?? [],
           ),
-      )
-      )
+          ElevatedButton(
+            onPressed: () {
+              _dataSource.filterServerSide(_nazivEditingController.text);
+            },
+            child: const Text("Pretraga"),
+          ),
+          const SizedBox(width: 10),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const ZanrDetailsScreen()),
+              );
+            },
+            child: const Text("Dodaj"),
+          ),
+        ],
+      ),
     );
   }
 
-  void openDeleteModal(int zanrId) {
+
+  Widget _buildPaginatedTable() {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: SizedBox(
+              width: double.infinity,
+              child: AdvancedPaginatedDataTable(
+                columns: [
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Naziv"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Uredi"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Obriši"),
+                  )),
+                ],
+                source: _dataSource,
+                addEmptyRows: false,
+              )),
+        ),
+      ),
+    );
+  }
+
+}
+
+class ZanrDataSource extends AdvancedDataTableSource<Zanr> {
+  List<Zanr> data = [];
+  final ZanrProvider provider;
+  BuildContext context;
+  int count = 10;
+  int page = 1;
+  int pageSize = 10;
+  String nazivGTE = "";
+  dynamic filter;
+  ZanrDataSource({required this.provider, required this.context});
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= data.length) return null;
+    final e = data[index];
+
+    return DataRow(cells: [
+      DataCell(Text(e.naziv ?? "")),
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.edit, color: Colors.lightBlue),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ZanrDetailsScreen(zanr: e),
+              ),
+            );
+          },
+        ),
+      ),
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.delete, color: Colors.red),
+          onPressed: () => _showDeleteDialog(e.zanrId!),
+        ),
+      ),
+    ]);
+  }
+
+  void _showDeleteDialog(int zanrId) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Brisanje'),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Da li ste sigurni da želite da obrišete žanr?'),
-            ],
-          ),
+          content: const Text('Da li ste sigurni da želite da obrišete dvoranu?'),
           actions: [
-            ElevatedButton(
+            TextButton(
               onPressed: () {
-                Navigator.pop(context);
-              }, 
-              child: const Text(
-                'Poništi',
-                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
-              ),
+                Navigator.pop(dialogContext);
+              },
+              child: const Text('Poništi'),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () async {
+                Navigator.pop(dialogContext);
                 try {
-                  await _zanrProvider.delete(zanrId);
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
-                  await _loadData();
+                  await provider.delete(zanrId);
+                  filterServerSide(nazivGTE);
                 } catch (e) {
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                    QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.error,
-                      title: "Greška pri brisanju žanra!",
-                      width: 300
-                    );
-                  }
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri brisanju dvorane!",
+                  );
                 }
               },
-              child: const Text(
-                'Obriši',
-                style: TextStyle(color: Colors.red),
-              ),
+              child: const Text('Obriši', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -193,4 +191,46 @@ class _ZanrListScreenState extends State<ZanrListScreen> {
     );
   }
 
+  @override
+  Future<RemoteDataSourceDetails<Zanr>> getNextPage(NextPageRequest request) async {
+    final page = (request.offset ~/ pageSize).toInt() + 1;
+
+    final filter = {
+      'NazivGTE': nazivGTE,
+      'isDeleted': false
+    };
+
+    try {
+      final result = await provider.get(
+        filter: filter,
+        page: page,
+        pageSize: pageSize
+        );
+      data = result.resultList;
+      count = result.count;
+      notifyListeners();
+      return RemoteDataSourceDetails(count, data);
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatu podataka!",
+      );
+      return RemoteDataSourceDetails(0, []);
+    }
+  }
+
+  void filterServerSide(String naziv) {
+    nazivGTE = naziv;
+    setNextView();
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => count;
+
+  @override
+  int get selectedRowCount => 0;
 }

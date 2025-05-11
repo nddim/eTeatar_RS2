@@ -54,12 +54,6 @@ namespace eTeatar.Services
                 query = query.Where(x => x.IsDeleted == search.isDeleted);
             }
 
-            int count = query.Count();
-            if (search?.Page.HasValue == true && search?.PageSize.HasValue == true)
-            {
-                query = query.Skip(search.Page.Value * search.PageSize.Value).Take(search.PageSize.Value);
-            }
-
             return query;
         }
 

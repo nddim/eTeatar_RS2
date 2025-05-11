@@ -15,29 +15,9 @@ namespace eTeatar.Services
         public override IQueryable<StavkaUplate> AddFilter(StavkaUplateSearchObject search, IQueryable<StavkaUplate> query)
         {
             query = base.AddFilter(search, query);
-            if (search?.KolicinaGTE != null)
+            if (search?.Cijena != null)
             {
-                query = query.Where(x => x.Kolicina > search.KolicinaGTE);
-            }
-            if (search?.KolicinaLTE != null)
-            {
-                query = query.Where(x => x.Kolicina < search.KolicinaLTE);
-            }
-            if (search?.CijenaGTE != null)
-            {
-                query = query.Where(x => x.Cijena > search.CijenaGTE);
-            }
-            if (search?.CijenaLTE != null)
-            {
-                query = query.Where(x => x.Cijena < search.CijenaLTE);
-            }
-            if (search?.UplataId != null)
-            {
-                query = query.Where(x => x.UplataId == search.UplataId);
-            }
-            if (search?.isDeleted != null)
-            {
-                query = query.Where(x => x.IsDeleted == search.isDeleted);
+                query = query.Where(x => x.Cijena == search.Cijena);
             }
 
             return query;

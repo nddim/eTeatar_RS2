@@ -16,19 +16,43 @@ abstract class BaseProvider<T> with ChangeNotifier {
         defaultValue: "http://localhost:5016/");
   }
 
-  Future<SearchResult<T>> get({dynamic filter}) async {
+   Future<SearchResult<T>> get(
+      {dynamic filter,
+      int? page,
+      int? pageSize,
+      bool? retrieveAll,
+      String? orderBy,
+      String? sortDirection}) async {
     var url = "$baseUrl$_endpoint";
 
+    Map<String, dynamic> queryParams = {};
     if (filter != null) {
-      var queryString = getQueryString(filter);
+      queryParams.addAll(filter);
+    }
+    if (page != null) {
+      queryParams['page'] = page;
+    }
+    if (pageSize != null) {
+      queryParams['pageSize'] = pageSize;
+    }
+    if (retrieveAll != null) {
+      queryParams['retrieveAll'] = retrieveAll;
+    }
+    if (orderBy != null) {
+      queryParams['orderBy'] = orderBy;
+    }
+    if (sortDirection != null) {
+      queryParams['sortDirection'] = sortDirection;
+    }
+    if (queryParams.isNotEmpty) {
+      var queryString = getQueryString(queryParams);
       url = "$url?$queryString";
     }
-
     var uri = Uri.parse(url);
     var headers = createHeaders();
+      print(uri);
 
     var response = await http.get(uri, headers: headers);
-
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
 
@@ -39,11 +63,11 @@ abstract class BaseProvider<T> with ChangeNotifier {
       for (var item in data['resultList']) {
         result.resultList.add(fromJson(item));
       }
-
       return result;
     } else {
       throw new Exception("Unknown error");
     }
+    // print("response: ${response.request} ${response.statusCode}, ${response.body}");
   }
 
   Future<T> getById(int id) async {

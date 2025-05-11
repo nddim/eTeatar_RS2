@@ -16,21 +16,9 @@ namespace eTeatar.Services
         public override IQueryable<Uplatum> AddFilter(UplataSearchObject search, IQueryable<Uplatum> query)
         {
             query = base.AddFilter(search, query);
-            if (search?.IznosGTE != null)
+            if (search?.Iznos != null)
             {
-                query = query.Where(x => x.Iznos > search.IznosGTE);
-            }
-            if (search?.IznosLTE != null)
-            {
-                query = query.Where(x => x.Iznos < search.IznosLTE);
-            }
-            if (search?.DatumGTE != null)
-            {
-                query = query.Where(x => x.Datum > search.DatumGTE);
-            }
-            if (search?.DatumLTE != null)
-            {
-                query = query.Where(x => x.Datum < search.DatumLTE);
+                query = query.Where(x => x.Iznos == search.Iznos);
             }
             if (search?.KorisnikId != null)
             {

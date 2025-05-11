@@ -1,3 +1,5 @@
+import 'package:advanced_datatable/advanced_datatable_source.dart';
+import 'package:advanced_datatable/datatable.dart';
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/dvorana.dart';
 import 'package:eteatar_desktop/models/predstava.dart';
@@ -20,30 +22,38 @@ class TerminListScreen extends StatefulWidget {
 }
 
 class _TerminListScreenState extends State<TerminListScreen> {
-  bool _isInit = true;
-  bool _isLoading = true;
   late TerminProvider _terminProvider;
+  late TerminDataSource _dataSource;
   late DvoranaProvider _dvoranaProvider;
   late PredstavaProvider _predstavaProvider;
-  SearchResult<Termin>? result = null;
   SearchResult<Predstava>? _predstavaResult;
   SearchResult<Dvorana>? _dvoranaResult;
+
+  bool _isLoading = false;
+  @override
+  BuildContext get context => super.context;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_isInit) {
-      _terminProvider = context.read<TerminProvider>();
-      _dvoranaProvider = context.read<DvoranaProvider>();
-      _predstavaProvider = context.read<PredstavaProvider>();
-      _loadData();
-      _isInit = false;
-    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _terminProvider = context.read<TerminProvider>();
+    _predstavaProvider = context.read<PredstavaProvider>();
+    _dvoranaProvider = context.read<DvoranaProvider>();
+    _loadData();
+    _dataSource = TerminDataSource(provider: _terminProvider, context: context);
+    setState(() {});
   }
 
   Future<void> _loadData() async {
-    var data;
+    var predstavaResult;
+    var dvoranaResult;
     try {
-      data = await _terminProvider.get(filter: { 'isDeleted': false});
+      predstavaResult = await _predstavaProvider.get(filter: { 'isDeleted': false});
     } catch (e) {
       QuickAlert.show(
         context: context,
@@ -52,18 +62,9 @@ class _TerminListScreenState extends State<TerminListScreen> {
         width: 300
       );
     }
+
     try {
-      _predstavaResult = await _predstavaProvider.get(filter: { 'isDeleted': false});
-    } catch (e) {
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: "Greška pri dohvatanju termina!",
-        width: 300
-      );
-    }
-    try {
-      _dvoranaResult = await _dvoranaProvider.get(filter: { 'isDeleted': false});
+      dvoranaResult = await _dvoranaProvider.get(filter: { 'isDeleted': false});
     } catch (e) {
       QuickAlert.show(
         context: context,
@@ -73,7 +74,8 @@ class _TerminListScreenState extends State<TerminListScreen> {
       );
     }
     setState(() {
-      result = data;
+      _dvoranaResult = dvoranaResult;
+      _predstavaResult = predstavaResult;
       _isLoading = false;
     });
   }
@@ -82,169 +84,207 @@ class _TerminListScreenState extends State<TerminListScreen> {
   Widget build(BuildContext context) {
     return MasterScreen(
       "Lista termina",
-      _isLoading 
-      ? Center(child: CircularProgressIndicator())
-      : Column(
-          children: [
-            _buildSearch(),
-            _buildResultView(),
-          ],
-        ),
+      Column(
+        children: [
+          _buildSearch(),
+          _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
+        ],
+      ),
     );
   }
 
   TextEditingController _statusEditingController = TextEditingController();
   int? _selectedPredstavaId;
   int? _selectedDvoranaId;
-
-  Widget _buildSearch(){
-    return Padding(padding: const EdgeInsets.all(8.0),
-    child: Row(
-      children:[
-        Expanded( child: TextField(controller: _statusEditingController, decoration: InputDecoration(labelText: "Status"))),
-        SizedBox(width: 10,),
-        Expanded(
-          child: FormBuilderDropdown<int>(
-            name: "predstavaId",
-            decoration: InputDecoration(labelText: "Predstava"),
-            items: _predstavaResult?.resultList
-                .map((e) => DropdownMenuItem(
-                      value: e.predstavaId,
-                      child: Text(e.naziv ?? ""),
-                    ))
-                .toList() ?? [],
-            onChanged: (value) {
-              setState(() {
-                _selectedPredstavaId = value;
-              });
-            },
+  
+  Widget _buildSearch() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded( child: TextField(controller: _statusEditingController, decoration: InputDecoration(labelText: "Status"))),
+          SizedBox(width: 10,),
+          Expanded(
+            child: FormBuilderDropdown<int>(
+              name: "predstavaId",
+              decoration: InputDecoration(labelText: "Predstava"),
+              items: _predstavaResult?.resultList
+                  .map((e) => DropdownMenuItem(
+                        value: e.predstavaId,
+                        child: Text(e.naziv ?? ""),
+                      ))
+                  .toList() ?? [],
+              onChanged: (value) {
+                setState(() {
+                  _selectedPredstavaId = value;
+                });
+              },
+            ),
           ),
-        ),
-        SizedBox(width: 10,),
-        Expanded(
-          child: FormBuilderDropdown<int>(
-            name: "dvoranaId",
-            decoration: InputDecoration(labelText: "Dvorana"),
-            items: _dvoranaResult?.resultList
-                .map((e) => DropdownMenuItem(
-                      value: e.dvoranaId,
-                      child: Text(e.naziv ?? ""),
-                    ))
-                .toList() ?? [],
-            onChanged: (value) {
-              setState(() {
-                _selectedDvoranaId = value;
-              });
-            },
+          SizedBox(width: 10,),
+          Expanded(
+            child: FormBuilderDropdown<int>(
+              name: "dvoranaId",
+              decoration: InputDecoration(labelText: "Dvorana"),
+              items: _dvoranaResult?.resultList
+                  .map((e) => DropdownMenuItem(
+                        value: e.dvoranaId,
+                        child: Text(e.naziv ?? ""),
+                      ))
+                  .toList() ?? [],
+              onChanged: (value) {
+                setState(() {
+                  _selectedDvoranaId = value;
+                });
+              },
+            ),
           ),
-        ),
-        SizedBox(width: 20,),
-        ElevatedButton(onPressed: () async{
-        
-        var filter = {
-          "Status": _statusEditingController.text,
-          "PredstavaId": _selectedPredstavaId,
-          "DvoranaId": _selectedDvoranaId,
-          'isDeleted': false
-        };
-        var data;
-        try {
-          data = await _terminProvider.get(filter: filter);
-        } catch (e) {
-          QuickAlert.show(
-            context: context,
-            type: QuickAlertType.error,
-            title: "Greška pri dohvatanju termina!",
-            width: 300
-          );
-        }
-        setState(() {
-          result = data;
-        });
-        
-        }, child: Text("Pretraga")),
-        SizedBox(width: 10,),
-        ElevatedButton(onPressed: () async{
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => TerminDetailsScreen()));
-        }, child: Text("Dodaj"))
+          SizedBox(width: 20,),
+          ElevatedButton(
+            onPressed: () {
+              _dataSource.filterServerSide(_statusEditingController.text, _selectedPredstavaId, _selectedDvoranaId);
+            },
+            child: const Text("Pretraga"),
+          ),
+          const SizedBox(width: 10),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const TerminDetailsScreen()),
+              );
+            },
+            child: const Text("Dodaj"),
+          ),
         ],
       ),
     );
   }
-  
-  Widget _buildResultView(){
+
+  Widget _buildPaginatedTable() {
     return Expanded(
-      child: Container(
-        width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
-        child: DataTable(
-        columns: const [
-          DataColumn(label: Text("Status")),
-          DataColumn(label: Text("Datum")),
-          DataColumn(label: Text("Dvorana")),
-          DataColumn(label: Text("Predstava")),
-          DataColumn(label: Text('Uredi')),
-          DataColumn(label: Text('Obriši')),
-        ],
-          rows: result?.resultList.map((e) => 
-          DataRow(
-            cells: [
-            DataCell(Text(e.status ?? "")),
-            DataCell(Text(e.datum.toString())),
-            DataCell(
-              FutureBuilder(
-                future: fetchDvorana(e.dvoranaId!),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text("Učitavanje...");
-                  } else if (snapshot.hasError) {
-                    return Text("Greška");
-                  } else {
-                    var dvorana = snapshot.data!;
-                    return Text("${dvorana.naziv}");
-                  }
-                },
-              )
-            ),
-            DataCell(
-              FutureBuilder(
-                future: fetchPredstava(e.predstavaId!),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text("Učitavanje...");
-                  } else if (snapshot.hasError) {
-                    return Text("Greška");
-                  } else {
-                    var predstava = snapshot.data!;
-                    return Text("${predstava.naziv}");
-                  }
-                },
-              )
-            ),
-            DataCell(
-              IconButton(
-                icon: Icon(Icons.edit,
-                    color: Theme.of(context).primaryColor),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => TerminDetailsScreen(termin: e,)));
-                },
-              )
-            ),
-            DataCell(
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  openDeleteModal(e.terminId!);
-                },
-              )
-            ),
-          ])).toList().cast<DataRow>() ?? [],
-          ),
-      )
-      )
+          child: SizedBox(
+              width: double.infinity,
+              child: AdvancedPaginatedDataTable(
+                columns: [
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Status"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Datum"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Dvorana"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Predstava"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Uredi"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Obriši"),
+                  )),
+                ],
+                source: _dataSource,
+                addEmptyRows: false,
+              )),
+        ),
+      ),
     );
   }
+}
 
+class TerminDataSource extends AdvancedDataTableSource<Termin> {
+  List<Termin> data = [];
+  final TerminProvider provider;
+  late DvoranaProvider _dvoranaProvider;
+  late PredstavaProvider _predstavaProvider;
+  BuildContext context;
+  int count = 10;
+  int page = 1;
+  int pageSize = 10;
+  String nazivGTE = "";
+  int _predstavaIdEQ = 0;
+  int _dvoranaIdEQ = 0;
+  dynamic filter;
+  TerminDataSource({required this.provider, required this.context}){
+    _dvoranaProvider = context.read<DvoranaProvider>();
+    _predstavaProvider = context.read<PredstavaProvider>();
+  }
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= data.length) return null;
+    final e = data[index];
+
+    return DataRow(cells: [
+      DataCell(Text(e.status ?? "")),
+      DataCell(Text(e.datum.toString())),
+      DataCell(
+        FutureBuilder(
+          future: fetchDvorana(e.dvoranaId!),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text("Učitavanje...");
+            } else if (snapshot.hasError) {
+              return Text("Greška");
+            } else {
+              var dvorana = snapshot.data!;
+              return Text("${dvorana.naziv}");
+            }
+          },
+        )
+      ),
+      DataCell(
+        FutureBuilder(
+          future: fetchPredstava(e.predstavaId!),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text("Učitavanje...");
+            } else if (snapshot.hasError) {
+              return Text("Greška");
+            } else {
+              var predstava = snapshot.data!;
+              return Text("${predstava.naziv}");
+            }
+          },
+        )
+      ),
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.edit, color: Colors.lightBlue),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => TerminDetailsScreen(termin: e),
+              ),
+            );
+          },
+        ),
+      ),
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.delete, color: Colors.red),
+          onPressed: () => _showDeleteDialog(e.dvoranaId!),
+        ),
+      ),
+    ]);
+  }
   Future<Dvorana> fetchDvorana(int dvoranaId) async {
     try {
       var dvorana = await _dvoranaProvider.getById(dvoranaId);
@@ -259,6 +299,7 @@ class _TerminListScreenState extends State<TerminListScreen> {
       throw Exception("Greška prilikom dohvata dvorane!");
     }
   }
+
   Future<Predstava> fetchPredstava(int predstavaId) async {
     try {
       var dvorana = await _predstavaProvider.getById(predstavaId);
@@ -273,53 +314,35 @@ class _TerminListScreenState extends State<TerminListScreen> {
       throw Exception("Greška prilikom dohvata predstave!");
     }
   }
-
-  void openDeleteModal(int terminId) {
+  void _showDeleteDialog(int terminId) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Brisanje'),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Da li ste sigurni da želite da obrišete termin?'),
-            ],
-          ),
+          content: const Text('Da li ste sigurni da želite da obrišete dvoranu?'),
           actions: [
-            ElevatedButton(
+            TextButton(
               onPressed: () {
-                Navigator.pop(context);
-              }, 
-              child: const Text(
-                'Poništi',
-                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
-              ),
+                Navigator.pop(dialogContext);
+              },
+              child: const Text('Poništi'),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () async {
+                Navigator.pop(dialogContext);
                 try {
-                  await _dvoranaProvider.delete(terminId);
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
-                  await _loadData();
+                  await provider.delete(terminId);
+                  filterServerSide(nazivGTE, _predstavaIdEQ, _dvoranaIdEQ);
                 } catch (e) {
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                    QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.error,
-                      title: "Greška pri brisanju termina!",
-                      width: 300
-                    );
-                  }
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri brisanju dvorane!",
+                  );
                 }
               },
-              child: const Text(
-                'Obriši',
-                style: TextStyle(color: Colors.red),
-              ),
+              child: const Text('Obriši', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -327,4 +350,51 @@ class _TerminListScreenState extends State<TerminListScreen> {
     );
   }
 
+  @override
+  Future<RemoteDataSourceDetails<Termin>> getNextPage(NextPageRequest request) async {
+    final page = (request.offset ~/ pageSize).toInt() + 1;
+
+    final filter = {
+      'NazivGTE': nazivGTE,
+      if (_predstavaIdEQ > 0) 'PredstavaId': _predstavaIdEQ.toString(),
+      if (_dvoranaIdEQ > 0) 'DvoranaId': _dvoranaIdEQ.toString(),
+      'isDeleted': false
+    };
+
+    try {
+      final result = await provider.get(
+        filter: filter,
+        page: page,
+        pageSize: pageSize
+        );
+      data = result.resultList;
+      count = result.count;
+      notifyListeners();
+      return RemoteDataSourceDetails(count, data);
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatu podataka!",
+      );
+      return RemoteDataSourceDetails(0, []);
+    }
+  }
+
+  void filterServerSide(String naziv, int? predstavaId, int? dvoranaId) {
+    nazivGTE = naziv;
+    _predstavaIdEQ = predstavaId ?? 0;
+    _dvoranaIdEQ = dvoranaId ?? 0;
+    nazivGTE = naziv;
+    setNextView();
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => count;
+
+  @override
+  int get selectedRowCount => 0;
 }

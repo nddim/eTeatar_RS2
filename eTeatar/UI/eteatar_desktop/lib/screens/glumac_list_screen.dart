@@ -1,6 +1,7 @@
+import 'package:advanced_datatable/advanced_datatable_source.dart';
+import 'package:advanced_datatable/datatable.dart';
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/glumac.dart';
-import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/providers/glumac_provider.dart';
 import 'package:eteatar_desktop/screens/glumac_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,184 +15,227 @@ class GlumacListScreen extends StatefulWidget {
 }
 
 class _GlumacListScreenState extends State<GlumacListScreen> {
-  bool _isInit = true;
-  bool _isLoading = true;
   late GlumacProvider _glumacProvider;
-  SearchResult<Glumac>? result = null;
+  late GlumacDataSource _dataSource;
+
+  bool _isLoading = false;
+  @override
+  BuildContext get context => super.context;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_isInit) {
-      _glumacProvider = context.read<GlumacProvider>();
-      _loadData();
-      _isInit = false;
-    }
   }
 
-  Future<void> _loadData() async {
-    var data;
-    try {
-      data = await _glumacProvider.get(filter: { 'isDeleted': false});
-    } catch (e){
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: "Greška pri dohvatanju glumaca!",
-        width: 300
-      );
-    }
-    setState(() {
-      result = data;
-      _isLoading = false;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _glumacProvider = context.read<GlumacProvider>();
+    _dataSource = GlumacDataSource(provider: _glumacProvider, context: context);
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return MasterScreen(
       "Lista glumaca",
-      _isLoading 
-      ? Center(child: CircularProgressIndicator())
-      : Column(
-          children: [
-            _buildSearch(),
-            _buildResultView(),
-          ],
-        ),
-    );
-  }
-
-  TextEditingController _imeEditingController = TextEditingController();
-
-  Widget _buildSearch(){
-    return Padding(padding: const EdgeInsets.all(8.0),
-    child: Row(
-      children:[
-        Expanded( child: TextField(controller: _imeEditingController, decoration: const InputDecoration(labelText: "Ime i prezime", hintText: "Ime i prezime glumca"))),
-        ElevatedButton(onPressed: () async{
-        
-        var filter = {
-          "ImeGTE": _imeEditingController.text,
-          'isDeleted': false
-        };
-        var data;
-        try {
-          data = await _glumacProvider.get(filter: filter);
-        } catch (e) {
-          QuickAlert.show(
-            context: context,
-            type: QuickAlertType.error,
-            title: "Greška pri dohvatanju glumaca!",
-            width: 300
-          );
-        }
-        setState(() {
-          result = data;
-        });
-
-        }, child: Text("Pretraga")),
-
-        SizedBox(width: 10,),
-        ElevatedButton(onPressed: () async{
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => GlumacDetailsScreen()));
-        }, child: Text("Dodaj"))
+      Column(
+        children: [
+          _buildSearch(),
+          _isLoading ? const Text("Nema podataka") : _buildPaginatedTable()
         ],
       ),
     );
   }
 
-  Widget _buildResultView(){
-    return Expanded(
-      child: Container(
-        width: double.infinity,
-        child: SingleChildScrollView(
-        child: DataTable(
-        columns: const [
-          DataColumn(label: Text("Ime")),
-          DataColumn(label: Text("Prezime")),
-          DataColumn(label: Text('Uredi')),
-          DataColumn(label: Text('Obriši')),
-        ],
-          rows: result?.resultList.map((e) => 
-          DataRow(
-            cells: [
-            DataCell(Text(e.ime ?? "")),
-            DataCell(Text(e.prezime ?? "")),
-            DataCell(
-              IconButton(
-                icon: Icon(Icons.edit,
-                    color: Theme.of(context).primaryColor),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => GlumacDetailsScreen(glumac: e,)));
-                },
-              )
+  TextEditingController _imeEditingController = TextEditingController();
+  Widget _buildSearch() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _imeEditingController,
+              decoration: const InputDecoration(labelText: "Naziv", hintText: "Naziv dvorane"),
             ),
-            DataCell(
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  openDeleteModal(e.glumacId!);
-                },
-              )
-            ),
-          ])).toList().cast<DataRow>() ?? [],
           ),
-      )
-      )
+          ElevatedButton(
+            onPressed: () {
+              _dataSource.filterServerSide(_imeEditingController.text);
+            },
+            child: const Text("Pretraga"),
+          ),
+          const SizedBox(width: 10),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const GlumacDetailsScreen()),
+              );
+            },
+            child: const Text("Dodaj"),
+          ),
+        ],
+      ),
     );
   }
   
-  void openDeleteModal(int glumacId) {
+  Widget _buildPaginatedTable() {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: SizedBox(
+              width: double.infinity,
+              child: AdvancedPaginatedDataTable(
+                columns: [
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Ime"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Prezime"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Uredi"),
+                  )),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text("Obriši"),
+                  )),
+                ],
+                source: _dataSource,
+                addEmptyRows: false,
+              )),
+        ),
+      ),
+    );
+  }
+ 
+}
+
+class GlumacDataSource extends AdvancedDataTableSource<Glumac> {
+  List<Glumac> data = [];
+  final GlumacProvider provider;
+  BuildContext context;
+  int count = 10;
+  int page = 1;
+  int pageSize = 10;
+  String imeGTE = "";
+  dynamic filter;
+  GlumacDataSource({required this.provider, required this.context});
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= data.length) return null;
+    final e = data[index];
+
+    return DataRow(cells: [
+      DataCell(Text(e.ime ?? "")),
+      DataCell(Text(e.prezime ?? "")),
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.edit, color: Colors.lightBlue),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => GlumacDetailsScreen(glumac: e),
+              ),
+            );
+          },
+        ),
+      ),
+      DataCell(
+        IconButton(
+          icon: const Icon(Icons.delete, color: Colors.red),
+          onPressed: () => _showDeleteDialog(e.glumacId!),
+        ),
+      ),
+    ]);
+  }
+
+  void _showDeleteDialog(int dvoranaId) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Brisanje'),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Da li ste sigurni da želite da obrišete glumca?'),
-            ],
-          ),
+          content: const Text('Da li ste sigurni da želite da obrišete glumca?'),
           actions: [
-            ElevatedButton(
+            TextButton(
               onPressed: () {
-                Navigator.pop(context);
-              }, 
-              child: const Text(
-                'Poništi',
-                style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
-              ),
+                Navigator.pop(dialogContext);
+              },
+              child: const Text('Poništi'),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () async {
+                Navigator.pop(dialogContext);
                 try {
-                  await _glumacProvider.delete(glumacId);
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
-                  await _loadData();
+                  await provider.delete(dvoranaId);
+                  filterServerSide(imeGTE);
                 } catch (e) {
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                    QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.error,
-                      title: "Greška pri brisanju glumca!",
-                      width: 300
-                    );
-                  }
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    title: "Greška pri brisanju glumca!",
+                  );
                 }
               },
-              child: const Text(
-                'Obriši',
-                style: TextStyle(color: Colors.red),
-              ),
+              child: const Text('Obriši', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
       },
     );
   }
+
+  @override
+  Future<RemoteDataSourceDetails<Glumac>> getNextPage(NextPageRequest request) async {
+    final page = (request.offset ~/ pageSize).toInt() + 1;
+
+    final filter = {
+      'ImeGTE': imeGTE,
+      'isDeleted': false
+    };
+
+    try {
+      final result = await provider.get(
+        filter: filter,
+        page: page,
+        pageSize: pageSize
+        );
+      data = result.resultList;
+      count = result.count;
+      notifyListeners();
+      return RemoteDataSourceDetails(count, data);
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatu podataka!",
+      );
+      return RemoteDataSourceDetails(0, []);
+    }
+  }
+
+  void filterServerSide(String naziv) {
+    imeGTE = naziv;
+    setNextView();
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => count;
+
+  @override
+  int get selectedRowCount => 0;
 }
