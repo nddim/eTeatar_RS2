@@ -10,12 +10,15 @@ class Karta {
   int? terminId;
   int? rezervacijaId;
   int? korisnikId;
+  bool? ukljucenaHrana;
+
   Karta(
     this.kartaId,
     this.cijena,
     this.sjedisteId,
     this.terminId,
-    this.korisnikId
+    this.korisnikId,
+    this.ukljucenaHrana
   );
 
   factory Karta.fromJson(Map<String, dynamic> json) => _$KartaFromJson(json);

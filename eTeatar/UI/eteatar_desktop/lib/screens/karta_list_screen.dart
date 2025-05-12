@@ -104,6 +104,11 @@ class _KartaListScreenState extends State<KartaListScreen> {
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
+                    child: const Text("Ukljucena hrana"),
+                  ), numeric:true),
+                  DataColumn(
+                      label: Container(
+                    alignment: Alignment.centerLeft,
                     child: const Text("Korisnik"),
                   ), numeric:true),
                   DataColumn(
@@ -174,6 +179,15 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
               return Text("${formatDateTime(termin.datum!.toString())}");
             }
           },
+        )
+      ),
+      DataCell(
+        Text(
+          e.ukljucenaHrana == true ? 'Da' : 'Ne',
+          style: TextStyle(
+            color: e.ukljucenaHrana == true ? Colors.green : Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
         )
       ),
       DataCell(

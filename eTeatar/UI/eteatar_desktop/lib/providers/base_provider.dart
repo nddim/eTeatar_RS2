@@ -50,16 +50,14 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
     var uri = Uri.parse(url);
     var headers = createHeaders();
-      print(uri);
 
     var response = await http.get(uri, headers: headers);
+
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
-
       var result = SearchResult<T>();
-
+      
       result.count = data['count'];
-
       for (var item in data['resultList']) {
         result.resultList.add(fromJson(item));
       }
@@ -67,7 +65,6 @@ abstract class BaseProvider<T> with ChangeNotifier {
     } else {
       throw new Exception("Unknown error");
     }
-    // print("response: ${response.request} ${response.statusCode}, ${response.body}");
   }
 
   Future<T> getById(int id) async {
