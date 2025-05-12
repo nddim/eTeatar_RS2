@@ -11,6 +11,8 @@ Task.Delay(10000).Wait();
 Task.Delay(1000).Wait();
 Console.WriteLine("Consuming Queue Now");
 
+DotNetEnv.Env.Load();
+
 var hostname = Environment.GetEnvironmentVariable("_rabbitMqHost") ?? "rabbitmq";
 var username = Environment.GetEnvironmentVariable("_rabbitMqUser") ?? "guest";
 var password = Environment.GetEnvironmentVariable("_rabbitMqPassword") ?? "guest";

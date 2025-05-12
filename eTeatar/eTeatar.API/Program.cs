@@ -69,6 +69,8 @@ builder.Services.AddSwaggerGen(c =>
 
 });
 
+DotNetEnv.Env.Load();
+
 var connectionString = builder.Configuration.GetConnectionString("eTeatarConnection");
 builder.Services.AddDbContext<ETeatarContext>(options => 
     options.UseSqlServer(connectionString));
