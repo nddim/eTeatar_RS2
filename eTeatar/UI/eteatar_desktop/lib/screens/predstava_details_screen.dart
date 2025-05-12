@@ -149,6 +149,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                     decoration: const InputDecoration(labelText: "Naziv"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
                       FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
@@ -188,6 +189,7 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                     decoration: const InputDecoration(labelText: "Opis"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
                       FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                   ),
@@ -200,6 +202,10 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                   decoration: const InputDecoration(labelText: "Produkcija"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.match(
+                        r'^[A-ZČĆŽĐŠ][a-zA-ZčćžđšČĆŽĐŠ,]*$', 
+                        errorText: "Prezime mora počinjati sa velikim slovom i smije sadržavati samo slova i zarez."),
+                    FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
                     FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     
                   ]),
@@ -212,6 +218,10 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                   decoration: const InputDecoration(labelText: "Koreografija"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.match(
+                        r'^[A-ZČĆŽĐŠ][a-zA-ZčćžđšČĆŽĐŠ,]*$', 
+                        errorText: "Prezime mora počinjati sa velikim slovom i smije sadržavati samo slova i zarez."),
+                    FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
                     FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                   ]),
                 ),
@@ -223,6 +233,10 @@ class _PredstavaDetailsScreenState extends State<PredstavaDetailsScreen> {
                   decoration: const InputDecoration(labelText: "Scenografija"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.match(
+                        r'^[A-ZČĆŽĐŠ][a-zA-ZčćžđšČĆŽĐŠ,]*$', 
+                        errorText: "Prezime mora počinjati sa velikim slovom i smije sadržavati samo slova i zarez."),
+                    FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
                     FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                   ]),
                 ),

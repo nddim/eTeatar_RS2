@@ -118,6 +118,7 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                     decoration: InputDecoration(labelText: "Naziv"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
                       FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
@@ -129,6 +130,7 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                     decoration: InputDecoration(labelText: "Opis"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
                       FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )

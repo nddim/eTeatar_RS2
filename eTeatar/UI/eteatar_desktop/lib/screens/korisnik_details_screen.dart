@@ -101,6 +101,9 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                     decoration: InputDecoration(labelText: "Ime"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.match(
+                        r'^[A-ZČĆŽĐŠ][a-zA-ZčćžđšČĆŽĐŠ]*$', 
+                        errorText: "Prezime mora počinjati sa velikim slovom i smije sadržavati samo slova."),
                       FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
@@ -112,6 +115,9 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                     decoration: InputDecoration(labelText: "Prezime"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.match(
+                        r'^[A-ZČĆŽĐŠ][a-zA-ZčćžđšČĆŽĐŠ]*$', 
+                        errorText: "Prezime mora počinjati sa velikim slovom i smije sadržavati samo slova."),
                       FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
@@ -168,6 +174,9 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                   decoration: InputDecoration(labelText: "Telefon"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.match(
+                      r'^\+\d{7,15}$',
+                    errorText: "Telefon mora imati od 7 do 15 cifara \ni počinjati znakom +."),
                     FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                   ]),
                 ),

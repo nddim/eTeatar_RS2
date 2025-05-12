@@ -90,6 +90,7 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
                     decoration: InputDecoration(labelText: "Naziv"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
                       FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
@@ -115,6 +116,7 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
                     decoration: InputDecoration(labelText: "Sadrzaj"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
                       FormBuilderValidators.maxLength(500, errorText: "Maksimalna dužina je 500 karaktera!"),
                     ]),
                     )
