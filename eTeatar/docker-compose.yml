@@ -1,0 +1,91 @@
+version: '3'
+services:
+#mssql docker   
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    container_name: rabbitmq
+    hostname: "rabbitmq"
+    labels:
+        NAME: "rabbitmq"
+    restart: unless-stopped
+    ports:
+        - "15672:15672"
+        - "5673:5672"
+    expose:
+        - 5672
+        - 15672
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:15672"]
+        interval: 30s
+        timeout: 10s
+        retries: 10
+    networks:
+        - eteatarnet2025
+   
+  eteatar-sql:
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    restart: unless-stopped
+    user: root
+    environment:
+        - ACCEPT_EULA=Y
+        - SA_PASSWORD=${SA_PASSWORD}
+        - MSSQL_PID=Developer
+    ports:
+        - 1401:1433
+    expose:
+        - 1433
+    networks:
+        - eteatarnet2025
+    
+  
+  eteatar-api:
+      restart: unless-stopped
+      build:
+        context: .
+        dockerfile: Dockerfile.api
+      environment:
+        - ConnectionStrings:eTeatarConnection=Server=${SOURCE},1433;Database=${CATALOGv};User=sa;Password=${SA_PASSWORD};ConnectRetryCount=0;TrustServerCertificate=True
+        - ASPNETCORE_ENVIRONMENT=Development
+        - SMTP_USER=${SMTP_USER}
+        - SMTP_PASS=${SMTP_PASS}
+        - SMTP_HOST=${SMTP_HOST}
+        - ENABLE_SSL=${ENABLE_SSL}
+        - SMTP_PORT=${SMTP_PORT}
+        - RABBIT_MQ=${RABBIT_MQ}
+        - SA_PASSWORD=${SA_PASSWORD}
+        - RABBIT_MQ_USER=${RABBIT_MQ_USER}
+        - RABBIT_MQ_PASS=${RABBIT_MQ_PASS}
+        - RABBIT_MQ_PORT=${RABBIT_MQ_PORT}
+      ports:
+        - 5203:5203
+      networks:
+        - eteatarnet2025
+      links:
+        - eteatar-sql
+      depends_on:
+        - eteatar-sql
+        - rabbitmq
+
+  eteatar-console:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile.subscriber
+    depends_on:
+      - rabbitmq      
+    environment:
+        - SMTP_USER=${SMTP_USER}
+        - SMTP_PASS=${SMTP_PASS}
+        - SMTP_HOST=${SMTP_HOST}
+        - ENABLE_SSL=${ENABLE_SSL}
+        - SMTP_PORT=${SMTP_PORT}
+        - RABBIT_MQ=${RABBIT_MQ}
+        - RABBIT_MQ_PORT=${RABBIT_MQ_PORT}
+        - RABBIT_MQ_HOST=${RABBIT_MQ_HOST}
+    networks:
+      - eteatarnet2025
+
+
+networks:
+  eteatarnet2025:
+    driver: bridge      

@@ -3,7 +3,6 @@ using eTeatar.Subscriber;
 using Newtonsoft.Json;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
-using eTeatar.Model;
 
 Console.WriteLine("Sleeping to wait for Rabbit");
 Task.Delay(10000).Wait();

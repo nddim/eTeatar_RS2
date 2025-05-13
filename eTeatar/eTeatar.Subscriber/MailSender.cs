@@ -12,15 +12,15 @@ namespace eTeatar.Subscriber
 {
     public class MailSender
     {
-        public static async Task SendEmail(Model.MailDTO mailObj)
+        public static async Task SendEmail(MailDTO mailObj)
         {
             if (mailObj == null) return;
 
-            string fromAddress = Environment.GetEnvironmentVariable("_fromAddress") ?? "eteatar.rs2@gmail.com";
-            string password = Environment.GetEnvironmentVariable("_password") ?? string.Empty;
-            string host = Environment.GetEnvironmentVariable("_host") ?? "smtp.gmail.com";
-            int port = int.Parse(Environment.GetEnvironmentVariable("_port") ?? "465");
-            bool enableSSL = bool.Parse(Environment.GetEnvironmentVariable("_enableSSL") ?? "true");
+            string fromAddress = Environment.GetEnvironmentVariable("SMTP_USER") ?? "eteatar.rs2@gmail.com";
+            string password = Environment.GetEnvironmentVariable("SMTP_PASS") ?? string.Empty;
+            string host = Environment.GetEnvironmentVariable("SMTP_HOST") ?? "smtp.gmail.com";
+            int port = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT") ?? "465");
+            bool enableSSL = bool.Parse(Environment.GetEnvironmentVariable("ENABLE_SSL") ?? "true");
             string displayName = Environment.GetEnvironmentVariable("_displayName") ?? "no-reply";
             int timeout = int.Parse(Environment.GetEnvironmentVariable("_timeout") ?? "255");
             Console.WriteLine($"Usli smo u metodu prije password: {password}");
