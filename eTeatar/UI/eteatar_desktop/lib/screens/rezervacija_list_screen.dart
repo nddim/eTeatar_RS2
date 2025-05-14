@@ -3,11 +3,13 @@ import 'package:advanced_datatable/datatable.dart';
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/korisnik.dart';
 import 'package:eteatar_desktop/models/rezervacija.dart';
+import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/models/termin.dart';
 import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:eteatar_desktop/providers/rezervacija_provider.dart';
 import 'package:eteatar_desktop/providers/termin_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -20,8 +22,11 @@ class RezervacijaListScreen extends StatefulWidget {
 
 class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
   late RezervacijaProvider _rezervacijaProvider;
+  late KorisnikProvider _korisnikProvider;
   late RezervacijaDataSource _dataSource;
   bool _isLoading = false;
+  SearchResult<Korisnik>? _korisnikResult;
+
   @override
   BuildContext get context => super.context;
 
@@ -34,8 +39,27 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
   void initState() {
     super.initState();
     _rezervacijaProvider = context.read<RezervacijaProvider>();
+    _korisnikProvider = context.read<KorisnikProvider>();
+    _loadData();
     _dataSource = RezervacijaDataSource(provider: _rezervacijaProvider, context: context);
     setState(() {});
+  }
+
+  Future<void> _loadData() async {
+    try {
+      var result = await _korisnikProvider.get(filter: { 'isDeleted': false});
+      setState(() {
+        _korisnikResult = result;
+      });
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju korisnika!",
+        text: "$e",
+        width: 300
+      );
+    }
   }
 
   @override
@@ -51,24 +75,79 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
     );
   }
 
-  TextEditingController _nazivEditingController = TextEditingController();
+  final Map<int, String> _statusMap = {
+    1: "Kreirano",
+    2: "Odobreno",
+    3: "Ponisteno",
+    4: "Zavrseno",
+  };
 
+  Key _dropdownKey = UniqueKey();
+  Key _statusDropdownKey = UniqueKey();
+  int? _selectedKorisnikId;
+  int? _selectedStatus;
+  
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              controller: _nazivEditingController,
-              decoration: const InputDecoration(labelText: "Naziv", hintText: "Naziv dvorane"),
+            child: DropdownButtonFormField<int>(
+              key: _statusDropdownKey,
+              value: _selectedStatus,
+              decoration: const InputDecoration(labelText: "Status"),
+              items: _statusMap.entries
+                  .map((entry) => DropdownMenuItem(
+                        value: entry.key,
+                        child: Text(entry.value),
+                      ))
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedStatus = value;
+                });
+              },
             ),
           ),
+          const SizedBox(width: 20,),
+          Expanded(
+            child: FormBuilderDropdown<int>(
+              key: _dropdownKey,
+              name: "korisnikId",
+              decoration: InputDecoration(labelText: "Korisnik"),
+              items: _korisnikResult?.resultList
+                  .map((e) => DropdownMenuItem(
+                        value: e.korisnikId,
+                        child: Text("${e.ime ?? ""} ${e.prezime ?? ""}"),
+                      ))
+                  .toList() ?? [],
+              onChanged: (value) {
+                setState(() {
+                  _selectedKorisnikId = value;
+                });
+              },
+            ),
+          ),
+          const SizedBox(width: 20,),
           ElevatedButton(
             onPressed: () {
-              _dataSource.filterServerSide(_nazivEditingController.text);
+              _dataSource.filterServerSide( _statusMap[_selectedStatus] ?? "", _selectedKorisnikId);
             },
             child: const Text("Pretraga"),
+          ),
+          const SizedBox(width: 20),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _selectedKorisnikId = null;
+                _selectedStatus = null;
+                _dropdownKey = UniqueKey();
+                _statusDropdownKey = UniqueKey();
+              });
+              _dataSource.filterServerSide("", null);
+            },
+            child: const Text("Resetuj filtere"),
           ),
         ],
       ),
@@ -133,7 +212,8 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
   int count = 10;
   int page = 1;
   int pageSize = 10;
-  String nazivGTE = "";
+  String statusEQ = "";
+  int korisnikIdEQ = 0;
   dynamic filter;
   RezervacijaDataSource({required this.provider, required this.context}){
     _korisnikProvider = context.read<KorisnikProvider>();
@@ -239,7 +319,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Brisanje'),
-          content: const Text('Da li ste sigurni da želite da obrišete dvoranu?'),
+          content: const Text('Da li ste sigurni da želite da obrišete rezervaciju?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -252,12 +332,12 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(dvoranaId);
-                  filterServerSide(nazivGTE);
+                  filterServerSide(statusEQ, korisnikIdEQ);
                 } catch (e) {
                   QuickAlert.show(
                     context: context,
                     type: QuickAlertType.error,
-                    title: "Greška pri brisanju dvorane!",
+                    title: "Greška pri brisanju rezervacije!",
                     text: "$e",
                   );
                 }
@@ -299,7 +379,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
                   if (context.mounted) {
                     Navigator.pop(context);
                   }
-                  filterServerSide(nazivGTE);
+                  filterServerSide(statusEQ, korisnikIdEQ);
                 } catch (e) {
                   if (context.mounted) {
                     Navigator.pop(context);
@@ -353,7 +433,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
                   if (context.mounted) {
                     Navigator.pop(context);
                   }
-                  filterServerSide(nazivGTE);
+                  filterServerSide(statusEQ, korisnikIdEQ);
                 } catch (e) {
                   if (context.mounted) {
                     Navigator.pop(context);
@@ -383,7 +463,8 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
     final page = (request.offset ~/ pageSize).toInt() + 1;
 
     final filter = {
-      'NazivGTE': nazivGTE,
+      'Status': statusEQ,
+      if (korisnikIdEQ > 0) 'KorisnikId': korisnikIdEQ.toString(),
       'isDeleted': false
     };
 
@@ -408,8 +489,9 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
     }
   }
 
-  void filterServerSide(String naziv) {
-    nazivGTE = naziv;
+  void filterServerSide(String status, int? korisnikId) {
+    statusEQ = status;
+    korisnikIdEQ = korisnikId ?? 0;
     setNextView();
   }
 

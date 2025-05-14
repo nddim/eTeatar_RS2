@@ -3,6 +3,7 @@ import 'package:advanced_datatable/datatable.dart';
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/karta.dart';
 import 'package:eteatar_desktop/models/korisnik.dart';
+import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/models/sjediste.dart';
 import 'package:eteatar_desktop/models/termin.dart';
 import 'package:eteatar_desktop/providers/karta_provider.dart';
@@ -11,6 +12,7 @@ import 'package:eteatar_desktop/providers/sjediste_provider.dart';
 import 'package:eteatar_desktop/providers/termin_provider.dart';
 import 'package:eteatar_desktop/providers/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -23,9 +25,10 @@ class KartaListScreen extends StatefulWidget {
 
 class _KartaListScreenState extends State<KartaListScreen> {
   late KartaProvider _kartaProvider;
+  late KorisnikProvider _korisnikProvider;
   late KartaDataSource _dataSource;
   bool _isLoading = false;
-  
+  SearchResult<Korisnik>? _korisnikResult;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -35,10 +38,27 @@ class _KartaListScreenState extends State<KartaListScreen> {
   void initState() {
     super.initState();
     _kartaProvider = context.read<KartaProvider>();
+    _korisnikProvider = context.read<KorisnikProvider>();
+    _loadData();
     _dataSource = KartaDataSource(provider: _kartaProvider, context: context);
     setState(() {});
   }
-
+  Future<void> _loadData() async {
+    try {
+      var result = await _korisnikProvider.get(filter: { 'isDeleted': false});
+      setState(() {
+        _korisnikResult = result;
+      });
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju korisnika!",
+        text: "$e",
+        width: 300
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return MasterScreen(
@@ -52,7 +72,10 @@ class _KartaListScreenState extends State<KartaListScreen> {
     );
   }
 
-  TextEditingController _korisnikEditingController = TextEditingController();
+  TextEditingController _cijenaEditingController = TextEditingController();
+  int? _selectedKorisnikId;
+  Key _dropdownKey = UniqueKey();
+
    Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -60,15 +83,47 @@ class _KartaListScreenState extends State<KartaListScreen> {
         children: [
           Expanded(
             child: TextField(
-              controller: _korisnikEditingController,
-              decoration: const InputDecoration(labelText: "Ime korisnika", hintText: "Ime korisnika"),
+              controller: _cijenaEditingController,
+              decoration: const InputDecoration(labelText: "Cijena karte", hintText: "KM"),
             ),
           ),
+          const SizedBox(width: 20,),
+          Expanded(
+            child: FormBuilderDropdown<int>(
+              key: _dropdownKey,
+              name: "korisnikId",
+              decoration: InputDecoration(labelText: "Korisnik"),
+              items: _korisnikResult?.resultList
+                  .map((e) => DropdownMenuItem(
+                        value: e.korisnikId,
+                        child: Text("${e.ime ?? ""} ${e.prezime ?? ""}"),
+                      ))
+                  .toList() ?? [],
+              onChanged: (value) {
+                setState(() {
+                  _selectedKorisnikId = value;
+                });
+              },
+            ),
+          ),
+          const SizedBox(width: 20,),
           ElevatedButton(
             onPressed: () {
-              _dataSource.filterServerSide(_korisnikEditingController.text);
+              _dataSource.filterServerSide(_cijenaEditingController.text, _selectedKorisnikId);
             },
             child: const Text("Pretraga"),
+          ),
+          const SizedBox(width: 20),
+          ElevatedButton(
+            onPressed: () {
+              _cijenaEditingController.clear();
+              setState(() {
+                _selectedKorisnikId = null;
+                _dropdownKey = UniqueKey();
+              });
+              _dataSource.filterServerSide("", null);
+            },
+            child: const Text("Resetuj filtere"),
           ),
         ],
       ),
@@ -137,6 +192,7 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
   int page = 1;
   int pageSize = 10;
   String imeGTE = "";
+  int korisnikIdEQ = 0;
   dynamic filter;
   KartaDataSource({required this.provider, required this.context}) {
   _korisnikProvider = context.read<KorisnikProvider>();
@@ -280,7 +336,7 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(kartaId);
-                  filterServerSide(imeGTE);
+                  filterServerSide(imeGTE, korisnikIdEQ);
                 } catch (e) {
                   QuickAlert.show(
                     context: context,
@@ -304,6 +360,7 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
 
     final filter = {
       'ImeGTE': imeGTE,
+      if (korisnikIdEQ > 0) 'KorisnikId': korisnikIdEQ.toString(),
       'isDeleted': false
     };
 
@@ -328,8 +385,9 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
     }
   }
 
-  void filterServerSide(String naziv) {
+  void filterServerSide(String naziv, int? korisnikId) {
     imeGTE = naziv;
+    korisnikIdEQ = korisnikId ?? 0;
     setNextView();
   }
 

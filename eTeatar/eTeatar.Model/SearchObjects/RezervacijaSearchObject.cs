@@ -8,5 +8,6 @@ namespace eTeatar.Model.SearchObjects
     {
         public int? TerminId { get; set; }
         public int? KorisnikId { get; set; }
+        public string? Status { get; set; }
     }
 }

@@ -88,8 +88,8 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Dobrodošli u eTeatar'),
-        backgroundColor: const Color.fromRGBO(72, 142, 255, 1),
+        title: const Text('eTeatar'),
+        backgroundColor: const Color.fromARGB(255, 44, 188, 255),
       ),
       body: Center(
         child: SingleChildScrollView( 
@@ -147,6 +147,7 @@ class LoginPage extends StatelessWidget {
                             AuthProvider.telefon = korisnik.telefon;
                             AuthProvider.email = korisnik.email;
                             AuthProvider.slika = korisnik.slika;
+                            print("Slika: ${AuthProvider.slika}");
                             await predstavaProvider.get();
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => const MasterScreen()),

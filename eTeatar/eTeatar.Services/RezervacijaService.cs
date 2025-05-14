@@ -26,6 +26,10 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.TerminId == search.TerminId);
             }
+            if (search?.Status != null)
+            {
+                query = query.Where(x => x.StateMachine == search.Status);
+            }
             if (search?.KorisnikId != null)
             {
                 query = query.Where(x => x.KorisnikId == search.KorisnikId);

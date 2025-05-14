@@ -76,7 +76,8 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
 
   int? _selectedVrijednost;
   int? _selectedPredstavaId;
-
+  Key _vrijednostdropdownKey = UniqueKey();
+  Key _predstavadropdownKey = UniqueKey();
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -84,6 +85,7 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
         children: [
             Expanded(
               child: DropdownButtonFormField<int>(
+                key: _vrijednostdropdownKey,
                 value: _selectedVrijednost,
                 decoration: const InputDecoration(labelText: "Vrijednost"),
                 items: const[
@@ -103,6 +105,7 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
             const SizedBox(width: 10),
             Expanded(
             child: FormBuilderDropdown<int>(
+              key: _predstavadropdownKey,
               name: "predstavaId",
               decoration: InputDecoration(labelText: "Predstava"),
               items: predstavaResult?.resultList
@@ -124,6 +127,19 @@ class _OcjenaListScreenState extends State<OcjenaListScreen> {
               _dataSource.filterServerSide(_selectedVrijednost, _selectedPredstavaId);
             },
             child: const Text("Pretraga"),
+          ),
+          const SizedBox(width: 10),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _selectedPredstavaId = null;
+                _selectedVrijednost = null;
+                _vrijednostdropdownKey = UniqueKey();
+                _predstavadropdownKey = UniqueKey();
+              });
+              _dataSource.filterServerSide(null, null);
+            },
+            child: const Text("Resetuj filtere"),
           ),
         ],
       ),
@@ -235,7 +251,7 @@ class OcjenaDataSource extends AdvancedDataTableSource<Ocjena> {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Brisanje'),
-          content: const Text('Da li ste sigurni da želite da obrišete dvoranu?'),
+          content: const Text('Da li ste sigurni da želite da obrišete ocjenu?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -253,7 +269,7 @@ class OcjenaDataSource extends AdvancedDataTableSource<Ocjena> {
                   QuickAlert.show(
                     context: context,
                     type: QuickAlertType.error,
-                    title: "Greška pri brisanju dvorane!",
+                    title: "Greška pri brisanju ocjene!",
                     text: "$e",
                   );
                 }

@@ -64,7 +64,7 @@ class _UplataListScreenState extends State<UplataListScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreen(
-      "Lista dvorana",
+      "Lista uplata",
       Column(
         children: [
           _buildSearch(),
@@ -75,7 +75,8 @@ class _UplataListScreenState extends State<UplataListScreen> {
   }
   TextEditingController _iznosEditingController = TextEditingController();
   int? _selectedKorisnikId;
-  
+  Key _dropdownKey = UniqueKey();
+
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -88,9 +89,10 @@ class _UplataListScreenState extends State<UplataListScreen> {
             decoration: InputDecoration(labelText: "Iznos")
           )
         ),
-        SizedBox(width: 10,),
+        SizedBox(width: 20,),
         Expanded(
           child: FormBuilderDropdown<int>(
+            key: _dropdownKey,
             name: "korisnikId",
             decoration: InputDecoration(labelText: "Korisnik"),
             items: _korisnikResult?.resultList
@@ -107,12 +109,24 @@ class _UplataListScreenState extends State<UplataListScreen> {
           ),
         ),
         SizedBox(width: 20,),
-          ElevatedButton(
-            onPressed: () {
-              _dataSource.filterServerSide(_iznosEditingController.text, _selectedKorisnikId);
-            },
-            child: const Text("Pretraga"),
-          ),
+        ElevatedButton(
+          onPressed: () {
+            _dataSource.filterServerSide(_iznosEditingController.text, _selectedKorisnikId);
+          },
+          child: const Text("Pretraga"),
+        ),
+        const SizedBox(width: 20),
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              _iznosEditingController.clear();
+              _selectedKorisnikId = null;
+              _dropdownKey = UniqueKey();
+            });
+            _dataSource.filterServerSide("", null);
+          },
+          child: const Text("Resetuj filtere"),
+        ),
         ],
       ),
     );

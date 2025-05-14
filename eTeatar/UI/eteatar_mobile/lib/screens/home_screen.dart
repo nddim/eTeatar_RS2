@@ -1,12 +1,16 @@
+import 'package:eteatar_mobile/layouts/master_screen.dart';
 import 'package:eteatar_mobile/models/predstava.dart';
 import 'package:eteatar_mobile/models/rezervacija.dart';
+import 'package:eteatar_mobile/models/search_result.dart';
 import 'package:eteatar_mobile/models/termin.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/providers/korisnik_provider.dart';
+import 'package:eteatar_mobile/providers/predstava_provider.dart';
 import 'package:eteatar_mobile/providers/rezervacija_provider.dart';
 import 'package:eteatar_mobile/providers/termin_provider.dart';
 import 'package:eteatar_mobile/screens/korisnicki_profil_screen.dart';
 import 'package:eteatar_mobile/screens/obavijesti_screen.dart';
+import 'package:eteatar_mobile/screens/predstava_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
@@ -22,16 +26,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool _isLoading = true;
   late KorisnikProvider korisnikProvider;
+  late PredstavaProvider predstavaProvider;
   late RezervacijaProvider rezervacijaProvider;
   late TerminProvider terminProvider;
   List<Rezervacija> rezervacije = [];
   List<Termin> termini = [];
   List<Predstava> preporucenePredstave = [];
+  SearchResult<Predstava>? predstavaResult;
   @override
   void initState() {
     korisnikProvider = context.read<KorisnikProvider>();
     rezervacijaProvider = context.read<RezervacijaProvider>();
     terminProvider = context.read<TerminProvider>();
+    predstavaProvider = context.read<PredstavaProvider>();
     super.initState();
     loadData();
   }
@@ -51,14 +58,39 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       );
 
+      predstavaResult = await predstavaProvider.get(
+        filter: {
+          'isDeleted': false,
+        },
+      );
+
       final korisnikResult = await korisnikProvider.recommend();
       preporucenePredstave = korisnikResult;
       final Map<int, Termin> terminMap = {
         for (var t in terminResult.resultList) t.terminId!: t
       };
 
+      final Map<int, dynamic> _predstavaCache = {};
+
       for (var rez in rezervacijaResult.resultList) {
-        rez.termin = terminMap[rez.terminId];
+        final termin = terminMap[rez.terminId];
+        rez.termin = termin;
+
+        if (termin != null) {
+          final predstavaId = termin.predstavaId;
+          if (predstavaId != null) {
+            if (!_predstavaCache.containsKey(predstavaId)) {
+              try {
+                final predstava = await predstavaProvider.getById(predstavaId);
+                _predstavaCache[predstavaId] = predstava;
+              } catch (e) {
+                debugPrint("Greška pri dohvaćanju predstave: $e");
+                _predstavaCache[predstavaId] = null;
+              }
+            }
+            termin.predstava = _predstavaCache[predstavaId];
+          }
+        }
       }
 
       setState(() {
@@ -96,15 +128,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               const SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Pretraži eTeatar',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
+              Expanded( // <-- Omogućava dugmetu da se raširi
+                child: TextButton(
+                  onPressed: () {
+                    MasterScreen.of(context)?.changeTab(1); // Ide na predstave
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.lightBlue,
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    isDense: true,
+                    padding: const EdgeInsets.symmetric(vertical: 16), // Povećano za bolji izgled
+                  ),
+                  child: const Text(
+                    "Pogledaj sve predstave →",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -116,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     MaterialPageRoute(builder: (context) => ObavijestiScreen()),
                   );
                 },
-              )
+              ),
             ],
           ),
           const SizedBox(height: 20),
@@ -136,12 +177,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: preporucenePredstave.length,
                         itemBuilder: (context, index) {
                           final predstava = preporucenePredstave[index];
-                          return _buildRecommendedCard(
-                            predstava.naziv ?? "Bez naziva",
-                            predstava.zanrovi,
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PredstavaDetaljiScreen2(predstava: predstava),
+                                ),
+                              );
+                            },
+                            child: _buildRecommendedCard(
+                              predstava.naziv ?? "Bez naziva",
+                              predstava.trajanje,
+                            ),
                           );
                         },
+                        
                       ),
+                      
           ),
           const SizedBox(height: 20),
           const Text(
@@ -184,13 +237,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildRecommendedCard(String title, List<int>? zanrovi) {
-    final zanrText = (zanrovi == null || zanrovi.isEmpty)
-        ? "Nepoznato"
-        : zanrovi.length == 1
-            ? "Žanr ID: ${zanrovi.first}"
-            : "Više žanrova";
-
+  Widget _buildRecommendedCard(String title, int? trajanje) {
+   
     return Container(
       width: 140,
       margin: const EdgeInsets.only(right: 12),
@@ -208,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
               textAlign: TextAlign.center,
             ),
             Text(
-              zanrText,
+              'Trajanje: ${trajanje.toString()} min',
               style: const TextStyle(color: Colors.grey),
               textAlign: TextAlign.center,
             ),

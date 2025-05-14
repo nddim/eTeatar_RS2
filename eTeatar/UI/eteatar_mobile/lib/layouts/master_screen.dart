@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 class MasterScreen extends StatefulWidget {
   const MasterScreen({super.key});
 
+  static _MasterScreenState? of(BuildContext context) =>
+        context.findAncestorStateOfType<_MasterScreenState>();
   @override
   State<MasterScreen> createState() => _MasterScreenState();
 }
@@ -55,4 +57,11 @@ class _MasterScreenState extends State<MasterScreen> {
       ),
     );
   }
+
+  void changeTab(int index) {
+  setState(() {
+    _selectedIndex = index;
+  });
+}
+
 }

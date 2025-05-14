@@ -2,11 +2,13 @@ import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/korisnik.dart';
+import 'package:eteatar_desktop/models/search_result.dart';
 import 'package:eteatar_desktop/models/vijest.dart';
 import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:eteatar_desktop/providers/vijest_provider.dart';
 import 'package:eteatar_desktop/screens/vijest_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -19,8 +21,11 @@ class VijestListScreen extends StatefulWidget {
 
 class _VijestListScreenState extends State<VijestListScreen> {
   late VijestProvider _vijestProvider;
+  late KorisnikProvider _korisnikProvider;
   late VijestDataSource _dataSource;
   bool _isLoading = false;
+  SearchResult<Korisnik>? _korisnikResult;
+
   @override
   BuildContext get context => super.context;
 
@@ -33,6 +38,8 @@ class _VijestListScreenState extends State<VijestListScreen> {
   void initState() {
     super.initState();
     _vijestProvider = context.read<VijestProvider>();
+    _korisnikProvider = context.read<KorisnikProvider>();
+    _loadData();
     _dataSource = VijestDataSource(provider: _vijestProvider, context: context);
     setState(() {});
   }
@@ -49,8 +56,28 @@ class _VijestListScreenState extends State<VijestListScreen> {
       ),
     );
   }
+  Future<void> _loadData() async {
+    var data;
+    try {
+      data = await _korisnikProvider.get(filter: { 'isDeleted': false});
+    } catch (e) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: "Greška pri dohvatanju uplata!",
+        text: "$e",
+        width: 300
+      );
+    }
+    setState(() {
+      _korisnikResult = data;
+    });
+  }
 
   TextEditingController _nazivEditingController = TextEditingController();
+  int? _selectedKorisnikId;
+  Key _dropdownKey = UniqueKey();
+
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -62,13 +89,45 @@ class _VijestListScreenState extends State<VijestListScreen> {
               decoration: const InputDecoration(labelText: "Naziv", hintText: "Naziv dvorane"),
             ),
           ),
+          SizedBox(width: 20,),
+          Expanded(
+            child: FormBuilderDropdown<int>(
+              key: _dropdownKey,
+              name: "korisnikId",
+              decoration: InputDecoration(labelText: "Korisnik"),
+              items: _korisnikResult?.resultList
+                  .map((e) => DropdownMenuItem(
+                        value: e.korisnikId,
+                        child: Text("${e.ime ?? ""} ${e.prezime ?? ""}"),
+                      ))
+                  .toList() ?? [],
+              onChanged: (value) {
+                setState(() {
+                  _selectedKorisnikId = value;
+                });
+              },
+            ),
+          ),
+          SizedBox(width: 20,),
           ElevatedButton(
             onPressed: () {
-              _dataSource.filterServerSide(_nazivEditingController.text);
+              _dataSource.filterServerSide(_nazivEditingController.text, _selectedKorisnikId);
             },
             child: const Text("Pretraga"),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 20),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _nazivEditingController.clear();
+                _selectedKorisnikId = null;
+                _dropdownKey = UniqueKey();
+              });
+              _dataSource.filterServerSide("", null);
+            },
+            child: const Text("Resetuj filtere"),
+          ),
+          const SizedBox(width: 20),
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -135,6 +194,7 @@ class VijestDataSource extends AdvancedDataTableSource<Vijest> {
   int page = 1;
   int pageSize = 10;
   String nazivGTE = "";
+  int _korisnikIdEQ = 0;
   dynamic filter;
   VijestDataSource({required this.provider, required this.context}){
     _korisnikProvider = context.read<KorisnikProvider>();
@@ -219,7 +279,7 @@ class VijestDataSource extends AdvancedDataTableSource<Vijest> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(vijestId);
-                  filterServerSide(nazivGTE);
+                  filterServerSide(nazivGTE, _korisnikIdEQ);
                 } catch (e) {
                   QuickAlert.show(
                     context: context,
@@ -243,6 +303,7 @@ class VijestDataSource extends AdvancedDataTableSource<Vijest> {
 
     final filter = {
       'NazivGTE': nazivGTE,
+      if (_korisnikIdEQ > 0) 'KorisnikId': _korisnikIdEQ.toString(),
       'isDeleted': false
     };
 
@@ -267,8 +328,9 @@ class VijestDataSource extends AdvancedDataTableSource<Vijest> {
     }
   }
 
-  void filterServerSide(String naziv) {
+  void filterServerSide(String naziv, int? korisnikId) {
     nazivGTE = naziv;
+    _korisnikIdEQ = korisnikId ?? 0;
     setNextView();
   }
 

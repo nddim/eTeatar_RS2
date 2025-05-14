@@ -234,6 +234,8 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
 
     final filter = {
       'ImeGTE': nazivGTE,
+      'PrezimeGTE': prezimeGTE,
+      'KorisnickoImeGTE': korisnickoImeGTE,
       'isDeleted': false
     };
 

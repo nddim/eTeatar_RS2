@@ -139,7 +139,7 @@ class StavkaUplateDataSource extends AdvancedDataTableSource<StavkaUplate> {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Brisanje'),
-          content: const Text('Da li ste sigurni da želite da obrišete dvoranu?'),
+          content: const Text('Da li ste sigurni da želite da obrišete stavku uplate?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -157,7 +157,7 @@ class StavkaUplateDataSource extends AdvancedDataTableSource<StavkaUplate> {
                   QuickAlert.show(
                     context: context,
                     type: QuickAlertType.error,
-                    title: "Greška pri brisanju dvorane!",
+                    title: "Greška pri brisanju stavke uplate!",
                     text: "$e",
                   );
                 }

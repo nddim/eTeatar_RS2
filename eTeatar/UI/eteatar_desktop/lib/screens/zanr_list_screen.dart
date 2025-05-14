@@ -38,7 +38,7 @@ class _ZanrListScreenState extends State<ZanrListScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreen(
-      "Lista zanrova",
+      "Lista žanrova",
       Column(
         children: [
           _buildSearch(),
@@ -161,7 +161,7 @@ class ZanrDataSource extends AdvancedDataTableSource<Zanr> {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Brisanje'),
-          content: const Text('Da li ste sigurni da želite da obrišete dvoranu?'),
+          content: const Text('Da li ste sigurni da želite da obrišete žanr?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -179,7 +179,7 @@ class ZanrDataSource extends AdvancedDataTableSource<Zanr> {
                   QuickAlert.show(
                     context: context,
                     type: QuickAlertType.error,
-                    title: "Greška pri brisanju dvorane!",
+                    title: "Greška pri brisanju žanr!",
                     text: "$e",
                   );
                 }

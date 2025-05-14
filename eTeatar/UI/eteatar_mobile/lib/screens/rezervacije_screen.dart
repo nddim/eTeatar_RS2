@@ -40,7 +40,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
   List<Rezervacija> rezervacije = [];
   String searchQuery = '';
   Map<int, int> brojSjedistaPoRezervaciji = {};
-
+  
   @override
   void initState() {
     rezervacijaProvider = context.read<RezervacijaProvider>();
@@ -142,6 +142,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                           itemBuilder: (context, index) {
                             final rez = filteredRezervacije[index];
                             final datumObj = rez.termin?.datum;
+                            final status = rez.stateMachine;
                             final datum = datumObj != null
                                 ? "${datumObj.day}.${datumObj.month}.${datumObj.year}"
                                 : "Bez datuma";
@@ -170,6 +171,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                                             Text('Datum: $datum'),
                                             Text('Vrijeme: $vrijeme'),
                                             Text('Broj sjedišta: ${brojSjedistaPoRezervaciji[rez.rezervacijaId] ?? 0}'),
+                                            Text('Status: $status'),
                                           ],
                                         ),
                                         ElevatedButton(

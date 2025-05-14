@@ -49,6 +49,8 @@ class _GlumacListScreenState extends State<GlumacListScreen> {
   }
 
   TextEditingController _imeEditingController = TextEditingController();
+  TextEditingController _prezimeEditingController = TextEditingController();
+
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -57,12 +59,19 @@ class _GlumacListScreenState extends State<GlumacListScreen> {
           Expanded(
             child: TextField(
               controller: _imeEditingController,
-              decoration: const InputDecoration(labelText: "Naziv", hintText: "Naziv dvorane"),
+              decoration: const InputDecoration(labelText: "Ime", hintText: "Ime glumca"),
+            ),
+          ),
+          const SizedBox(width: 10,),
+          Expanded(
+            child: TextField(
+              controller: _prezimeEditingController,
+              decoration: const InputDecoration(labelText: "Prezime", hintText: "Prezime glumca"),
             ),
           ),
           ElevatedButton(
             onPressed: () {
-              _dataSource.filterServerSide(_imeEditingController.text);
+              _dataSource.filterServerSide(_imeEditingController.text, _prezimeEditingController.text);
             },
             child: const Text("Pretraga"),
           ),
@@ -128,6 +137,7 @@ class GlumacDataSource extends AdvancedDataTableSource<Glumac> {
   int page = 1;
   int pageSize = 10;
   String imeGTE = "";
+  String prezimeGTE = "";
   dynamic filter;
   GlumacDataSource({required this.provider, required this.context});
 
@@ -179,7 +189,7 @@ class GlumacDataSource extends AdvancedDataTableSource<Glumac> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(dvoranaId);
-                  filterServerSide(imeGTE);
+                  filterServerSide(imeGTE, prezimeGTE);
                 } catch (e) {
                   QuickAlert.show(
                     context: context,
@@ -203,6 +213,7 @@ class GlumacDataSource extends AdvancedDataTableSource<Glumac> {
 
     final filter = {
       'ImeGTE': imeGTE,
+      'PrezimeGTE': prezimeGTE,
       'isDeleted': false
     };
 
@@ -227,8 +238,9 @@ class GlumacDataSource extends AdvancedDataTableSource<Glumac> {
     }
   }
 
-  void filterServerSide(String naziv) {
-    imeGTE = naziv;
+  void filterServerSide(String ime, String prezime) {
+    imeGTE = ime;
+    prezimeGTE = prezime;
     setNextView();
   }
 

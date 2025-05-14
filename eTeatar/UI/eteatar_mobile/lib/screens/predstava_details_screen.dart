@@ -44,7 +44,7 @@ class _PredstavaDetaljiScreen2State extends State<PredstavaDetaljiScreen2> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Slika predstave
+            
             if (p?.slika != null)
               Center(
                 child: ClipRRect(
@@ -62,19 +62,19 @@ class _PredstavaDetaljiScreen2State extends State<PredstavaDetaljiScreen2> {
                 ),
               ),
             const SizedBox(height: 16),
-            // Naziv predstave
+            
             Text(p?.naziv ?? '', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            // Opis predstave
+            
             Text(p?.opis ?? '', style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 16),
-            // Detalji o produkciji
+            
             Text("Produkcija: ${p?.produkcija ?? 'Nepoznato'}"),
             Text("Koreografija: ${p?.koreografija ?? 'Nepoznato'}"),
             Text("Scenografija: ${p?.scenografija ?? 'Nepoznato'}"),
+            Text("Trajanje: ${p?.trajanje ?? 'Nepoznato'} min"),
             const SizedBox(height: 24),
             
-            // Dugme za rezervaciju
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(

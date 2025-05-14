@@ -74,7 +74,8 @@ class _PredstavaListScreenState extends State<PredstavaListScreen> {
 
   TextEditingController _nazivEditingController = TextEditingController();
   int? _selectedZanrId;
-  
+  Key _dropdownKey = UniqueKey();
+
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -89,6 +90,7 @@ class _PredstavaListScreenState extends State<PredstavaListScreen> {
           SizedBox(width: 20,),
           Expanded(
             child: FormBuilderDropdown<int>(
+              key: _dropdownKey,
               name: "zanrId",
               decoration: InputDecoration(labelText: "Žanr"),
               items: _zanrResult?.resultList
@@ -104,14 +106,26 @@ class _PredstavaListScreenState extends State<PredstavaListScreen> {
               },
             ),
           ),
-          SizedBox(width: 20,),
+          const SizedBox(width: 20,),
           ElevatedButton(
             onPressed: () {
               _dataSource.filterServerSide(_nazivEditingController.text, _selectedZanrId);
             },
             child: const Text("Pretraga"),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 20),
+          ElevatedButton(
+            onPressed: () {
+              _nazivEditingController.clear();
+              setState(() {
+                _selectedZanrId = null;
+                _dropdownKey = UniqueKey();
+              });
+              _dataSource.filterServerSide("", null);
+            },
+            child: const Text("Resetuj filtere"),
+          ),
+          const SizedBox(width: 20,),
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(

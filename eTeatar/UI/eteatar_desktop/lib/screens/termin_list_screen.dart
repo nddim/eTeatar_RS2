@@ -94,8 +94,14 @@ class _TerminListScreenState extends State<TerminListScreen> {
       ),
     );
   }
-
-  TextEditingController _statusEditingController = TextEditingController();
+  final Map<int, String> _statusMap = {
+    1: "Aktivan",
+    2: "Neaktivan",
+  };
+  Key _statusDropdownKey = UniqueKey();
+  Key _dvoranaDropdownKey = UniqueKey();
+  Key _predstavadropdownKey = UniqueKey();
+  int? _selectedStatus;
   int? _selectedPredstavaId;
   int? _selectedDvoranaId;
   
@@ -104,10 +110,28 @@ class _TerminListScreenState extends State<TerminListScreen> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          Expanded( child: TextField(controller: _statusEditingController, decoration: InputDecoration(labelText: "Status"))),
-          SizedBox(width: 10,),
+          Expanded(
+            child: DropdownButtonFormField<int>(
+              key: _statusDropdownKey,
+              value: _selectedStatus,
+              decoration: const InputDecoration(labelText: "Status"),
+              items: _statusMap.entries
+                  .map((entry) => DropdownMenuItem(
+                        value: entry.key,
+                        child: Text(entry.value),
+                      ))
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedStatus = value;
+                });
+              },
+            ),
+          ),
+          const SizedBox(width: 20,),
           Expanded(
             child: FormBuilderDropdown<int>(
+              key: _predstavadropdownKey,
               name: "predstavaId",
               decoration: InputDecoration(labelText: "Predstava"),
               items: _predstavaResult?.resultList
@@ -123,9 +147,10 @@ class _TerminListScreenState extends State<TerminListScreen> {
               },
             ),
           ),
-          SizedBox(width: 10,),
+          const SizedBox(width: 20,),
           Expanded(
             child: FormBuilderDropdown<int>(
+              key: _dvoranaDropdownKey,
               name: "dvoranaId",
               decoration: InputDecoration(labelText: "Dvorana"),
               items: _dvoranaResult?.resultList
@@ -141,14 +166,29 @@ class _TerminListScreenState extends State<TerminListScreen> {
               },
             ),
           ),
-          SizedBox(width: 20,),
+          const SizedBox(width: 20,),
           ElevatedButton(
             onPressed: () {
-              _dataSource.filterServerSide(_statusEditingController.text, _selectedPredstavaId, _selectedDvoranaId);
+              _dataSource.filterServerSide(_statusMap[_selectedStatus] ?? "", _selectedPredstavaId, _selectedDvoranaId);
             },
             child: const Text("Pretraga"),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 20),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _selectedDvoranaId = null;
+                _selectedStatus = null;
+                _selectedPredstavaId = null;
+                _statusDropdownKey = UniqueKey();
+                _dvoranaDropdownKey = UniqueKey();
+                _predstavadropdownKey = UniqueKey();
+              });
+              _dataSource.filterServerSide("", null, null);
+            },
+            child: const Text("Resetuj filtere"),
+          ),
+          const SizedBox(width: 20),
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -220,7 +260,7 @@ class TerminDataSource extends AdvancedDataTableSource<Termin> {
   int count = 10;
   int page = 1;
   int pageSize = 10;
-  String nazivGTE = "";
+  String status = "";
   int _predstavaIdEQ = 0;
   int _dvoranaIdEQ = 0;
   dynamic filter;
@@ -324,7 +364,7 @@ class TerminDataSource extends AdvancedDataTableSource<Termin> {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Brisanje'),
-          content: const Text('Da li ste sigurni da želite da obrišete dvoranu?'),
+          content: const Text('Da li ste sigurni da želite da obrišete termin?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -337,12 +377,12 @@ class TerminDataSource extends AdvancedDataTableSource<Termin> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(terminId);
-                  filterServerSide(nazivGTE, _predstavaIdEQ, _dvoranaIdEQ);
+                  filterServerSide(status, _predstavaIdEQ, _dvoranaIdEQ);
                 } catch (e) {
                   QuickAlert.show(
                     context: context,
                     type: QuickAlertType.error,
-                    title: "Greška pri brisanju dvorane!",
+                    title: "Greška pri brisanju termina!",
                     text: "$e",
                   );
                 }
@@ -360,7 +400,7 @@ class TerminDataSource extends AdvancedDataTableSource<Termin> {
     final page = (request.offset ~/ pageSize).toInt() + 1;
 
     final filter = {
-      'NazivGTE': nazivGTE,
+      'Status': status,
       if (_predstavaIdEQ > 0) 'PredstavaId': _predstavaIdEQ.toString(),
       if (_dvoranaIdEQ > 0) 'DvoranaId': _dvoranaIdEQ.toString(),
       'isDeleted': false
@@ -387,11 +427,10 @@ class TerminDataSource extends AdvancedDataTableSource<Termin> {
     }
   }
 
-  void filterServerSide(String naziv, int? predstavaId, int? dvoranaId) {
-    nazivGTE = naziv;
+  void filterServerSide(String status1, int? predstavaId, int? dvoranaId) {
+    status = status1;
     _predstavaIdEQ = predstavaId ?? 0;
     _dvoranaIdEQ = dvoranaId ?? 0;
-    nazivGTE = naziv;
     setNextView();
   }
 
