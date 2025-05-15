@@ -57,6 +57,13 @@ class _MasterScreenState extends State<MasterScreen> {
               child: ListView(
                 children: [
                   _buildDrawerItem(
+                    icon: Icons.event,
+                    label: "Predstave",
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => PredstavaListScreen()));
+                    }
+                  ),
+                  _buildDrawerItem(
                     icon: Icons.theaters,
                     label: "Dvorane",
                     onTap: () {
@@ -89,13 +96,6 @@ class _MasterScreenState extends State<MasterScreen> {
                     label: "Ocjene",
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(builder: (context) => OcjenaListScreen()));
-                    }
-                  ),
-                  _buildDrawerItem(
-                    icon: Icons.event,
-                    label: "Predstave",
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => PredstavaListScreen()));
                     }
                   ),
                   _buildDrawerItem(

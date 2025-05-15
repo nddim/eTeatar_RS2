@@ -59,6 +59,7 @@ class _GlumacListScreenState extends State<GlumacListScreen> {
           Expanded(
             child: TextField(
               controller: _imeEditingController,
+              maxLength: 30,
               decoration: const InputDecoration(labelText: "Ime", hintText: "Ime glumca"),
             ),
           ),
@@ -66,6 +67,7 @@ class _GlumacListScreenState extends State<GlumacListScreen> {
           Expanded(
             child: TextField(
               controller: _prezimeEditingController,
+              maxLength: 30,
               decoration: const InputDecoration(labelText: "Prezime", hintText: "Prezime glumca"),
             ),
           ),
@@ -189,6 +191,11 @@ class GlumacDataSource extends AdvancedDataTableSource<Glumac> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(dvoranaId);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisan glumac!",
+                  width: 300);
                   filterServerSide(imeGTE, prezimeGTE);
                 } catch (e) {
                   QuickAlert.show(

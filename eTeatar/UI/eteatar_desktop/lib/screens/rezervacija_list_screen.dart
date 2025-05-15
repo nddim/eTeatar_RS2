@@ -430,6 +430,11 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
               onPressed: () async {
                 try {
                   await provider.ponisti(rezervacijaId);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisana rezervacija!",
+                  width: 300);
                   if (context.mounted) {
                     Navigator.pop(context);
                   }

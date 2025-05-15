@@ -174,6 +174,11 @@ class ZanrDataSource extends AdvancedDataTableSource<Zanr> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(zanrId);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisana žanr!",
+                  width: 300);
                   filterServerSide(nazivGTE);
                 } catch (e) {
                   QuickAlert.show(

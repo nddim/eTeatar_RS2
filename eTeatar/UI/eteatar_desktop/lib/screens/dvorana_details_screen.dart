@@ -74,7 +74,8 @@ class _DvoranaDetailsScreenState extends State<DvoranaDetailsScreen> {
                     decoration: InputDecoration(labelText: "Naziv"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
-                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
+                      FormBuilderValidators.maxLength(30, errorText: "Maksimalna dužina je 30 karaktera!"),
                     ]),
                     )
                 ),
@@ -137,7 +138,7 @@ class _DvoranaDetailsScreenState extends State<DvoranaDetailsScreen> {
                   title: "Greška pri kreiranju dvorane!",
                   text: "$e",
                   width: 300);
-              }
+                }
               } else {
               try {
                 await _dvoranaProvider.update(widget.dvorana!.dvoranaId!, requestData);

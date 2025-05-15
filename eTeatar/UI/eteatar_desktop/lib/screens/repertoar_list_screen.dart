@@ -183,6 +183,11 @@ class RepertoarDataSource extends AdvancedDataTableSource<Repertoar> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(dvoranaId);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisan repertoar!",
+                  width: 300);
                   filterServerSide(nazivGTE);
                 } catch (e) {
                   QuickAlert.show(

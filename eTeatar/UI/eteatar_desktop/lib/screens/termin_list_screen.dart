@@ -377,6 +377,11 @@ class TerminDataSource extends AdvancedDataTableSource<Termin> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(terminId);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisan termin!",
+                  width: 300);
                   filterServerSide(status, _predstavaIdEQ, _dvoranaIdEQ);
                 } catch (e) {
                   QuickAlert.show(

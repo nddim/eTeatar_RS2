@@ -4,6 +4,8 @@ import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/stavka_uplate.dart';
 import 'package:eteatar_desktop/providers/stavka_uplate_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -50,26 +52,39 @@ class _StavkaUplateListScreenState extends State<StavkaUplateListScreen> {
   TextEditingController _cijenaEditingController = TextEditingController();
 
   Widget _buildSearch() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _cijenaEditingController,
-              decoration: const InputDecoration(labelText: "Cijena", hintText: "Cijena stavke uplate"),
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Row(
+      children: [
+        Expanded(
+          child: FormBuilderTextField(
+            name: 'cijena',
+            controller: _cijenaEditingController,
+            decoration: const InputDecoration(
+              labelText: "Cijena",
+              hintText: "KM",
             ),
+            keyboardType: TextInputType.number,
+            validator: FormBuilderValidators.compose([
+              FormBuilderValidators.numeric(errorText: "Unos mora biti broj!"),
+              FormBuilderValidators.min(0.01, errorText: "Cijena mora biti veća od 0!"),
+            ]),
           ),
-          ElevatedButton(
-            onPressed: () {
+        ),
+        const SizedBox(width: 16),
+        ElevatedButton(
+          onPressed: () {
+            final isValid = FormBuilder.of(context)?.saveAndValidate() ?? false;
+            if (isValid) {
               _dataSource.filterServerSide(_cijenaEditingController.text);
-            },
-            child: const Text("Pretraga"),
-          )
-        ],
-      ),
-    );
-  }
+            }
+          },
+          child: const Text("Pretraga"),
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildPaginatedTable() {
     return Expanded(
@@ -152,6 +167,11 @@ class StavkaUplateDataSource extends AdvancedDataTableSource<StavkaUplate> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(dvoranaId);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisana stavka uplate!",
+                  width: 300);
                   filterServerSide(cijenaGTE);
                 } catch (e) {
                   QuickAlert.show(

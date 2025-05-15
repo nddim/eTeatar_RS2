@@ -264,6 +264,11 @@ class OcjenaDataSource extends AdvancedDataTableSource<Ocjena> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(dvoranaId);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisana ocjena!",
+                  width: 300);
                   filterServerSide(vrijednostGTE, predstavaIdEQ);
                 } catch (e) {
                   QuickAlert.show(

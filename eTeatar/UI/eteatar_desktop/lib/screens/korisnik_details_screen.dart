@@ -104,11 +104,12 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                       FormBuilderValidators.match(
                         r'^[A-ZČĆŽĐŠ][a-zA-ZčćžđšČĆŽĐŠ]*$', 
                         errorText: "Ime mora počinjati sa velikim slovom i smije sadržavati samo slova."),
-                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
+                      FormBuilderValidators.maxLength(30, errorText: "Maksimalna dužina je 30 karaktera!"),
                     ]),
                     )
                 ),
-                SizedBox(width: 10,),
+                const SizedBox(width: 10,),
                 Expanded(
                   child: FormBuilderTextField(
                     name: "Prezime",
@@ -118,18 +119,23 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                       FormBuilderValidators.match(
                         r'^[A-ZČĆŽĐŠ][a-zA-ZčćžđšČĆŽĐŠ]*$', 
                         errorText: "Prezime mora počinjati sa velikim slovom i smije sadržavati samo slova."),
-                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
+                      FormBuilderValidators.maxLength(30, errorText: "Maksimalna dužina je 30 karaktera!"),
                     ]),
                     )
                 ),
-                SizedBox(width: 10,),
+                const SizedBox(width: 10,),
                 Expanded(
                   child: FormBuilderTextField(
                     name: "KorisnickoIme",
                     decoration: InputDecoration(labelText: "Korisnicko ime"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
-                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
+                      FormBuilderValidators.match(
+                        r'^[a-zA-ZčćžđšČĆŽĐŠ]*$', 
+                        errorText: "Korisnicko ime smije sadržavati samo slova."),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
+                      FormBuilderValidators.maxLength(30, errorText: "Maksimalna dužina je 30 karaktera!"),
                     ]),
                     )
                 ),
@@ -141,19 +147,30 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
               Expanded(child: 
                 FormBuilderDateTimePicker(
                   name: "DatumRodenja",
-                  decoration: InputDecoration(labelText: "Datum rođenja"),
-                   validator: FormBuilderValidators.compose([
+                  decoration: const InputDecoration(labelText: "Datum rođenja"),
+                  inputType: InputType.date,
+                  format: DateFormat("yyyy-MM-dd"),
+                  validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     (value) {
                       if (value == null) return null;
+
                       if (value.isBefore(DateTime(1900, 1, 1))) {
-                        return "Datum rođenja ne može biti manji od 1900.01.01.";
+                        return "Datum rođenja ne može biti prije 1900-01-01.";
                       }
+
+                      if (value.isAfter(DateTime.now())) {
+                        return "Datum rođenja ne može biti u budućnosti.";
+                      }
+
+                      final minimumAgeDate = DateTime.now().subtract(const Duration(days: 365 * 5));
+                      if (value.isAfter(minimumAgeDate)) {
+                        return "Korisnik mora imati najmanje 5 godina.";
+                      }
+
                       return null;
                     }
                   ]),
-                  inputType: InputType.date,
-                  format: DateFormat("yyyy-MM-dd"),
                 ),
               ),
               SizedBox(width: 10,),

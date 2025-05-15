@@ -16,13 +16,9 @@ namespace eTeatar.Services
         public override IQueryable<Kartum> AddFilter(KartaSearchObject search, IQueryable<Kartum> query)
         {
             query = base.AddFilter(search, query);
-            if (search?.CijenaLTE != null)
-            {
-                query = query.Where(x => x.Cijena < search.CijenaGTE);
-            }
             if (search?.CijenaGTE != null)
             {
-                query = query.Where(x => x.Cijena > search.CijenaGTE);
+                query = query.Where(x => x.Cijena >= search.CijenaGTE);
             }
             if (search?.RezervacijaId != null)
             {

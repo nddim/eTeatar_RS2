@@ -19,6 +19,10 @@ namespace eTeatar.Services
             {
                 query = query.Where(x => x.Cijena == search.Cijena);
             }
+            if (search?.isDeleted != null)
+            {
+                query = query.Where(x => x.IsDeleted == search.isDeleted);
+            }
 
             return query;
         }

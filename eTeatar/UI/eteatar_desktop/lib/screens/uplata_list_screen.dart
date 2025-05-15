@@ -8,6 +8,7 @@ import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:eteatar_desktop/providers/uplata_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -23,6 +24,7 @@ class _UplataListScreenState extends State<UplataListScreen> {
   late UplataDataSource _dataSource;
   late KorisnikProvider _korisnikProvider;
   SearchResult<Korisnik>? _korisnikResult;
+  final _formKey = GlobalKey<FormBuilderState>();
 
   bool _isLoading = false;
   @override
@@ -80,54 +82,66 @@ class _UplataListScreenState extends State<UplataListScreen> {
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded( 
-          child: 
-          TextField(
-            controller: _iznosEditingController, 
-            decoration: InputDecoration(labelText: "Iznos")
-          )
-        ),
-        SizedBox(width: 20,),
-        Expanded(
-          child: FormBuilderDropdown<int>(
-            key: _dropdownKey,
-            name: "korisnikId",
-            decoration: InputDecoration(labelText: "Korisnik"),
-            items: _korisnikResult?.resultList
-                .map((e) => DropdownMenuItem(
-                      value: e.korisnikId,
-                      child: Text("${e.ime ?? ""} ${e.prezime ?? ""}"),
-                    ))
-                .toList() ?? [],
-            onChanged: (value) {
-              setState(() {
-                _selectedKorisnikId = value;
-              });
+      child: FormBuilder(
+        key: _formKey,
+        child: Row(
+          children: [
+            Expanded(
+              child: FormBuilderTextField(
+                name: "iznos",
+                controller: _iznosEditingController,
+                decoration: const InputDecoration(
+                  labelText: "Iznos",
+                  hintText: "Unesite iznos u KM",
+                ),
+                keyboardType: TextInputType.number,
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.numeric(errorText: "Unos mora biti broj"),
+                  FormBuilderValidators.min(1, errorText: "Iznos ne može biti manji od 1 KM"),
+                  FormBuilderValidators.max(100000, errorText: "Iznos ne može biti veći od 100000 KM"),
+                ]),
+              ),
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: FormBuilderDropdown<int>(
+                key: _dropdownKey,
+                name: "korisnikId",
+                decoration: InputDecoration(labelText: "Korisnik"),
+                items: _korisnikResult?.resultList
+                    .map((e) => DropdownMenuItem(
+                          value: e.korisnikId,
+                          child: Text("${e.ime ?? ""} ${e.prezime ?? ""}"),
+                        ))
+                    .toList() ?? [],
+                onChanged: (value) {
+                  setState(() {
+                    _selectedKorisnikId = value;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(width: 20),
+            ElevatedButton(
+            onPressed: () {
+              _dataSource.filterServerSide(_iznosEditingController.text, _selectedKorisnikId);
             },
+            child: const Text("Pretraga"),
           ),
-        ),
-        SizedBox(width: 20,),
-        ElevatedButton(
-          onPressed: () {
-            _dataSource.filterServerSide(_iznosEditingController.text, _selectedKorisnikId);
-          },
-          child: const Text("Pretraga"),
-        ),
-        const SizedBox(width: 20),
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
+            const SizedBox(width: 20),
+            ElevatedButton(
+            onPressed: () {
               _iznosEditingController.clear();
-              _selectedKorisnikId = null;
-              _dropdownKey = UniqueKey();
-            });
-            _dataSource.filterServerSide("", null);
-          },
-          child: const Text("Resetuj filtere"),
+              setState(() {
+                _selectedKorisnikId = null;
+                _dropdownKey = UniqueKey();
+              });
+              _dataSource.filterServerSide("", null);
+            },
+            child: const Text("Resetuj filtere"),
+          ),
+          ],
         ),
-        ],
       ),
     );
   }
@@ -272,6 +286,11 @@ class UplataDataSource extends AdvancedDataTableSource<Uplata> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(uplataId);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisana uplata!",
+                  width: 300);
                   filterServerSide(iznosEQ, _korisnikIdEQ);
                 } catch (e) {
                   QuickAlert.show(

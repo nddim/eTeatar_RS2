@@ -219,7 +219,7 @@ class PredstavaDataSource extends AdvancedDataTableSource<Predstava> {
                 : Image.asset(
                     "assets/images/emptyPredstavaImage.jpg",
                     fit: BoxFit.cover,
-                  ),
+            ),
           ),
         ),
       ),
@@ -260,6 +260,11 @@ class PredstavaDataSource extends AdvancedDataTableSource<Predstava> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(dvoranaId);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisana predstava!",
+                  width: 300);
                   filterServerSide(nazivGTE, zanrIdEQ);
                 } catch (e) {
                   QuickAlert.show(

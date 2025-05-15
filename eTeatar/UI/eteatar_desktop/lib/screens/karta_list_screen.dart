@@ -13,6 +13,7 @@ import 'package:eteatar_desktop/providers/termin_provider.dart';
 import 'package:eteatar_desktop/providers/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
@@ -24,6 +25,7 @@ class KartaListScreen extends StatefulWidget {
 }
 
 class _KartaListScreenState extends State<KartaListScreen> {
+  final _formKey = GlobalKey<FormBuilderState>();
   late KartaProvider _kartaProvider;
   late KorisnikProvider _korisnikProvider;
   late KartaDataSource _dataSource;
@@ -79,53 +81,70 @@ class _KartaListScreenState extends State<KartaListScreen> {
    Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _cijenaEditingController,
-              decoration: const InputDecoration(labelText: "Cijena karte", hintText: "KM"),
+      child: FormBuilder(
+        key: _formKey,
+        child: Row(
+          children: [
+            Expanded(
+              child: FormBuilderTextField(
+                name: "cijena",
+                controller: _cijenaEditingController,
+                decoration: const InputDecoration(labelText: "Cijena karte", hintText: "KM"),
+                keyboardType: TextInputType.number,
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.numeric(errorText: "Unos mora biti broj!"),
+                  FormBuilderValidators.min(1, errorText: "Cijena ne može biti manja od 1 KM"),
+                  FormBuilderValidators.max(1000, errorText: "Cijena ne može biti veća od 1000 KM"),
+                ]),
+              ),
             ),
-          ),
-          const SizedBox(width: 20,),
-          Expanded(
-            child: FormBuilderDropdown<int>(
-              key: _dropdownKey,
-              name: "korisnikId",
-              decoration: InputDecoration(labelText: "Korisnik"),
-              items: _korisnikResult?.resultList
-                  .map((e) => DropdownMenuItem(
-                        value: e.korisnikId,
-                        child: Text("${e.ime ?? ""} ${e.prezime ?? ""}"),
-                      ))
-                  .toList() ?? [],
-              onChanged: (value) {
-                setState(() {
-                  _selectedKorisnikId = value;
-                });
+            const SizedBox(width: 20),
+            Expanded(
+              child: FormBuilderDropdown<int>(
+                key: _dropdownKey,
+                name: "korisnikId",
+                decoration: const InputDecoration(labelText: "Korisnik"),
+                items: _korisnikResult?.resultList
+                        .map((e) => DropdownMenuItem(
+                              value: e.korisnikId,
+                              child: Text("${e.ime ?? ""} ${e.prezime ?? ""}"),
+                            ))
+                        .toList() ??
+                    [],
+                onChanged: (value) {
+                  setState(() {
+                    _selectedKorisnikId = value;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(width: 20),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState?.saveAndValidate() ?? false) {
+                  _dataSource.filterServerSide(
+                    _cijenaEditingController.text,
+                    _selectedKorisnikId,
+                  );
+                }
               },
+              child: const Text("Pretraga"),
             ),
-          ),
-          const SizedBox(width: 20,),
-          ElevatedButton(
-            onPressed: () {
-              _dataSource.filterServerSide(_cijenaEditingController.text, _selectedKorisnikId);
-            },
-            child: const Text("Pretraga"),
-          ),
-          const SizedBox(width: 20),
-          ElevatedButton(
-            onPressed: () {
-              _cijenaEditingController.clear();
-              setState(() {
-                _selectedKorisnikId = null;
-                _dropdownKey = UniqueKey();
-              });
-              _dataSource.filterServerSide("", null);
-            },
-            child: const Text("Resetuj filtere"),
-          ),
-        ],
+            const SizedBox(width: 20),
+            ElevatedButton(
+              onPressed: () {
+                _formKey.currentState?.reset();
+                _cijenaEditingController.clear();
+                setState(() {
+                  _selectedKorisnikId = null;
+                  _dropdownKey = UniqueKey();
+                });
+                _dataSource.filterServerSide("", null);
+              },
+              child: const Text("Resetuj filtere"),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -191,7 +210,7 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
   int count = 10;
   int page = 1;
   int pageSize = 10;
-  String imeGTE = "";
+  String cijena = "";
   int korisnikIdEQ = 0;
   dynamic filter;
   KartaDataSource({required this.provider, required this.context}) {
@@ -336,12 +355,17 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(kartaId);
-                  filterServerSide(imeGTE, korisnikIdEQ);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisana karta!",
+                  width: 300);
+                  filterServerSide(cijena, korisnikIdEQ);
                 } catch (e) {
                   QuickAlert.show(
                     context: context,
                     type: QuickAlertType.error,
-                    title: "Greška pri brisanju dvorane!",
+                    title: "Greška pri brisanju karte!",
                     text: "$e",
                   );
                 }
@@ -359,7 +383,7 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
     final page = (request.offset ~/ pageSize).toInt() + 1;
 
     final filter = {
-      'ImeGTE': imeGTE,
+      'CijenaGTE': cijena,
       if (korisnikIdEQ > 0) 'KorisnikId': korisnikIdEQ.toString(),
       'isDeleted': false
     };
@@ -385,8 +409,8 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
     }
   }
 
-  void filterServerSide(String naziv, int? korisnikId) {
-    imeGTE = naziv;
+  void filterServerSide(String _cijena, int? korisnikId) {
+    cijena = _cijena;
     korisnikIdEQ = korisnikId ?? 0;
     setNextView();
   }

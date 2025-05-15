@@ -279,6 +279,11 @@ class VijestDataSource extends AdvancedDataTableSource<Vijest> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(vijestId);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisana vijest!",
+                  width: 300);
                   filterServerSide(nazivGTE, _korisnikIdEQ);
                 } catch (e) {
                   QuickAlert.show(

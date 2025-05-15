@@ -78,7 +78,8 @@ class _GlumacDetailsScreenState extends State<GlumacDetailsScreen> {
                       FormBuilderValidators.match(
                         r'^[A-ZČĆŽĐŠ][a-zA-ZčćžđšČĆŽĐŠ]*$', 
                         errorText: "Ime mora počinjati sa velikim slovom i smije sadržavati samo slova."),
-                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
+                      FormBuilderValidators.maxLength(30, errorText: "Maksimalna dužina je 30 karaktera!"),
                     ]),
                     )
                 ),
@@ -92,7 +93,8 @@ class _GlumacDetailsScreenState extends State<GlumacDetailsScreen> {
                       FormBuilderValidators.match(
                         r'^[A-ZČĆŽĐŠ][a-zA-ZčćžđšČĆŽĐŠ]*$', 
                         errorText: "Prezime mora počinjati sa velikim slovom i smije sadržavati samo slova."),
-                      FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
+                      FormBuilderValidators.maxLength(30, errorText: "Maksimalna dužina je 30 karaktera!"),
                     ]),
                     )
                 ),
@@ -106,6 +108,7 @@ class _GlumacDetailsScreenState extends State<GlumacDetailsScreen> {
                     decoration: InputDecoration(labelText: "Biografija"),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 10 karaktera!"),
                       FormBuilderValidators.maxLength(500, errorText: "Maksimalna dužina je 500 karaktera!"),
                     ]),
                     )

@@ -60,6 +60,7 @@ class _DvoranaListScreenState extends State<DvoranaListScreen> {
             child: TextField(
               controller: _nazivController,
               decoration: const InputDecoration(labelText: "Naziv", hintText: "Naziv dvorane"),
+              maxLength: 30,
             ),
           ),
           ElevatedButton(
@@ -180,6 +181,11 @@ class DvoranaDataSource extends AdvancedDataTableSource<Dvorana> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(dvoranaId);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisana dvorana!",
+                  width: 300);
                   filterServerSide(nazivGTE);
                 } catch (e) {
                   QuickAlert.show(

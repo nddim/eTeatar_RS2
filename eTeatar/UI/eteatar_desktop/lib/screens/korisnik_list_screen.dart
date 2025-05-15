@@ -58,11 +58,11 @@ class _KorisnikListScreenState extends State<KorisnikListScreen> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          Expanded( child: TextField(controller: _imeEditingController, decoration: InputDecoration(labelText: "Ime"))),
+          Expanded( child: TextField(controller: _imeEditingController, decoration: InputDecoration(labelText: "Ime"), maxLength: 30)),
           SizedBox(width: 10,),
-          Expanded( child: TextField(controller: _prezimeEditingController, decoration: InputDecoration(labelText: "Prezime"))),
+          Expanded( child: TextField(controller: _prezimeEditingController, decoration: InputDecoration(labelText: "Prezime"), maxLength: 30)),
           SizedBox(width: 10,),
-          Expanded( child: TextField(controller: _korisnickoImeEditingController, decoration: InputDecoration(labelText: "Korisnicko ime"))),
+          Expanded( child: TextField(controller: _korisnickoImeEditingController, decoration: InputDecoration(labelText: "Korisnicko ime"), maxLength: 30)),
           SizedBox(width: 10,),
           ElevatedButton(
             onPressed: () {
@@ -222,6 +222,11 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
                 Navigator.pop(dialogContext);
                 try {
                   await provider.delete(dvoranaId);
+                  await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  title: "Uspješno obrisan korisnik!",
+                  width: 300);
                   filterServerSide(nazivGTE, prezimeGTE, korisnickoImeGTE);
                 } catch (e) {
                   QuickAlert.show(
