@@ -167,9 +167,21 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
       DataCell(Text(e.email ?? "")),
       DataCell(Text(e.telefon ?? "")),
       DataCell(Text(e.korisnickoIme ?? "")),
-      DataCell(
-        e.slika != null 
-        ? Container(width: 100, height: 100, child: imageFromString(e.slika!),) : Text("")),
+           DataCell(
+        SizedBox(
+          width: 40,
+          height: 40,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: e.slika != null
+                ? imageFromString(e.slika!)
+                : Image.asset(
+                    "assets/images/noProfileImg.png",
+                    fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ),
       DataCell(
         IconButton(
           icon: const Icon(Icons.edit, color: Colors.lightBlue),

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eTeatar.Services.Database;
 
@@ -11,9 +12,11 @@ using eTeatar.Services.Database;
 namespace eTeatar.Services.Migrations
 {
     [DbContext(typeof(ETeatarContext))]
-    partial class ETeatarContextModelSnapshot : ModelSnapshot
+    [Migration("20250514201621_updateDbSeeda")]
+    partial class updateDbSeeda
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,96 +271,6 @@ namespace eTeatar.Services.Migrations
                             SjedisteId = 11,
                             TerminId = 60,
                             ukljucenaHrana = true
-                        },
-                        new
-                        {
-                            KartaId = 7,
-                            Cijena = 10m,
-                            IsDeleted = false,
-                            KorisnikId = 2,
-                            SjedisteId = 90,
-                            TerminId = 81,
-                            ukljucenaHrana = true
-                        },
-                        new
-                        {
-                            KartaId = 8,
-                            Cijena = 10m,
-                            IsDeleted = false,
-                            KorisnikId = 2,
-                            SjedisteId = 15,
-                            TerminId = 82,
-                            ukljucenaHrana = true
-                        },
-                        new
-                        {
-                            KartaId = 9,
-                            Cijena = 10m,
-                            IsDeleted = false,
-                            KorisnikId = 2,
-                            SjedisteId = 60,
-                            TerminId = 83,
-                            ukljucenaHrana = true
-                        },
-                        new
-                        {
-                            KartaId = 10,
-                            Cijena = 10m,
-                            IsDeleted = false,
-                            KorisnikId = 2,
-                            SjedisteId = 100,
-                            TerminId = 84,
-                            ukljucenaHrana = true
-                        },
-                        new
-                        {
-                            KartaId = 11,
-                            Cijena = 10m,
-                            IsDeleted = false,
-                            KorisnikId = 2,
-                            SjedisteId = 11,
-                            TerminId = 85,
-                            ukljucenaHrana = true
-                        },
-                        new
-                        {
-                            KartaId = 12,
-                            Cijena = 10m,
-                            IsDeleted = false,
-                            KorisnikId = 2,
-                            SjedisteId = 70,
-                            TerminId = 86,
-                            ukljucenaHrana = true
-                        },
-                        new
-                        {
-                            KartaId = 13,
-                            Cijena = 10m,
-                            IsDeleted = false,
-                            KorisnikId = 2,
-                            SjedisteId = 99,
-                            TerminId = 87,
-                            ukljucenaHrana = true
-                        },
-                        new
-                        {
-                            KartaId = 14,
-                            Cijena = 10m,
-                            IsDeleted = false,
-                            KorisnikId = 2,
-                            SjedisteId = 25,
-                            TerminId = 88,
-                            ukljucenaHrana = true
-                        },
-                        new
-                        {
-                            KartaId = 15,
-                            Cijena = 10m,
-                            IsDeleted = false,
-                            KorisnikId = 2,
-                            SjedisteId = 75,
-                            TerminId = 89,
-                            ukljucenaHrana = true
                         });
                 });
 
@@ -558,7 +471,7 @@ namespace eTeatar.Services.Migrations
                             DatumKreiranja = new DateTime(2025, 5, 9, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Komentar = "Odlična predstava!",
-                            KorisnikId = 1,
+                            KorisnikId = 2,
                             PredstavaId = 1,
                             Vrijednost = 4
                         },
@@ -568,7 +481,7 @@ namespace eTeatar.Services.Migrations
                             DatumKreiranja = new DateTime(2025, 5, 10, 15, 30, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Komentar = "Gluma fantastična, priča zanimljiva.",
-                            KorisnikId = 1,
+                            KorisnikId = 2,
                             PredstavaId = 2,
                             Vrijednost = 5
                         },
@@ -578,7 +491,7 @@ namespace eTeatar.Services.Migrations
                             DatumKreiranja = new DateTime(2025, 5, 11, 16, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Komentar = "Dobar pokušaj, ali može bolje.",
-                            KorisnikId = 1,
+                            KorisnikId = 2,
                             PredstavaId = 3,
                             Vrijednost = 3
                         },
@@ -588,7 +501,7 @@ namespace eTeatar.Services.Migrations
                             DatumKreiranja = new DateTime(2025, 5, 12, 11, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Komentar = "Bravo za produkciju i režiju!",
-                            KorisnikId = 1,
+                            KorisnikId = 2,
                             PredstavaId = 4,
                             Vrijednost = 5
                         },
@@ -598,7 +511,7 @@ namespace eTeatar.Services.Migrations
                             DatumKreiranja = new DateTime(2025, 5, 12, 14, 45, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Komentar = "Veoma emotivno i snažno.",
-                            KorisnikId = 1,
+                            KorisnikId = 2,
                             PredstavaId = 5,
                             Vrijednost = 4
                         },
@@ -3358,87 +3271,6 @@ namespace eTeatar.Services.Migrations
                             IsDeleted = false,
                             PredstavaId = 10,
                             Status = "Aktivan"
-                        },
-                        new
-                        {
-                            TerminId = 81,
-                            Datum = new DateTime(2025, 5, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
-                            DvoranaId = 3,
-                            IsDeleted = false,
-                            PredstavaId = 1,
-                            Status = "Neaktivan"
-                        },
-                        new
-                        {
-                            TerminId = 82,
-                            Datum = new DateTime(2025, 4, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
-                            DvoranaId = 1,
-                            IsDeleted = false,
-                            PredstavaId = 2,
-                            Status = "Neaktivan"
-                        },
-                        new
-                        {
-                            TerminId = 83,
-                            Datum = new DateTime(2025, 5, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
-                            DvoranaId = 2,
-                            IsDeleted = false,
-                            PredstavaId = 3,
-                            Status = "Neaktivan"
-                        },
-                        new
-                        {
-                            TerminId = 84,
-                            Datum = new DateTime(2025, 4, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
-                            DvoranaId = 3,
-                            IsDeleted = false,
-                            PredstavaId = 4,
-                            Status = "Neaktivan"
-                        },
-                        new
-                        {
-                            TerminId = 85,
-                            Datum = new DateTime(2025, 5, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
-                            DvoranaId = 1,
-                            IsDeleted = false,
-                            PredstavaId = 5,
-                            Status = "Neaktivan"
-                        },
-                        new
-                        {
-                            TerminId = 86,
-                            Datum = new DateTime(2025, 4, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
-                            DvoranaId = 2,
-                            IsDeleted = false,
-                            PredstavaId = 1,
-                            Status = "Neaktivan"
-                        },
-                        new
-                        {
-                            TerminId = 87,
-                            Datum = new DateTime(2025, 5, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
-                            DvoranaId = 3,
-                            IsDeleted = false,
-                            PredstavaId = 2,
-                            Status = "Neaktivan"
-                        },
-                        new
-                        {
-                            TerminId = 88,
-                            Datum = new DateTime(2025, 4, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
-                            DvoranaId = 1,
-                            IsDeleted = false,
-                            PredstavaId = 4,
-                            Status = "Neaktivan"
-                        },
-                        new
-                        {
-                            TerminId = 89,
-                            Datum = new DateTime(2025, 5, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
-                            DvoranaId = 2,
-                            IsDeleted = false,
-                            PredstavaId = 9,
-                            Status = "Neaktivan"
                         });
                 });
 

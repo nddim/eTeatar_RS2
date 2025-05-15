@@ -80,10 +80,21 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
         width: 300
       );
     }
+    if (predstavaResult != null && dvoranaResult != null) {
+      _initialValue = {
+        "Datum": widget.termin?.datum ?? DateTime.now(),
+        "Status": widget.termin?.status ?? "Aktivan",
+        "predstavaId": widget.termin?.predstavaId,
+        "dvoranaId": widget.termin?.dvoranaId,
+      };
+    }
+
     setState(() {
       isLoading = false;
     });
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -112,23 +123,20 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                   ]),
                   inputType: InputType.both,
-                  format: DateFormat("yyyy-MM-dd"),
+                  format: DateFormat("yyyy-MM-dd HH:mm"),
                 ),
               ),
               SizedBox(width: 10,),
               Expanded(
-                child: FormBuilderTextField(
+                child: FormBuilderDropdown<String>(
                   name: "Status",
-                  decoration: InputDecoration(labelText: "Status"),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    FormBuilderValidators.match(
-                        r'^[A-ZČĆŽĐŠ][a-zA-ZčćžđšČĆŽĐŠ]*$', 
-                        errorText: "Prezime mora počinjati sa velikim slovom i smije sadržavati samo slova."),
-                    FormBuilderValidators.minLength(3, errorText: "Minimalna dužina je 3 karaktera!"),
-                    FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
-                  ]),
-                  )
+                  decoration: const InputDecoration(labelText: "Status"),
+                  validator: FormBuilderValidators.required(errorText: "Obavezno polje"),
+                  items: const [
+                    DropdownMenuItem(value: "Aktivan", child: Text("Aktivan")),
+                    DropdownMenuItem(value: "Neaktivan", child: Text("Neaktivan")),
+                  ],
+                ),
               ),
               ]
             ),
@@ -176,7 +184,7 @@ class _TerminDetailsScreenState extends State<TerminDetailsScreen> {
 
               final requestData = {
                 ...formData,
-                'Datum': DateFormat('yyyy-MM-dd').format(formData['Datum']),
+                'Datum': (formData['Datum'] as DateTime).toIso8601String()
               };
               if(widget.termin == null){
                 try {

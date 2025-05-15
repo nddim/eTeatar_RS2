@@ -108,11 +108,11 @@ namespace eTeatar.Services.Migrations
                 columns: new[] { "OcjenaId", "DatumKreiranja", "IsDeleted", "Komentar", "KorisnikId", "PredstavaId", "Vrijednost", "VrijemeBrisanja" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 5, 9, 18, 0, 0, 0, DateTimeKind.Unspecified), false, "Odlična predstava!", 2, 1, 4, null },
-                    { 2, new DateTime(2025, 5, 10, 15, 30, 0, 0, DateTimeKind.Unspecified), false, "Gluma fantastična, priča zanimljiva.", 2, 2, 5, null },
-                    { 3, new DateTime(2025, 5, 11, 16, 0, 0, 0, DateTimeKind.Unspecified), false, "Dobar pokušaj, ali može bolje.", 2, 3, 3, null },
-                    { 4, new DateTime(2025, 5, 12, 11, 0, 0, 0, DateTimeKind.Unspecified), false, "Bravo za produkciju i režiju!", 2, 4, 5, null },
-                    { 5, new DateTime(2025, 5, 12, 14, 45, 0, 0, DateTimeKind.Unspecified), false, "Veoma emotivno i snažno.", 2, 5, 4, null },
+                    { 1, new DateTime(2025, 5, 9, 18, 0, 0, 0, DateTimeKind.Unspecified), false, "Odlična predstava!", 1, 1, 4, null },
+                    { 2, new DateTime(2025, 5, 10, 15, 30, 0, 0, DateTimeKind.Unspecified), false, "Gluma fantastična, priča zanimljiva.", 1, 2, 5, null },
+                    { 3, new DateTime(2025, 5, 11, 16, 0, 0, 0, DateTimeKind.Unspecified), false, "Dobar pokušaj, ali može bolje.", 1, 3, 3, null },
+                    { 4, new DateTime(2025, 5, 12, 11, 0, 0, 0, DateTimeKind.Unspecified), false, "Bravo za produkciju i režiju!", 1, 4, 5, null },
+                    { 5, new DateTime(2025, 5, 12, 14, 45, 0, 0, DateTimeKind.Unspecified), false, "Veoma emotivno i snažno.", 1, 5, 4, null },
                     { 6, new DateTime(2025, 5, 10, 12, 0, 0, 0, DateTimeKind.Unspecified), false, "Svaka čast glumcima!", 1, 1, 5, null },
                     { 7, new DateTime(2025, 5, 11, 13, 0, 0, 0, DateTimeKind.Unspecified), false, "Solidno, ali nije ostavilo jak utisak.", 1, 2, 3, null },
                     { 8, new DateTime(2025, 5, 11, 14, 0, 0, 0, DateTimeKind.Unspecified), false, "Zanimljiva priča i dobar ritam.", 1, 4, 4, null },

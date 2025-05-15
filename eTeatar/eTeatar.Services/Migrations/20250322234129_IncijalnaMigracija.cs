@@ -483,7 +483,7 @@ namespace eTeatar.Services.Migrations
                 name: "RezervacijaSjediste",
                 columns: table => new
                 {
-                    RezervacijaSjedisteId = table.Column<int>(type: "int", nullable: false),
+                    RezervacijaSjedisteId = table.Column<int>(type: "int", nullable: false).Annotation("SqlServer:Identity", "1, 1"),
                     RezervacijaId = table.Column<int>(type: "int", nullable: false),
                     SjedisteId = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -494,12 +494,12 @@ namespace eTeatar.Services.Migrations
                     table.PrimaryKey("PK_RezervacijaSjediste", x => x.RezervacijaSjedisteId);
                     table.ForeignKey(
                         name: "FKSjediste277089",
-                        column: x => x.RezervacijaSjedisteId,
+                        column: x => x.SjedisteId,
                         principalTable: "Sjediste",
                         principalColumn: "SjedisteId");
                     table.ForeignKey(
-                        name: "FK_RezervacijaSjediste_Rezervacija_RezervacijaSjedisteId",
-                        column: x => x.RezervacijaSjedisteId,
+                        name: "FKRezervacija",
+                        column: x => x.RezervacijaId,
                         principalTable: "Rezervacija",
                         principalColumn: "RezervacijaId");
                 });

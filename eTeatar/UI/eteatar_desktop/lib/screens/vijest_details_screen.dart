@@ -39,11 +39,7 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
 
     super.initState();
 
-    _initialValue = {
-      "Naziv" : widget.vijest?.naziv ?? "",
-      "Sadrzaj" : widget.vijest?.sadrzaj ?? "",
-      "KorisnikId" : widget.vijest?.korisnikId.toString() ?? "",
-    };
+    
 
     initForm();
   }
@@ -60,6 +56,11 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
         width: 300
       );
     }
+    _initialValue = {
+      "Naziv" : widget.vijest?.naziv ?? "",
+      "Sadrzaj" : widget.vijest?.sadrzaj ?? "",
+      "korisnikId" : widget.vijest?.korisnikId,
+    };
     setState(() {
       isLoading = false;
     });
@@ -97,14 +98,18 @@ class _VijestDetailsScreenState extends State<VijestDetailsScreen> {
                 ),
                 SizedBox(width: 10,),
                 Expanded(
-                  child: FormBuilderDropdown(
-                     name: "korisnikId",
-                     validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    ]),
-                     decoration: InputDecoration(labelText: "Korisnik"),
-                     items: korisnikResult?.resultList.map((e) => DropdownMenuItem(child: Text(e.ime ?? ""), value: e.korisnikId)).toList() ?? [],
-                )
+                  child: 
+                  FormBuilderDropdown<int>(
+                    name: "korisnikId",
+                    decoration: InputDecoration(labelText: "Korisnik"),
+                    validator: FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    items: korisnikResult?.resultList
+                        .map((e) => DropdownMenuItem<int>(
+                              value: e.korisnikId,
+                              child: Text("${e.ime ?? ''} ${e.prezime ?? ''}"),
+                            ))
+                        .toList() ?? [],
+                  ),
                 ),
               ]
             ),

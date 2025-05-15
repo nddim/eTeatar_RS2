@@ -87,7 +87,7 @@ class _DvoranaDetailsScreenState extends State<DvoranaDetailsScreen> {
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
                       FormBuilderValidators.numeric(errorText: "Unos mora biti broj!"),
                       FormBuilderValidators.max(100, errorText: "Kapacitet ne smije biti veci od 100!"),
-                      FormBuilderValidators.min(5, errorText: "Kapacitet ne smije biti manj od 5!"),
+                      FormBuilderValidators.min(5, errorText: "Kapacitet ne smije biti manji od 5!"),
                     ]),
                     )
                 ),

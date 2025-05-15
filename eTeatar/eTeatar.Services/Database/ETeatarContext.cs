@@ -81,13 +81,13 @@ public partial class ETeatarContext : DbContext
 
             entity.Property(e => e.Biografija)
                 .HasMaxLength(500)
-                .IsUnicode(false);
+                .IsUnicode(true);
             entity.Property(e => e.Ime)
                 .HasMaxLength(255)
-                .IsUnicode(false);
+                .IsUnicode(true);
             entity.Property(e => e.Prezime)
                 .HasMaxLength(255)
-                .IsUnicode(false);
+                .IsUnicode(true);
             entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
         });
 
@@ -151,7 +151,7 @@ public partial class ETeatarContext : DbContext
             entity.Property(e => e.Prezime)
                 .HasMaxLength(255)
                 .IsUnicode(true);
-            entity.Property(e => e.Slika).HasMaxLength(2000);
+            entity.Property(e => e.Slika).HasColumnType("nvarchar(max)").IsUnicode(true);
             entity.Property(e => e.Telefon)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -226,7 +226,7 @@ public partial class ETeatarContext : DbContext
             entity.Property(e => e.Cijena)
                 .HasPrecision(18, 2);
 
-            entity.Property(e => e.Slika).HasMaxLength(2000);
+            entity.Property(e => e.Slika).HasColumnType("nvarchar(max)").IsUnicode(true);
             entity.Property(e => e.Trajanje);
             entity.Property(e => e.VrijemeBrisanja).HasColumnType("datetime");
             entity.HasMany(e=> e.PredstavaRepertoars).WithOne(pr=> pr.Predstava).HasForeignKey(pr => pr.PredstavaId);
@@ -357,6 +357,9 @@ public partial class ETeatarContext : DbContext
         modelBuilder.Entity<RezervacijaSjediste>(entity =>
         {
             entity.HasKey(e => e.RezervacijaSjedisteId);
+
+            entity.Property(e => e.RezervacijaSjedisteId)
+                .ValueGeneratedOnAdd();
 
             entity.ToTable("RezervacijaSjediste");
 
@@ -590,78 +593,22 @@ public static class ModelBuilderExtensions
             }
         );
         modelBuilder.Entity<Kartum>().HasData(
-            new Kartum
-            {
-                KartaId = 1,
-                Cijena = 10,
-                IsDeleted = false,
-                VrijemeBrisanja = null,
-                TerminId = 22,
-                RezervacijaId = null,
-                KorisnikId = 2,
-                ukljucenaHrana = true,
-                SjedisteId = 2
-            },
-            new Kartum
-            {
-                KartaId = 2,
-                Cijena = 10,
-                IsDeleted = false,
-                VrijemeBrisanja = null,
-                TerminId = 22,
-                RezervacijaId = null,
-                KorisnikId = 2,
-                ukljucenaHrana = true,
-                SjedisteId = 3
-            },
-            new Kartum
-            {
-                KartaId = 3,
-                Cijena = 10,
-                IsDeleted = false,
-                VrijemeBrisanja = null,
-                TerminId = 30,
-                RezervacijaId = null,
-                KorisnikId = 2,
-                ukljucenaHrana = false,
-                SjedisteId = 89
-            },
-            new Kartum
-            {
-                KartaId = 4,
-                Cijena = 10,
-                IsDeleted = false,
-                VrijemeBrisanja = null,
-                TerminId = 30,
-                RezervacijaId = null,
-                KorisnikId = 2,
-                ukljucenaHrana = false,
-                SjedisteId = 90
-            },
-            new Kartum
-            {
-                KartaId = 5,
-                Cijena = 10,
-                IsDeleted = false,
-                VrijemeBrisanja = null,
-                TerminId = 60,
-                RezervacijaId = null,
-                KorisnikId = 2,
-                ukljucenaHrana = true,
-                SjedisteId = 10
-            },
-            new Kartum
-            {
-                KartaId = 6,
-                Cijena = 10,
-                IsDeleted = false,
-                VrijemeBrisanja = null,
-                TerminId = 60,
-                RezervacijaId = null,
-                KorisnikId = 2,
-                ukljucenaHrana = true,
-                SjedisteId = 11
-            }
+            new Kartum { KartaId = 1, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 22, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 2 },
+            new Kartum { KartaId = 2, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 22, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 3 },
+            new Kartum { KartaId = 3, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 30, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = false, SjedisteId = 89 },
+            new Kartum { KartaId = 4, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 30, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = false, SjedisteId = 90 },
+            new Kartum { KartaId = 5, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 60, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 10 },
+            new Kartum { KartaId = 6, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 60, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 11 },
+            new Kartum { KartaId = 7, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 81, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 90 },
+            new Kartum { KartaId = 8, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 82, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 15 },
+            new Kartum { KartaId = 9, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 83, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 60 },
+            new Kartum { KartaId = 10, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 84, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 100 },
+            new Kartum { KartaId = 11, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 85, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 11 },
+            new Kartum { KartaId = 12, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 86, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 70 },
+            new Kartum { KartaId = 13, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 87, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 99 },
+            new Kartum { KartaId = 14, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 88, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 25 },
+            new Kartum { KartaId = 15, Cijena = 10, IsDeleted = false, VrijemeBrisanja = null, TerminId = 89, RezervacijaId = null, KorisnikId = 2, ukljucenaHrana = true, SjedisteId = 75 }
+
         );
         modelBuilder.Entity<Korisnik>().HasData(
             new Korisnik
@@ -706,7 +653,7 @@ public static class ModelBuilderExtensions
                 Vrijednost = 4,
                 Komentar = "Odlična predstava!",
                 DatumKreiranja = DateTime.Parse("2025-05-09 18:00:00.000"),
-                KorisnikId = 2,
+                KorisnikId = 1,
                 PredstavaId = 1
             },
             new Ocjena
@@ -717,7 +664,7 @@ public static class ModelBuilderExtensions
                 Vrijednost = 5,
                 Komentar = "Gluma fantastična, priča zanimljiva.",
                 DatumKreiranja = DateTime.Parse("2025-05-10 15:30:00.000"),
-                KorisnikId = 2,
+                KorisnikId = 1,
                 PredstavaId = 2
             },
             new Ocjena
@@ -728,7 +675,7 @@ public static class ModelBuilderExtensions
                 Vrijednost = 3,
                 Komentar = "Dobar pokušaj, ali može bolje.",
                 DatumKreiranja = DateTime.Parse("2025-05-11 16:00:00.000"),
-                KorisnikId = 2,
+                KorisnikId = 1,
                 PredstavaId = 3
             },
             new Ocjena
@@ -739,7 +686,7 @@ public static class ModelBuilderExtensions
                 Vrijednost = 5,
                 Komentar = "Bravo za produkciju i režiju!",
                 DatumKreiranja = DateTime.Parse("2025-05-12 11:00:00.000"),
-                KorisnikId = 2,
+                KorisnikId = 1,
                 PredstavaId = 4
             },
             new Ocjena
@@ -750,7 +697,7 @@ public static class ModelBuilderExtensions
                 Vrijednost = 4,
                 Komentar = "Veoma emotivno i snažno.",
                 DatumKreiranja = DateTime.Parse("2025-05-12 14:45:00.000"),
-                KorisnikId = 2,
+                KorisnikId = 1,
                 PredstavaId = 5
             },
             new Ocjena
@@ -1295,8 +1242,17 @@ public static class ModelBuilderExtensions
             new Termin { TerminId = 57, Datum = DateTime.Parse("2025-06-01 22:00:00.000"), Status = "Aktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 3, PredstavaId = 10 },
             new Termin { TerminId = 58, Datum = DateTime.Parse("2025-06-02 18:00:00.000"), Status = "Aktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 1, PredstavaId = 10 },
             new Termin { TerminId = 59, Datum = DateTime.Parse("2025-06-02 20:00:00.000"), Status = "Aktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 2, PredstavaId = 10 },
-            new Termin { TerminId = 60, Datum = DateTime.Parse("2025-06-02 22:00:00.000"), Status = "Aktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 3, PredstavaId = 10 }
-
+            new Termin { TerminId = 60, Datum = DateTime.Parse("2025-06-02 22:00:00.000"), Status = "Aktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 3, PredstavaId = 10 },
+            new Termin { TerminId = 81, Datum = DateTime.Parse("2025-05-01 22:00:00.000"), Status = "Neaktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 3, PredstavaId = 1 },
+            new Termin { TerminId = 82, Datum = DateTime.Parse("2025-04-02 18:00:00.000"), Status = "Neaktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 1, PredstavaId = 2 },
+            new Termin { TerminId = 83, Datum = DateTime.Parse("2025-05-02 20:00:00.000"), Status = "Neaktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 2, PredstavaId = 3 },
+            new Termin { TerminId = 84, Datum = DateTime.Parse("2025-04-02 22:00:00.000"), Status = "Neaktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 3, PredstavaId = 4 },
+            new Termin { TerminId = 85, Datum = DateTime.Parse("2025-05-01 18:00:00.000"), Status = "Neaktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 1, PredstavaId = 5 },
+            new Termin { TerminId = 86, Datum = DateTime.Parse("2025-04-01 20:00:00.000"), Status = "Neaktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 2, PredstavaId = 1 },
+            new Termin { TerminId = 87, Datum = DateTime.Parse("2025-05-01 22:00:00.000"), Status = "Neaktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 3, PredstavaId = 2 },
+            new Termin { TerminId = 88, Datum = DateTime.Parse("2025-04-02 18:00:00.000"), Status = "Neaktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 1, PredstavaId = 4 },
+            new Termin { TerminId = 89, Datum = DateTime.Parse("2025-05-02 20:00:00.000"), Status = "Neaktivan", IsDeleted = false, VrijemeBrisanja = null, DvoranaId = 2, PredstavaId = 9 }
+              
         );
         modelBuilder.Entity<Uloga>().HasData(
             new Uloga

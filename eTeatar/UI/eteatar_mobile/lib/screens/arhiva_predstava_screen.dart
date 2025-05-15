@@ -64,7 +64,13 @@ class _ArhivaPredstavaScreenState extends State<ArhivaPredstavaScreen> {
                         margin: const EdgeInsets.only(bottom: 12),
                         child: ListTile(
                           title: Text(predstava.naziv ?? 'Bez naziva'),
-                          subtitle: Text(predstava.opis ?? 'Bez opisa'),
+                          subtitle: Text(
+                            predstava.opis != null
+                                ? (predstava.opis!.length > 40
+                                    ? '${predstava.opis!.substring(0, 40)}...'
+                                    : predstava.opis!)
+                                : 'Bez opisa',
+                          ),
                           trailing: Text('${predstava.trajanje} min'),
                           onTap: () {
                             Navigator.of(context).push(

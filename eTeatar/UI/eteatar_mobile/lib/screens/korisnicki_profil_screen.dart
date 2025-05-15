@@ -4,9 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:eteatar_mobile/main.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/providers/korisnik_provider.dart';
-import 'package:eteatar_mobile/providers/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -21,8 +19,6 @@ class KorisnickiProfil extends StatefulWidget {
 
 class _KorisnickiProfilState extends State<KorisnickiProfil> {
   final _formKey = GlobalKey<FormBuilderState>();
-  File? _selectedImageFile;
-  final ImagePicker _picker = ImagePicker();
   late KorisnikProvider korisnikProvider;
   bool promijeniLozinku = false;
   Map<String, dynamic> _initialValue = {};
@@ -62,18 +58,6 @@ class _KorisnickiProfilState extends State<KorisnickiProfil> {
         ],
       ),
     );
-  }
-
-  Future<void> _pickImage() async {
-    final picked = await _picker.pickImage(source: ImageSource.gallery);
-
-    if (picked != null) {
-      final bytes = await picked.readAsBytes();
-      setState(() {
-        _selectedImageFile = File(picked.path);
-        _base64Image = base64Encode(bytes);
-      });
-    }
   }
 
   Widget _buildProfileHeader() {
@@ -196,6 +180,7 @@ class _KorisnickiProfilState extends State<KorisnickiProfil> {
                   name: 'email',
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.email(errorText: "Unesite ispravnu email adresu!"),
                     FormBuilderValidators.maxLength(100,
                         errorText: "Maksimalno 50 znakova"),
                   ]),

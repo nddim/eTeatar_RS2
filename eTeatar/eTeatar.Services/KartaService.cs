@@ -78,7 +78,29 @@ namespace eTeatar.Services
         public List<Model.KartaDTO> getKartasByKorisnik(int korisnikId)
         {
             var query = Context.Karta
-                .Where(x => x.KorisnikId == korisnikId && !x.IsDeleted)
+                .Include(x=>x.Termin)
+                .Where(x => x.KorisnikId == korisnikId && !x.IsDeleted && x.Termin.Datum > DateTime.Now)
+                .Select(x => new KartaDTO
+                {
+                    KartaId = x.KartaId,
+                    Cijena = x.Cijena,
+                    SjedisteId = x.Sjediste.SjedisteId,
+                    Red = x.Sjediste.Red,
+                    Kolona = x.Sjediste.Kolona,
+                    TerminId = x.Termin.TerminId,
+                    DatumVrijeme = x.Termin.Datum,
+                    NazivPredstave = x.Termin.Predstava.Naziv,
+                    UkljucenaHrana = x.ukljucenaHrana
+                });
+
+            return query.ToList();
+        }
+
+        public List<KartaDTO> getArchivedKartasByKorisnik(int korisnikId)
+        {
+            var query = Context.Karta
+                .Include(x => x.Termin)
+                .Where(x => x.KorisnikId == korisnikId && !x.IsDeleted && x.Termin.Datum < DateTime.Now)
                 .Select(x => new KartaDTO
                 {
                     KartaId = x.KartaId,

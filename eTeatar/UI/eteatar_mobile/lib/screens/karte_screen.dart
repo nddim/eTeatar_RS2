@@ -14,11 +14,13 @@ class KarteScreen extends StatefulWidget {
   State<KarteScreen> createState() => _KarteScreenState();
 }
 
-class _KarteScreenState extends State<KarteScreen> {
+class _KarteScreenState extends State<KarteScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   bool _isLoading = true;
   late KartaDtoProvider kartaDtoProvider;
   late TerminProvider terminProvider;
   List<KartaDTO> karte = [];
+  List<KartaDTO> archivedKarte = [];
   List<Termin> termini = [];
   Map<int, Termin> terminiMap = {};
 
@@ -26,6 +28,7 @@ class _KarteScreenState extends State<KarteScreen> {
   void initState() {
     kartaDtoProvider = context.read<KartaDtoProvider>();
     terminProvider = context.read<TerminProvider>();
+    _tabController = TabController(length: 2, vsync: this);
     super.initState();
     loadData();
   }
@@ -33,7 +36,7 @@ class _KarteScreenState extends State<KarteScreen> {
   Future<void> loadData() async {
     try {
       final result = await kartaDtoProvider.getKarte();
-
+      final resultArchived = await kartaDtoProvider.getArchivedKarte();
       var resultTermin = await terminProvider.get(
         filter: {'isDeleted': false}
       );
@@ -43,6 +46,7 @@ class _KarteScreenState extends State<KarteScreen> {
 
       setState(() {
         karte = result;
+        archivedKarte = resultArchived;
         _isLoading = false;
       });
     } catch (e) {
@@ -62,58 +66,76 @@ class _KarteScreenState extends State<KarteScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Karte'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.black,
+          indicatorColor: Colors.white,
+          tabs: const [
+            Tab(text: 'Aktivne karte'),
+            Tab(text: 'Prošle karte'),
+          ],
         ),
         backgroundColor: Colors.lightBlue,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : karte.isEmpty
-              ? const Center(child: Text("Nema dostupnih karata."))
-              : ListView.separated(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: karte.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final karta = karte[index];
+          : TabBarView(
+              controller: _tabController,
+              children: [
+                _buildKarteList(karte, allowTap: true),         // Aktivne — klik omogućeno
+                _buildKarteList(archivedKarte, allowTap: false), // Prošle — klik onemogućen
+              ],
+            ),
+    );
+  }
 
-                    final termin = terminiMap[karta.terminId];
+  Widget _buildKarteList(List<KartaDTO> karteZaPrikaz, {required bool allowTap}) {
+    if (karteZaPrikaz.isEmpty) {
+      return const Center(child: Text("Nema dostupnih karata."));
+    }
 
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 4,
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => KartaDetailsScreen(karta: karta),
-                            ),
-                          );
-                        },
-                        contentPadding: const EdgeInsets.all(12),
-                        title: Text(
-                          'Karta ID: ${karta.kartaId}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Cijena: ${karta.cijena} KM'),
-                            Text('Predstava: ${karta.nazivPredstave}'),
-                            Text('Datum: ${termin?.datum?.toLocal().toString() ?? 'Nema datuma'}'),
-                            Text('Sjediste: Red ${karta.red}, Kolona ${karta.kolona}'),
-                          ],
-                        ),
+    return ListView.separated(
+      padding: const EdgeInsets.all(16),
+      itemCount: karteZaPrikaz.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        final karta = karteZaPrikaz[index];
+        final termin = terminiMap[karta.terminId];
+
+        return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 4,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          child: ListTile(
+            onTap: allowTap
+                ? () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => KartaDetailsScreen(karta: karta),
                       ),
                     );
-                  },
-                ),
+                  }
+                : null,
+            contentPadding: const EdgeInsets.all(12),
+            title: Text(
+              karta.nazivPredstave,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Cijena: ${karta.cijena} KM'),
+                Text('Datum: ${termin?.datum?.toLocal().toString() ?? 'Nema datuma'}'),
+                Text('Sjediste: Red ${karta.red}, Kolona ${karta.kolona}'),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

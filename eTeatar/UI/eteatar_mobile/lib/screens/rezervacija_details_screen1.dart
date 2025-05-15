@@ -40,7 +40,7 @@ class _RezervacijaDetailsScreen1State extends State<RezervacijaDetailsScreen1> {
     final Map<DateTime, List<Termin>> mapa = {};
 
     for (var t in termini) {
-      if (t.datum != null) {
+      if (t.datum != null && t.datum!.isAfter(DateTime.now())) {
         final datum = DateTime(t.datum!.year, t.datum!.month, t.datum!.day);
         mapa.putIfAbsent(datum, () => []).add(t);
       }
@@ -152,17 +152,25 @@ class _RezervacijaDetailsScreen1State extends State<RezervacijaDetailsScreen1> {
       children: termini.map((termin) {
         final vrijeme = TimeOfDay.fromDateTime(termin.datum!);
         final isSelected = termin == _odabraniTermin;
+        final isAktivan = termin.status == "Aktivan";
+
         return ChoiceChip(
           label: Text("${vrijeme.format(context)}h"),
           selected: isSelected,
-          onSelected: (_) {
-            setState(() {
-              _odabraniTermin = termin;
-            });
-          },
-          selectedColor: Colors.blue,
-          backgroundColor: Colors.grey[200],
-          labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
+          onSelected: isAktivan
+              ? (_) {
+                  setState(() {
+                    _odabraniTermin = termin;
+                  });
+                }
+              : null,
+          selectedColor: isAktivan ? Colors.blue : Colors.grey,
+          backgroundColor: isAktivan ? Colors.grey[200] : Colors.grey[400],
+          labelStyle: TextStyle(
+            color: isAktivan
+                ? (isSelected ? Colors.white : Colors.black)
+                : Colors.black54,
+          ),
         );
       }).toList(),
     );

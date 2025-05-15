@@ -51,6 +51,7 @@ class _PredstavaDetaljiScreenState extends State<PredstavaDetaljiScreen> {
         context: context,
         type: QuickAlertType.error,
         title: "Greška pri dohvatanju prosječne ocjene!",
+        text: "$e",
       );
     }
   }
@@ -181,6 +182,7 @@ class _PredstavaDetaljiScreenState extends State<PredstavaDetaljiScreen> {
                       context: context,
                       type: QuickAlertType.error,
                       title: "Greška pri dodavanju ocjene!",
+                      text: "$e",
                     );
                     return;
                   }

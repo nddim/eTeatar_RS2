@@ -3,6 +3,7 @@ import 'package:advanced_datatable/datatable.dart';
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/repertoar.dart';
 import 'package:eteatar_desktop/providers/repertoar_provider.dart';
+import 'package:eteatar_desktop/providers/utils.dart';
 import 'package:eteatar_desktop/screens/repertoar_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -140,8 +141,8 @@ class RepertoarDataSource extends AdvancedDataTableSource<Repertoar> {
 
     return DataRow(cells: [
       DataCell(Text(e.naziv ?? "")),
-      DataCell(Text(e.datumPocetka.toString())),
-      DataCell(Text(e.datumKraja.toString())),
+      DataCell(Text(formatDate(e.datumPocetka!))),
+      DataCell(Text(formatDate(e.datumKraja!))),
       DataCell(
         IconButton(
           icon: const Icon(Icons.edit, color: Colors.lightBlue),

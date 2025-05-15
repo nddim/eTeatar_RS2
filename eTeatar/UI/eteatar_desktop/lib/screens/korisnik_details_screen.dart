@@ -103,7 +103,7 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
                       FormBuilderValidators.match(
                         r'^[A-ZČĆŽĐŠ][a-zA-ZčćžđšČĆŽĐŠ]*$', 
-                        errorText: "Prezime mora počinjati sa velikim slovom i smije sadržavati samo slova."),
+                        errorText: "Ime mora počinjati sa velikim slovom i smije sadržavati samo slova."),
                       FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                     ]),
                     )
@@ -163,6 +163,7 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                   decoration: InputDecoration(labelText: "Email"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
+                    FormBuilderValidators.email(errorText: "Unesite ispravnu email adresu!"),
                     FormBuilderValidators.maxLength(255, errorText: "Maksimalna dužina je 255 karaktera!"),
                   ]),
                   )

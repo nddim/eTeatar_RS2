@@ -18,5 +18,10 @@ namespace eTeatar.API.Controllers
         {
             return ((IKartaService)_service).getKartasByKorisnik(korisnikId);
         }
+        [HttpGet("getArchivedKartasByKorisnik/{korisnikId}")]
+        public List<KartaDTO> getArchivedKartasByKorisnik(int korisnikId)
+        {
+            return ((IKartaService)_service).getArchivedKartasByKorisnik(korisnikId);
+        }
     }
 }

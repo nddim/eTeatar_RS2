@@ -208,7 +208,21 @@ class PredstavaDataSource extends AdvancedDataTableSource<Predstava> {
       DataCell(Text(e.naziv ?? "")),
       DataCell(Text("${e.cijena.toString()} KM")),
       DataCell(Text("${e.trajanje.toString()} mins")),
-      DataCell(e.slika != null ? Container(width: 100, height: 100, child: imageFromString(e.slika!),): Text("")),
+      DataCell(
+        SizedBox(
+          width: 80,
+          height: 80,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: e.slika != null
+                ? imageFromString(e.slika!)
+                : Image.asset(
+                    "assets/images/emptyPredstavaImage.jpg",
+                    fit: BoxFit.cover,
+                  ),
+          ),
+        ),
+      ),
       DataCell(
         IconButton(
           icon: Icon(Icons.edit,

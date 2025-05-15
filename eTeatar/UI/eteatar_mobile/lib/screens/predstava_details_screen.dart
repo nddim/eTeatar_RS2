@@ -54,11 +54,11 @@ class _PredstavaDetaljiScreen2State extends State<PredstavaDetaljiScreen2> {
               )
             else
               Center(
-                child: Container(
+                 child: Image.asset(
+                  "assets/images/emptyPredstavaImage.jpg",
                   height: 200,
                   width: 200,
-                  color: Colors.grey[300],
-                  child: const Center(child: Icon(Icons.image, size: 60)),
+                  fit: BoxFit.cover,
                 ),
               ),
             const SizedBox(height: 16),

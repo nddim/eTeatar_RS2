@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eTeatar.Services.Database;
 
@@ -11,9 +12,11 @@ using eTeatar.Services.Database;
 namespace eTeatar.Services.Migrations
 {
     [DbContext(typeof(ETeatarContext))]
-    partial class ETeatarContextModelSnapshot : ModelSnapshot
+    [Migration("20250515174838_updateDbSeed3")]
+    partial class updateDbSeed3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -558,7 +561,7 @@ namespace eTeatar.Services.Migrations
                             DatumKreiranja = new DateTime(2025, 5, 9, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Komentar = "Odlična predstava!",
-                            KorisnikId = 1,
+                            KorisnikId = 2,
                             PredstavaId = 1,
                             Vrijednost = 4
                         },
@@ -568,7 +571,7 @@ namespace eTeatar.Services.Migrations
                             DatumKreiranja = new DateTime(2025, 5, 10, 15, 30, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Komentar = "Gluma fantastična, priča zanimljiva.",
-                            KorisnikId = 1,
+                            KorisnikId = 2,
                             PredstavaId = 2,
                             Vrijednost = 5
                         },
@@ -578,7 +581,7 @@ namespace eTeatar.Services.Migrations
                             DatumKreiranja = new DateTime(2025, 5, 11, 16, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Komentar = "Dobar pokušaj, ali može bolje.",
-                            KorisnikId = 1,
+                            KorisnikId = 2,
                             PredstavaId = 3,
                             Vrijednost = 3
                         },
@@ -588,7 +591,7 @@ namespace eTeatar.Services.Migrations
                             DatumKreiranja = new DateTime(2025, 5, 12, 11, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Komentar = "Bravo za produkciju i režiju!",
-                            KorisnikId = 1,
+                            KorisnikId = 2,
                             PredstavaId = 4,
                             Vrijednost = 5
                         },
@@ -598,7 +601,7 @@ namespace eTeatar.Services.Migrations
                             DatumKreiranja = new DateTime(2025, 5, 12, 14, 45, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Komentar = "Veoma emotivno i snažno.",
-                            KorisnikId = 1,
+                            KorisnikId = 2,
                             PredstavaId = 5,
                             Vrijednost = 4
                         },
