@@ -43,19 +43,29 @@ class _MasterScreenState extends State<MasterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            UserAccountsDrawerHeader(
-              decoration: BoxDecoration(
+             UserAccountsDrawerHeader(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(72, 142, 255, 1),
               ),
-              accountName: Text(""),
+              accountName: const Text("Dobrodošli,", style: TextStyle(color: Colors.white)),
               accountEmail: Text(
-                "Administrator",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)
+                "${AuthProvider.ime} ${AuthProvider.prezime}",
+                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 20)
               )
             ),
             Expanded(
               child: ListView(
                 children: [
+                  _buildDrawerItem(
+                    icon: Icons.arrow_back,
+                    label: "Nazad",
+                    onTap: () {
+                      Navigator.of(context).pop(); // zatvori Drawer
+                      Future.delayed(Duration(milliseconds: 300), () {
+                        Navigator.of(context).pop(); // zatvori trenutni screen
+                      });
+                    }
+                  ),
                   _buildDrawerItem(
                     icon: Icons.event,
                     label: "Predstave",

@@ -104,16 +104,15 @@ class _UplataListScreenState extends State<UplataListScreen> {
             ),
             const SizedBox(width: 20),
             Expanded(
-              child: FormBuilderDropdown<int>(
+              child: 
+              DropdownButtonFormField<int>(
                 key: _dropdownKey,
-                name: "korisnikId",
-                decoration: InputDecoration(labelText: "Korisnik"),
-                items: _korisnikResult?.resultList
-                    .map((e) => DropdownMenuItem(
-                          value: e.korisnikId,
-                          child: Text("${e.ime ?? ""} ${e.prezime ?? ""}"),
-                        ))
-                    .toList() ?? [],
+                value: _selectedKorisnikId,
+                decoration: const InputDecoration(labelText: "Korisnik"),
+                items: _korisnikResult?.resultList.map((e) => DropdownMenuItem(
+                  value: e.korisnikId,
+                  child: Text("${e.ime ?? ""} ${e.prezime ?? ""}"),
+                )).toList() ?? [],
                 onChanged: (value) {
                   setState(() {
                     _selectedKorisnikId = value;
@@ -124,22 +123,27 @@ class _UplataListScreenState extends State<UplataListScreen> {
             const SizedBox(width: 20),
             ElevatedButton(
             onPressed: () {
-              _dataSource.filterServerSide(_iznosEditingController.text, _selectedKorisnikId);
-            },
+                if (_formKey.currentState?.saveAndValidate() ?? false) {
+                  _dataSource.filterServerSide(
+                    _iznosEditingController.text,
+                    _selectedKorisnikId,
+                  );
+                }
+              },
             child: const Text("Pretraga"),
           ),
             const SizedBox(width: 20),
             ElevatedButton(
-            onPressed: () {
-              _iznosEditingController.clear();
-              setState(() {
-                _selectedKorisnikId = null;
-                _dropdownKey = UniqueKey();
-              });
-              _dataSource.filterServerSide("", null);
-            },
-            child: const Text("Resetuj filtere"),
-          ),
+              onPressed: () {
+                _iznosEditingController.clear();
+                setState(() {
+                  _selectedKorisnikId = null;
+                  _dropdownKey = UniqueKey();
+                });
+                _dataSource.filterServerSide("", null);
+              },
+              child: const Text("Resetuj filtere"),
+            ),
           ],
         ),
       ),

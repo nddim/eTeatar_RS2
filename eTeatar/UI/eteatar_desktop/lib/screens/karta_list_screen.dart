@@ -100,17 +100,15 @@ class _KartaListScreenState extends State<KartaListScreen> {
             ),
             const SizedBox(width: 20),
             Expanded(
-              child: FormBuilderDropdown<int>(
+              child: 
+              DropdownButtonFormField<int>(
                 key: _dropdownKey,
-                name: "korisnikId",
+                value: _selectedKorisnikId,
                 decoration: const InputDecoration(labelText: "Korisnik"),
-                items: _korisnikResult?.resultList
-                        .map((e) => DropdownMenuItem(
-                              value: e.korisnikId,
-                              child: Text("${e.ime ?? ""} ${e.prezime ?? ""}"),
-                            ))
-                        .toList() ??
-                    [],
+                items: _korisnikResult?.resultList.map((e) => DropdownMenuItem(
+                  value: e.korisnikId,
+                  child: Text("${e.ime ?? ""} ${e.prezime ?? ""}"),
+                )).toList() ?? [],
                 onChanged: (value) {
                   setState(() {
                     _selectedKorisnikId = value;
@@ -133,7 +131,6 @@ class _KartaListScreenState extends State<KartaListScreen> {
             const SizedBox(width: 20),
             ElevatedButton(
               onPressed: () {
-                _formKey.currentState?.reset();
                 _cijenaEditingController.clear();
                 setState(() {
                   _selectedKorisnikId = null;

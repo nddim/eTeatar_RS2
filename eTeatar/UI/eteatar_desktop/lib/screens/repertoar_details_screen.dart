@@ -27,13 +27,12 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
   Map<String, dynamic> _initialValue = {};
   SearchResult<Predstava>? predstavaResult;
   SearchResult<Predstava>? initialPredstavaResult;
-
   late RepertoarProvider _repertoarProvider;
   late PredstavaProvider _predstavaProvider;
   bool isLoading = true;
-
   List<int> _selectedPredstave = [];
-  
+
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -101,7 +100,10 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
       ],)
     ) ;
   }
-  
+
+  final DateTime _maxDate = DateTime.now().add(const Duration(days: 365));
+  DateTime? _selectedDatumPocetka;
+
   Widget _buildForm() {
     return FormBuilder(
       key: _formKey,
@@ -123,7 +125,7 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                     ]),
                     )
                 ),
-                SizedBox(width: 10,),
+                const SizedBox(width: 10,),
                 Expanded(
                   child: FormBuilderTextField(
                     name: "Opis",
@@ -138,43 +140,60 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
               ]
             ),
             Row(children: [
-              Expanded(child: 
-                FormBuilderDateTimePicker(
+              Expanded(
+                child: FormBuilderDateTimePicker(
                   name: "DatumPocetka",
                   decoration: InputDecoration(labelText: "Datum pocetka"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     (value) {
                       if (value == null) return null;
-                      if (value.isBefore(DateTime(1900, 1, 1))) {
-                        return "Datum rođenja ne može biti manji od 1900.01.01.";
+                      if (value.isBefore(DateTime.now())) {
+                        return "Ne možete izabrati datum u prošlosti!";
                       }
                       return null;
                     }
                   ]),
                   inputType: InputType.date,
                   format: DateFormat("yyyy-MM-dd"),
+                  firstDate: DateTime.now(), 
+                  lastDate: _maxDate,        
+                  onChanged: (pocetniDatum) {
+                    setState(() {
+                      _selectedDatumPocetka = pocetniDatum;
+                      var datumKraja = _formKey.currentState?.fields["DatumKraja"]?.value;
+                      if (datumKraja != null && pocetniDatum != null && datumKraja.isBefore(pocetniDatum)) {
+                        _formKey.currentState?.fields["DatumKraja"]?.didChange(null);
+                      }
+                    });
+                  },
                 ),
               ),
-              SizedBox(width: 10,),
-              Expanded(child: 
-                FormBuilderDateTimePicker(
+              const SizedBox(width: 10,),
+              Expanded(
+                child: FormBuilderDateTimePicker(
                   name: "DatumKraja",
                   decoration: InputDecoration(labelText: "Datum kraja"),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: "Obavezno polje"),
                     (value) {
                       if (value == null) return null;
-                      if (value.isBefore(DateTime(1900, 1, 1))) {
-                        return "Datum rođenja ne može biti manji od 1900.01.01.";
+                      final datumPocetka = _formKey.currentState?.fields["DatumPocetka"]?.value;
+                      if (datumPocetka != null && value.isBefore(datumPocetka)) {
+                        return "Datum kraja ne može biti prije datuma početka!";
+                      }
+                      if (value.isBefore(DateTime.now())) {
+                        return "Ne možete izabrati datum u prošlosti!";
                       }
                       return null;
                     }
                   ]),
                   inputType: InputType.date,
                   format: DateFormat("yyyy-MM-dd"),
+                  firstDate: _selectedDatumPocetka ?? DateTime.now(),
+                  lastDate: _maxDate,
                 ),
-              )
+              ),
             ],
             ),
             Row(

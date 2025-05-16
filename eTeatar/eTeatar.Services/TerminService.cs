@@ -61,16 +61,12 @@ namespace eTeatar.Services
 
         public override void BeforeUpdate(TerminUpsertRequest request, Termin entity)
         {
-            if (provjeriKonflikte(request.Datum, request.PredstavaId))
+            var terminPredstave = Context.Termins.Where(x => x.Datum == request.Datum && x.PredstavaId == request.PredstavaId && x.TerminId != entity.TerminId).FirstOrDefault();
+            if (terminPredstave != null)
             {
                 throw new UserException("Već postoji termin predstave u to vrijeme!");
             }
             base.BeforeUpdate(request, entity);
-        }
-        public bool provjeriKonflikte(DateTime datum, int predstavaId)
-        {
-            bool termini = Context.Termins.Any(x => x.Datum == datum && x.PredstavaId == predstavaId);
-            return termini;
         }
     }
 }

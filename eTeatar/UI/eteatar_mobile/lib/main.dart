@@ -23,6 +23,7 @@ import 'package:eteatar_mobile/providers/zanr_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 void main() {
   runZonedGuarded(() async {
@@ -147,24 +148,17 @@ class LoginPage extends StatelessWidget {
                             AuthProvider.telefon = korisnik.telefon;
                             AuthProvider.email = korisnik.email;
                             AuthProvider.slika = korisnik.slika;
-                            print("Slika: ${AuthProvider.slika}");
                             await predstavaProvider.get();
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => const MasterScreen()),
                             );
                           } on Exception catch (e) {
-                            showDialog(
+                            QuickAlert.show(
                               context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text("Greška"),
-                                content: Text(e.toString()),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const Text("OK"),
-                                  ),
-                                ],
-                              ),
+                              type: QuickAlertType.error,
+                              title: "Pogrešni kredencijali za login!",
+                              text: "$e",
+                              width: 250,
                             );
                           }
                         },

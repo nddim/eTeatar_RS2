@@ -55,7 +55,7 @@ namespace eTeatar.Services
 
         public override void BeforeUpdate(GlumacUpdateRequest request, Glumac entity)
         {
-            var glumacImePrezime = Context.Glumacs.Where(x => x.Ime == request.Ime && x.Prezime == request.Prezime).FirstOrDefault();
+            var glumacImePrezime = Context.Glumacs.Where(x => x.Ime == request.Ime && x.Prezime == request.Prezime && x.GlumacId != entity.GlumacId).FirstOrDefault();
             if (glumacImePrezime != null)
             {
                 throw new UserException("Već postoji glumac s tim imenom i prezimenom!");

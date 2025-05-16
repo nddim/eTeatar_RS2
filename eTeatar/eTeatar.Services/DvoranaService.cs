@@ -84,7 +84,8 @@ namespace eTeatar.Services
         public override void BeforeUpdate(DvoranaUpsertRequest request, Dvorana entity)
         {
 
-            var dvoranaNaziv = Context.Dvoranas.Where(x => x.Naziv == request.Naziv).FirstOrDefault();
+            var dvoranaNaziv = Context.Dvoranas
+                .Where(x => x.Naziv == request.Naziv && x.DvoranaId != entity.DvoranaId).FirstOrDefault();
             if (dvoranaNaziv != null)
             {
                 throw new UserException("Već postoji dvorana s tim imenom!");
@@ -93,6 +94,10 @@ namespace eTeatar.Services
             if (request.Kapacitet <= 10)
             {
                 throw new UserException("Kapacitet ne smije biti manji od 10");
+            }
+            if (request.Kapacitet > 100)
+            {
+                throw new UserException("Kapacitet ne smije biti veći od 100");
             }
         }
 

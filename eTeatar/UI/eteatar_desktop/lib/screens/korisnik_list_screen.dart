@@ -2,6 +2,7 @@ import 'package:advanced_datatable/advanced_datatable_source.dart';
 import 'package:advanced_datatable/datatable.dart';
 import 'package:eteatar_desktop/layouts/master_screen.dart';
 import 'package:eteatar_desktop/models/korisnik.dart';
+import 'package:eteatar_desktop/providers/auth_provider.dart';
 import 'package:eteatar_desktop/providers/korisnik_provider.dart';
 import 'package:eteatar_desktop/screens/korisnik_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -203,7 +204,18 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
     ]);
   }
 
-  void _showDeleteDialog(int dvoranaId) {
+  void _showDeleteDialog(int korisnikId) {
+
+    if(AuthProvider.korisnikId == korisnikId){
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.warning,
+        title: "Upozorenje!",
+        text: "Ne možete obrisati svoj korisnički profil!",
+        width: 300
+      );
+      return;
+    }
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -221,7 +233,7 @@ class KorisnikDataSource extends AdvancedDataTableSource<Korisnik> {
               onPressed: () async {
                 Navigator.pop(dialogContext);
                 try {
-                  await provider.delete(dvoranaId);
+                  await provider.delete(korisnikId);
                   await QuickAlert.show(
                   context: context,
                   type: QuickAlertType.success,

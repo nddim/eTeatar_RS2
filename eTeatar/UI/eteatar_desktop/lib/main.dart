@@ -1,3 +1,4 @@
+import 'package:eteatar_desktop/models/korisnik.dart';
 import 'package:eteatar_desktop/providers/auth_provider.dart';
 import 'package:eteatar_desktop/providers/dvorana_provider.dart';
 import 'package:eteatar_desktop/providers/glumac_provider.dart';
@@ -128,6 +129,14 @@ class LoginPage extends StatelessWidget {
                           AuthProvider.username = _usernameController.text;
                           AuthProvider.password = _passwordController.text;
                           try {
+                            KorisnikProvider korisnikProvider = KorisnikProvider();
+                            Korisnik korisnik = await korisnikProvider.login(AuthProvider.username!, AuthProvider.password!);
+                            AuthProvider.korisnikId = korisnik.korisnikId;
+                            AuthProvider.ime = korisnik.ime;
+                            AuthProvider.prezime = korisnik.prezime;
+                            AuthProvider.telefon = korisnik.telefon;
+                            AuthProvider.email = korisnik.email;
+                            AuthProvider.slika = korisnik.slika;
                             await predstavaProvider.get();
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (builder) => PredstavaListScreen()));
