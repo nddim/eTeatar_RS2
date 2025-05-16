@@ -10,12 +10,15 @@ Task.Delay(10000).Wait();
 Task.Delay(1000).Wait();
 Console.WriteLine("Consuming Queue Now");
 
-DotNetEnv.Env.Load();
+var hostname = Environment.GetEnvironmentVariable("RABBIT_MQ_HOST") ?? "rabbitmq";
+var username = Environment.GetEnvironmentVariable("RABBIT_MQ_USER") ?? "guest";
+var password = Environment.GetEnvironmentVariable("RABBIT_MQ_PASS") ?? "guest";
+var port = int.Parse(Environment.GetEnvironmentVariable("RABBIT_MQ_PORT") ?? "5672");
 
-var hostname = Environment.GetEnvironmentVariable("_rabbitMqHost") ?? "rabbitmq";
-var username = Environment.GetEnvironmentVariable("_rabbitMqUser") ?? "guest";
-var password = Environment.GetEnvironmentVariable("_rabbitMqPassword") ?? "guest";
-var port = int.Parse(Environment.GetEnvironmentVariable("_rabbitMqPort") ?? "5672");
+Console.WriteLine($"Hostname: {hostname}");
+Console.WriteLine($"Username: {username}");
+Console.WriteLine($"Password: {password}");
+Console.WriteLine($"Port: {port}");
 
 ConnectionFactory factory = new ConnectionFactory() { HostName = hostname, Port = port };
 factory.UserName = username;

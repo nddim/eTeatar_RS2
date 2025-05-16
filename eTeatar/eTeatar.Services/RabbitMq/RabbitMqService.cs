@@ -16,7 +16,7 @@ namespace eTeatar.Services.RabbitMq
             var hostname = Environment.GetEnvironmentVariable("RABBIT_MQ_HOST") ?? "rabbitmq";
             var username = Environment.GetEnvironmentVariable("RABBIT_MQ_USER") ?? "guest";
             var password = Environment.GetEnvironmentVariable("RABBIT_MQ_PASS") ?? "guest";
-            var port = int.Parse(Environment.GetEnvironmentVariable("_rabbitMqPort") ?? "5672");
+            var port = int.Parse(Environment.GetEnvironmentVariable("RABBIT_MQ_PORT") ?? "5672");
 
             Console.WriteLine($"{hostname}:{username}:{password}");
             var factory = new ConnectionFactory { HostName = hostname, UserName = username, Password = password, Port = port };

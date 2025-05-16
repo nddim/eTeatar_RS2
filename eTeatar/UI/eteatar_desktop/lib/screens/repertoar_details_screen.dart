@@ -102,7 +102,6 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
   }
 
   final DateTime _maxDate = DateTime.now().add(const Duration(days: 365));
-  DateTime? _selectedDatumPocetka;
 
   Widget _buildForm() {
     return FormBuilder(
@@ -160,10 +159,11 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                   lastDate: _maxDate,        
                   onChanged: (pocetniDatum) {
                     setState(() {
-                      _selectedDatumPocetka = pocetniDatum;
-                      var datumKraja = _formKey.currentState?.fields["DatumKraja"]?.value;
+                      var datumKrajaField = _formKey.currentState?.fields["DatumKraja"];
+                      var datumKraja = datumKrajaField?.value;
+
                       if (datumKraja != null && pocetniDatum != null && datumKraja.isBefore(pocetniDatum)) {
-                        _formKey.currentState?.fields["DatumKraja"]?.didChange(null);
+                        datumKrajaField?.didChange(null);
                       }
                     });
                   },
@@ -190,8 +190,17 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                   ]),
                   inputType: InputType.date,
                   format: DateFormat("yyyy-MM-dd"),
-                  firstDate: _selectedDatumPocetka ?? DateTime.now(),
+                  firstDate: _formKey.currentState?.fields["DatumPocetka"]?.value ?? DateTime.now(),
                   lastDate: _maxDate,
+                  initialDate: () {
+                    final datumPocetka = _formKey.currentState?.fields["DatumPocetka"]?.value ?? DateTime.now();
+                    final krajnji = _formKey.currentState?.fields["DatumKraja"]?.value;
+
+                    if (krajnji != null && krajnji.isAfter(datumPocetka)) {
+                      return krajnji;
+                    }
+                    return datumPocetka.add(Duration(days: 1));
+                  }(),
                 ),
               ),
             ],
