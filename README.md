@@ -10,7 +10,7 @@ Seminarski rad iz predmeta Razvoj softvera 2 na Fakultetu informacijskih tehnolo
      - Pokrenuti iducu komandu:
        
        ```bash
-       dart pub get
+       flutter pub get
        ```
      
      - Pokrenuti emulator ( Android Studio emulator) .
