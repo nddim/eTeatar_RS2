@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using eTeatar.Model;
 using eTeatar.Services.RabbitMq;
 using eTeatar.Services.Recommender;
+using KorisnikUloga = eTeatar.Model.KorisnikUloga;
 using Predstava = eTeatar.Model.Predstava;
 
 namespace eTeatar.Services
@@ -98,6 +99,20 @@ namespace eTeatar.Services
             }
 
             base.BeforeUpdate(request, entity);
+        }
+
+        public override void AfterInsert(KorisnikInsertRequest request, Database.Korisnik entity)
+        {
+            if (request?.UlogaId != null)
+            {
+                    Context.KorisnikUlogas.Add(new Database.KorisnikUloga()
+                    {
+                        UlogaId = request.UlogaId,
+                        KorisnikId = entity.KorisnikId,
+                    });
+
+                Context.SaveChanges();
+            }
         }
 
         public static string GenerateSalt()

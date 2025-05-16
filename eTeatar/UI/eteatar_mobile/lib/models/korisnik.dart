@@ -1,3 +1,4 @@
+import 'package:eteatar_mobile/models/korisnik_uloga.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'korisnik.g.dart';
@@ -14,12 +15,21 @@ class Korisnik {
   DateTime? datumRodenja;
   String? lozinka;
   String? lozinkaPotvrda;
+  List<KorisnikUloga> korisnikUlogas;
   
-  Korisnik(
+  Korisnik({
     this.korisnikId,
     this.ime,
-    this.prezime
-  );
+    this.prezime,
+    this.email,
+    this.slika,
+    this.telefon,
+    this.korisnickoIme,
+    this.datumRodenja,
+    this.lozinka,
+    this.lozinkaPotvrda,
+    this.korisnikUlogas = const [],
+  });
 
   factory Korisnik.fromJson(Map<String, dynamic> json) => _$KorisnikFromJson(json);
 

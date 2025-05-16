@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using eTeatar.Model;
 using eTeatar.Services.Database;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
@@ -30,8 +31,13 @@ namespace eTeatar.Services.Recommender
         public List<Predstava> getRecommendedPredstave(int korisnikId)
         {
             var svePredstaveQuery = eTeatarContext.Predstavas
-                .Include(p => p.PredstavaGlumacs).ThenInclude(pg => pg.Glumac)
+                .Include(p => p.PredstavaGlumacs).ThenInclude(pg => pg.Glumac).Where(p => p.IsDeleted == false)
                 .AsQueryable();
+
+            if (!svePredstaveQuery.Any())
+            {
+                throw new UserException("Nema dostupnih predstava za preporuku.");
+            }
 
             var kupljenePredstavaIds = eTeatarContext.Karta
                 .Where(k => k.KorisnikId == korisnikId)

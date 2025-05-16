@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:eteatar_desktop/models/korisnik.dart';
+import 'package:eteatar_desktop/providers/auth_provider.dart';
 import 'package:eteatar_desktop/providers/base_provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -28,6 +29,18 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
     }
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
+      AuthProvider.username = fromJson(data).korisnickoIme;
+      AuthProvider.password = password;
+      AuthProvider.korisnikId = fromJson(data).korisnikId;
+
+      for (var item in fromJson(data).korisnikUlogas) {
+        if (item.uloga!.naziv == "Admin") {
+          break;
+        } else {
+          throw Exception(
+              "Ne možete pristupiti interfejsu gledaoca putem desktop aplikacije");
+        }
+      }
       return fromJson(data);
     } else {
       throw Exception("Unknown error");

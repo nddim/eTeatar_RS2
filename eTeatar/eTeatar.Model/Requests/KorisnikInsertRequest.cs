@@ -13,5 +13,6 @@ namespace eTeatar.Model.Requests
         public string Telefon { get; set; }
         public byte[]? Slika { get; set; }
         public DateTime DatumRodenja { get; set; }
+        public int UlogaId { get; set; }
     }
 }

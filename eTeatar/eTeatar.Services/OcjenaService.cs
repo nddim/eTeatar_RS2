@@ -73,5 +73,13 @@ namespace eTeatar.Services
 
             return ocjene.Average(x => x.Vrijednost);
         }
+
+        public bool jelKorisnikOcijenio(int korisnikId, int predstavaId)
+        {
+            var ocjena = Context.Ocjenas.Where(x =>
+                x.KorisnikId == korisnikId && x.PredstavaId == predstavaId).FirstOrDefault();
+
+            return ocjena != null;
+        }
     }
 }

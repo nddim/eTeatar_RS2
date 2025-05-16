@@ -19,5 +19,10 @@ namespace eTeatar.API.Controllers
         {
             return ((IOcjenaService)_service).getProsjekOcjena(predstavaId);
         }
+        [HttpGet("jelKorisnikOcjenio")]
+        public bool JelOcijenio(int korisnikId, int predstavaId)
+        {
+            return ((IOcjenaService)_service).jelKorisnikOcijenio(korisnikId, predstavaId);
+        }
     }
 }

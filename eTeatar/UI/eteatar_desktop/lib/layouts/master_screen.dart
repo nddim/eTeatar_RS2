@@ -3,6 +3,7 @@ import 'package:eteatar_desktop/providers/auth_provider.dart';
 import 'package:eteatar_desktop/screens/dvorana_list_screen.dart';
 import 'package:eteatar_desktop/screens/glumac_list_screen.dart';
 import 'package:eteatar_desktop/screens/karta_list_screen.dart';
+import 'package:eteatar_desktop/screens/korisnicki_profil_screen.dart';
 import 'package:eteatar_desktop/screens/korisnik_list_screen.dart';
 import 'package:eteatar_desktop/screens/ocjena_list_screen.dart';
 import 'package:eteatar_desktop/screens/predstava_list_screen.dart';
@@ -155,6 +156,13 @@ class _MasterScreenState extends State<MasterScreen> {
                     label: "Zanrovi",
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(builder: (context) => ZanrListScreen()));
+                    }
+                  ),
+                  _buildDrawerItem(
+                    icon: Icons.person_4_outlined,
+                    label: "Korisnicki profil",
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => KorisnickiProfilScreen()));
                     }
                   ),
                 ],

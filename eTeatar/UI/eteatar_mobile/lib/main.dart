@@ -83,7 +83,8 @@ class LoginPage extends StatelessWidget {
   LoginPage({super.key});
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+  final _formKey = GlobalKey<FormState>();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,79 +94,99 @@ class LoginPage extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 44, 188, 255),
       ),
       body: Center(
-        child: SingleChildScrollView( 
+        child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0), 
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Card(
               elevation: 4,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: Padding(
-                padding: const EdgeInsets.all(24.0), 
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset("assets/images/logo.png", height: 100, width: 100),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Dobrodošli u eTeatar',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: _usernameController,
-                      decoration: const InputDecoration(
-                        labelText: "Korisničko ime",
-                        hintText: 'Korisničko ime',
-                        prefixIcon: Icon(Icons.person),
-                        border: OutlineInputBorder(),
+                padding: const EdgeInsets.all(24.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset("assets/images/logo.png", height: 100, width: 100),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Dobrodošli u eTeatar',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: "Password",
-                        hintText: '********',
-                        prefixIcon: Icon(Icons.lock),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          PredstavaProvider predstavaProvider = PredstavaProvider();
-                          AuthProvider.username = _usernameController.text;
-                          AuthProvider.password = _passwordController.text;
-                          try {
-                            KorisnikProvider korisnikProvider = KorisnikProvider();
-                            Korisnik korisnik = await korisnikProvider.login(AuthProvider.username!, AuthProvider.password!);
-                            AuthProvider.korisnikId = korisnik.korisnikId;
-                            AuthProvider.ime = korisnik.ime;
-                            AuthProvider.prezime = korisnik.prezime;
-                            AuthProvider.telefon = korisnik.telefon;
-                            AuthProvider.email = korisnik.email;
-                            AuthProvider.slika = korisnik.slika;
-                            await predstavaProvider.get();
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (context) => const MasterScreen()),
-                            );
-                          } on Exception catch (e) {
-                            QuickAlert.show(
-                              context: context,
-                              type: QuickAlertType.error,
-                              title: "Pogrešni kredencijali za login!",
-                              text: "$e",
-                              width: 250,
-                            );
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _usernameController,
+                        maxLength: 30,
+                        decoration: const InputDecoration(
+                          labelText: "Korisničko ime",
+                          prefixIcon: Icon(Icons.person),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Unesite korisničko ime';
                           }
+                          return null;
                         },
-                        child: const Text("Login"),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _passwordController,
+                        maxLength: 30,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: "Password",
+                          hintText: '********',
+                          prefixIcon: Icon(Icons.lock),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Unesite lozinku';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              PredstavaProvider predstavaProvider = PredstavaProvider();
+                              AuthProvider.username = _usernameController.text;
+                              AuthProvider.password = _passwordController.text;
+                              try {
+                                KorisnikProvider korisnikProvider = KorisnikProvider();
+                                Korisnik korisnik = await korisnikProvider.login(
+                                  AuthProvider.username!,
+                                  AuthProvider.password!,
+                                );
+                                AuthProvider.korisnikId = korisnik.korisnikId;
+                                AuthProvider.ime = korisnik.ime;
+                                AuthProvider.prezime = korisnik.prezime;
+                                AuthProvider.telefon = korisnik.telefon;
+                                AuthProvider.email = korisnik.email;
+                                AuthProvider.slika = korisnik.slika;
+                                await predstavaProvider.get();
+
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(builder: (context) => const MasterScreen()),
+                                );
+                              } on Exception catch (e) {
+                                QuickAlert.show(
+                                  context: context,
+                                  type: QuickAlertType.error,
+                                  title: "Pogrešni kredencijali za login!",
+                                  text: "$e",
+                                  width: 250,
+                                );
+                              }
+                            }
+                          },
+                          child: const Text("Login"),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

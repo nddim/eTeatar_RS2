@@ -44,7 +44,7 @@ services:
         context: .
         dockerfile: Dockerfile.api
       environment:
-        - ConnectionStrings:eTeatarConnection=Server=${SOURCE},1433;Database=${CATALOGv};User=sa;Password=${SA_PASSWORD};ConnectRetryCount=0;TrustServerCertificate=True
+        - ConnectionStrings:eTeatarConnection=Server=${SOURCE},1433;Database=${CATALOG};User=sa;Password=${SA_PASSWORD};ConnectRetryCount=0;TrustServerCertificate=True
         - ASPNETCORE_ENVIRONMENT=Development
         - SMTP_USER=${SMTP_USER}
         - SMTP_PASS=${SMTP_PASS}

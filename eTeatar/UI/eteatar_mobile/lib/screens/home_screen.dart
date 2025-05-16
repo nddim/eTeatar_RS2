@@ -64,8 +64,17 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       );
 
-      final korisnikResult = await korisnikProvider.recommend();
-      preporucenePredstave = korisnikResult;
+      try {
+        final korisnikResult = await korisnikProvider.recommend();
+        preporucenePredstave = korisnikResult;
+      }
+      catch (e) {
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Greška pri dohvatanju preporučenih predstava!"
+        );
+      };
       final Map<int, Termin> terminMap = {
         for (var t in terminResult.resultList) t.terminId!: t
       };
@@ -105,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
       QuickAlert.show(
         context: context,
         type: QuickAlertType.error,
-        title: "Greška pri dohvatanju podataka!",
+        title: "Greška pri dohvatanju podataka!"
       );
     }
   }

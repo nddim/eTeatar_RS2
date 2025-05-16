@@ -201,6 +201,25 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
               ),
             ],
             ),
+            if (widget.korisnik == null)
+              Row(
+                children: [
+                  Expanded(
+                    child: FormBuilderDropdown<String>(
+                      name: 'UlogaId',
+                      decoration: const InputDecoration(labelText: 'Uloga'),
+                      validator: FormBuilderValidators.required(errorText: "Obavezno odabrati ulogu!"),
+                      items: ulogaResult?.resultList
+                              .map((uloga) => DropdownMenuItem(
+                                    value: uloga.ulogaId.toString(),
+                                    child: Text(uloga.naziv!),
+                                  ))
+                              .toList() ??
+                          [],
+                    ),
+                  ),
+                ],
+              ),
             Row(children: [
               Expanded(
                 child: FormBuilderField(
@@ -242,6 +261,8 @@ class _KorisnikDetailsScreenState extends State<KorisnikDetailsScreen> {
                 ...formData,
                 'DatumRodenja': DateFormat('yyyy-MM-dd').format(formData['DatumRodenja']),
                 'Slika': _base64Image,
+                if (widget.korisnik == null)
+                  'UlogaId': int.parse(formData['UlogaId']),
               };
               if(widget.korisnik == null){
                 try {

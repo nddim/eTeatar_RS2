@@ -31,6 +31,19 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
     }
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
+      AuthProvider.username = fromJson(data).korisnickoIme;
+      AuthProvider.password = password;
+      AuthProvider.korisnikId = fromJson(data).korisnikId;
+
+      for (var item in fromJson(data).korisnikUlogas) {
+        if (item.uloga!.naziv == "Gledaoc") {
+          break;
+        } else {
+          throw Exception(
+              "Ne možete pristupiti interfejsu admina putem mobile aplikacije");
+        }
+      }
+
       return fromJson(data);
     } else {
       throw Exception("Unknown error");

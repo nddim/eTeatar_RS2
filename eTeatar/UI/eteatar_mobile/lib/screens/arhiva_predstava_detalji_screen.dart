@@ -19,18 +19,19 @@ class _PredstavaDetaljiScreenState extends State<PredstavaDetaljiScreen> {
   late OcjenaProvider ocjenaProvider;
   double? _prosjekOcjena;
   bool _isRatingLoading = true;
-
+  bool _isCheckingOcjena = true;
 
   @override
   void initState() {
     super.initState();
     ocjenaProvider = context.read<OcjenaProvider>();
     fetchAverageRating();
+    jelKorisnikOcjenio();
   }
 
   final _komentarController = TextEditingController();
   double _ocjena = 5.0;
-
+  bool _jelKorisnikOcjenio = false;
   @override
   void dispose() {
     _komentarController.dispose();
@@ -55,6 +56,31 @@ class _PredstavaDetaljiScreenState extends State<PredstavaDetaljiScreen> {
       );
     }
   }
+
+  Future<void> jelKorisnikOcjenio() async {
+  try {
+    final result = await ocjenaProvider.jelKorisnikOcjenio(
+      AuthProvider.korisnikId!, 
+      widget.predstava!.predstavaId!
+    );
+    setState(() {
+      _jelKorisnikOcjenio = result;
+      _isCheckingOcjena = false;
+    });
+  } catch (e) {
+    setState(() {
+      _jelKorisnikOcjenio = false;
+      _isCheckingOcjena = false;
+    });
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.error,
+      title: "Greška pri provjeri ocjene!",
+      text: "$e",
+    );
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     final p = widget.predstava;
@@ -117,6 +143,17 @@ class _PredstavaDetaljiScreenState extends State<PredstavaDetaljiScreen> {
   }
 
   Widget _buildRatingCard() {
+    if (_isCheckingOcjena) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_jelKorisnikOcjenio) {
+      return const Text(
+        "Već ste ocijenili ovu predstavu.",
+        style: TextStyle(fontStyle: FontStyle.italic, fontSize: 16),
+      );
+    }
+
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -135,10 +172,7 @@ class _PredstavaDetaljiScreenState extends State<PredstavaDetaljiScreen> {
               allowHalfRating: false,
               itemCount: 5,
               itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-              itemBuilder: (context, _) => const Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
+              itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.amber),
               onRatingUpdate: (rating) {
                 setState(() {
                   _ocjena = rating;
@@ -175,8 +209,9 @@ class _PredstavaDetaljiScreenState extends State<PredstavaDetaljiScreen> {
                     _komentarController.clear();
                     setState(() {
                       _ocjena = 5;
+                      _jelKorisnikOcjenio = true;
                     });
-                    return;
+                    await fetchAverageRating();
                   } catch (e) {
                     QuickAlert.show(
                       context: context,
@@ -184,10 +219,9 @@ class _PredstavaDetaljiScreenState extends State<PredstavaDetaljiScreen> {
                       title: "Greška pri dodavanju ocjene!",
                       text: "$e",
                     );
-                    return;
                   }
                 },
-                child: const Text("Sacuvaj ocjenu"),
+                child: const Text("Sačuvaj ocjenu"),
               ),
             )
           ],

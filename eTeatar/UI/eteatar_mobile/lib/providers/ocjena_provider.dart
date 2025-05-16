@@ -31,4 +31,24 @@ class OcjenaProvider extends BaseProvider<Ocjena> {
       throw Exception("Greška prilikom dohvatanja prosječne ocjene: $e");
     }
   }
+
+    Future<bool> jelKorisnikOcjenio(int korisnikId, int predstavaId) async {
+
+    var url = "${BaseProvider.baseUrl}Ocjena/posotjiOcjena?korisnikId=${korisnikId}&predstavaId=${predstavaId}";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    try {
+      final response = await http.get(uri, headers: headers);
+      if (isValidResponse(response)) {
+        final obj = jsonDecode(response.body);
+        return obj as bool;
+      } else {
+        throw Exception("Server error");
+      }
+    } catch (e) {
+      throw Exception("Greška prilikom dohvatanja prosječne ocjene: $e");
+    }
+  }
+
  }

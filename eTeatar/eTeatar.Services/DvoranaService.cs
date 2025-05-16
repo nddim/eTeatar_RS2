@@ -126,5 +126,15 @@ namespace eTeatar.Services
 
             return (najboljiRedovi, najboljiKolone);
         }
+
+        public override void BeforeDelete(Dvorana entity)
+        {
+            var imaTermina = Context.Termins.Any(t => t.DvoranaId == entity.DvoranaId && t.Datum > DateTime.Now);
+
+            if (imaTermina)
+            {
+                throw new UserException("Nije moguće obrisati dvoranu koja ima zakazane termine.");
+            }
+        }
     }
 }

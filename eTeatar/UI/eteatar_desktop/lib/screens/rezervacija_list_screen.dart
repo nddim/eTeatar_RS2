@@ -181,17 +181,7 @@ class _RezervacijaListScreenState extends State<RezervacijaListScreen> {
                   DataColumn(
                       label: Container(
                     alignment: Alignment.centerLeft,
-                    child: const Text("Odobri"),
-                  )),
-                  DataColumn(
-                      label: Container(
-                    alignment: Alignment.centerLeft,
-                    child: const Text("Ponisti"),
-                  )),
-                  DataColumn(
-                      label: Container(
-                    alignment: Alignment.centerLeft,
-                    child: const Text("Obriši"),
+                    child: const Text("Akcije"),
                   )),
                 ],
                 source: _dataSource,
@@ -215,6 +205,13 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
   String statusEQ = "";
   int korisnikIdEQ = 0;
   dynamic filter;
+  final Map<String, List<String>> dozvoljeneAkcije = {
+  'Kreirano': ['odobri', 'ponisti', 'obrisi'],
+  'Odobreno': ['ponisti', 'obrisi'],
+  'Ponisteno': ['obrisi'],
+  'Zavrseno': ['obrisi']
+};
+
   RezervacijaDataSource({required this.provider, required this.context}){
     _korisnikProvider = context.read<KorisnikProvider>();
     _terminProvider = context.read<TerminProvider>();
@@ -224,7 +221,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
   DataRow? getRow(int index) {
     if (index >= data.length) return null;
     final e = data[index];
-
+    final akcije = dozvoljeneAkcije[e.stateMachine ?? ""] ?? [];
     return DataRow(cells: [
       DataCell(Text(e.stateMachine ?? "")),
       DataCell(
@@ -257,28 +254,28 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
           },
         )
       ),
-      DataCell(
-        IconButton(
-          icon: const Icon(Icons.check_circle, color: Colors.green ),
-          onPressed: () {
-            openOdobriModal(e.rezervacijaId!);
-          },
-        )
-      ),
-      DataCell(
-        IconButton(
-          icon: const Icon(Icons.cancel, color: Colors.orange),
-          onPressed: () {
-            openPonistiModal(e.rezervacijaId!);
-          },
-        )
-      ),
-      DataCell(
-        IconButton(
-          icon: const Icon(Icons.delete, color: Colors.red),
-          onPressed: () => _showDeleteDialog(e.rezervacijaId!),
-        ),
-      ),
+     DataCell(Row(
+      children: [
+        if (akcije.contains('odobri'))
+          IconButton(
+            icon: const Icon(Icons.check_circle, color: Colors.green),
+            tooltip: "Odobri",
+            onPressed: () => openOdobriModal(e.rezervacijaId!),
+          ),
+        if (akcije.contains('ponisti'))
+          IconButton(
+            icon: const Icon(Icons.cancel, color: Colors.orange),
+            tooltip: "Poništi",
+            onPressed: () => openPonistiModal(e.rezervacijaId!),
+          ),
+        if (akcije.contains('obrisi'))
+          IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            tooltip: "Obriši",
+            onPressed: () => _showDeleteDialog(e.rezervacijaId!),
+          ),
+      ],
+    ))
     ]);
   }
 
@@ -433,7 +430,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
                   await QuickAlert.show(
                   context: context,
                   type: QuickAlertType.success,
-                  title: "Uspješno obrisana rezervacija!",
+                  title: "Uspješno poništena rezervacija!",
                   width: 300);
                   if (context.mounted) {
                     Navigator.pop(context);

@@ -1,4 +1,5 @@
-import 'package:eteatar_desktop/models/uloga.dart';
+
+import 'package:eteatar_mobile/models/uloga.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'korisnik_uloga.g.dart';

@@ -63,6 +63,8 @@ namespace eTeatar.Services
                 throw new UserException("Nije pronaden objekat sa poslanim id-om!");
             }
 
+            BeforeDelete(entity);
+
             if (entity is ISoftDelete softDeleteEntity)
             {
                 softDeleteEntity.IsDeleted = true;
@@ -74,5 +76,6 @@ namespace eTeatar.Services
 
             Context.SaveChanges();
         }
+        public virtual void BeforeDelete(TDbEntity entity) { }
     }
 }
