@@ -7,7 +7,7 @@ Seminarski rad iz predmeta Razvoj softvera 2 na Fakultetu informacijskih tehnolo
 - **Extractovati arhivu fit-build-05-16-desktop (eTeatar_RS2/eTeatar), te otvoriti eteatar_desktop.exe iz foldera Release.**
 - **Pokretanje mobilne aplikacije:**
      - Otvoriti flutter projekt u Visual Studio Code (eTeatar_RS2/eTeatar/UI/eteatar_mobile).
-     - Pokrenuti iducu komandu:
+     - Otvoriti terminal i pokrenuti iduću komandu:
        
        ```bash
        flutter pub get
