@@ -80,15 +80,15 @@ class _KorisnickiProfilState extends State<KorisnickiProfil> {
                       decoration: BoxDecoration(
                         shape: BoxShape.rectangle,
                         borderRadius: BorderRadius.circular(20),
-                        image: AuthProvider.slika != null
-                            ? DecorationImage(
-                                image: MemoryImage(base64Decode(AuthProvider.slika!)),
-                                fit: BoxFit.cover,
-                              )
-                            : const DecorationImage(
-                                image: AssetImage("assets/images/noProfileImg.png"),
-                                fit: BoxFit.cover,
-                              ),
+                        image: _base64Image != null
+                          ? DecorationImage(
+                              image: MemoryImage(base64Decode(_base64Image!)),
+                              fit: BoxFit.cover,
+                            )
+                          : const DecorationImage(
+                              image: AssetImage("assets/images/noProfileImg.png"),
+                              fit: BoxFit.cover,
+                            ),
                       ),
                     ),
                   ),
@@ -362,8 +362,10 @@ class _KorisnickiProfilState extends State<KorisnickiProfil> {
     var result = await FilePicker.platform.pickFiles(type: FileType.image);
 
     if (result != null && result.files.single.path != null) {
-      _image = File(result.files.single.path!);
-      _base64Image = base64Encode(_image!.readAsBytesSync());
+      setState(() {
+        _image = File(result.files.single.path!);
+        _base64Image = base64Encode(_image!.readAsBytesSync());
+      });
     }
   }
 }

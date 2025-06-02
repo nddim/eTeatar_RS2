@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:eteatar_desktop/providers/utils.dart';
 
 class TerminListScreen extends StatefulWidget {
   const TerminListScreen({super.key});
@@ -276,7 +277,7 @@ class TerminDataSource extends AdvancedDataTableSource<Termin> {
 
     return DataRow(cells: [
       DataCell(Text(e.status ?? "")),
-      DataCell(Text(e.datum.toString())),
+      DataCell(Text(formatDateTime(e.datum.toString()))),
       DataCell(
         FutureBuilder(
           future: fetchDvorana(e.dvoranaId!),

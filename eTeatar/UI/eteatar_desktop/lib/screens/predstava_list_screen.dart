@@ -206,7 +206,7 @@ class PredstavaDataSource extends AdvancedDataTableSource<Predstava> {
 
     return DataRow(cells: [
       DataCell(Text(e.naziv ?? "")),
-      DataCell(Text("${e.cijena.toString()} KM")),
+      DataCell(Text("${formatCurrency(e.cijena)} KM")),
       DataCell(Text("${e.trajanje.toString()} mins")),
       DataCell(
         SizedBox(

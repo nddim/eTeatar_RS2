@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:eteatar_desktop/providers/utils.dart';
 
 class VijestListScreen extends StatefulWidget {
   const VijestListScreen({super.key});
@@ -223,7 +224,7 @@ class VijestDataSource extends AdvancedDataTableSource<Vijest> {
 
     return DataRow(cells: [
       DataCell(Text(e.naziv ?? "")),
-      DataCell(Text(e.datum.toString())),
+      DataCell(Text(formatDateTime(e.datum.toString()))),
       DataCell(
         FutureBuilder(
           future: fetchKorisnikSafe(e.korisnikId!),

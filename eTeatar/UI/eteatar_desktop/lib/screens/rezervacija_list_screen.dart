@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:eteatar_desktop/providers/utils.dart';
 
 class RezervacijaListScreen extends StatefulWidget {
   const RezervacijaListScreen({super.key});
@@ -234,7 +235,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
               return Text("Greška");
             } else {
               var termin = snapshot.data!;
-              return Text("${termin.datum}");
+              return Text(formatDateTime(termin.datum.toString()));
             }
           },
         )

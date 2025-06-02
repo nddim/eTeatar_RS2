@@ -1,5 +1,6 @@
 import 'package:eteatar_mobile/models/karta_dto.dart';
 import 'package:eteatar_mobile/providers/karta_provider.dart';
+import 'package:eteatar_mobile/providers/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
@@ -70,23 +71,38 @@ class _KartaDetailsScreenState extends State<KartaDetailsScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    detailRow('Karta ID:', widget.karta!.kartaId.toString()),
-                    detailRow('Cijena:', '${widget.karta!.cijena} KM'),
-                    detailRow('Predstava:', widget.karta!.nazivPredstave),
-                    detailRow('Datum:', widget.karta!.datumVrijeme.toLocal().toString()),
-                    detailRow('Sjediste:', 'Red ${widget.karta!.red}, Kolona ${widget.karta!.kolona}'),
+                    detailRow(Icons.attach_money, 'Cijena', '${formatCurrency(widget.karta!.cijena)} KM'),
+                    detailRow(Icons.theater_comedy, 'Predstava', widget.karta!.nazivPredstave),
+                    detailRow(Icons.date_range, 'Datum', formatDateTime(widget.karta!.datumVrijeme.toLocal().toString())),
+                    detailRow(Icons.event_seat, 'Sjediste', 'Red ${widget.karta!.red}, Kolona ${widget.karta!.kolona}'),
                     const SizedBox(height: 10),
-                    CheckboxListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: const Text("Uključena hrana"),
-                      value: ukljucenaHrana,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          print("aaaaaaaaaaaaaaaaaaaaaa");
-                          ukljucenaHrana = value ?? false;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity.leading,
+                    // ✅ Novi red za "Uključena hrana"
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.fastfood, color: Colors.blue),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Text(
+                              "Uključena hrana",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                          Checkbox(
+                            value: ukljucenaHrana,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                ukljucenaHrana = value ?? false;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -135,29 +151,42 @@ class _KartaDetailsScreenState extends State<KartaDetailsScreen> {
       ),
     );
   }
-
-  Widget detailRow(String label, String value) {
+  
+  Widget detailRow(IconData icon, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '$label ',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Icon(icon, color: Colors.blue, size: 28),
             ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                color: Colors.black87,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    value,
+                    style: const TextStyle(
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

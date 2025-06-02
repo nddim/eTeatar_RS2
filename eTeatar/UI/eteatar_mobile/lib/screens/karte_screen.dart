@@ -2,6 +2,7 @@ import 'package:eteatar_mobile/models/karta_dto.dart';
 import 'package:eteatar_mobile/models/termin.dart';
 import 'package:eteatar_mobile/providers/karta_dto_provider.dart';
 import 'package:eteatar_mobile/providers/termin_provider.dart';
+import 'package:eteatar_mobile/providers/utils.dart';
 import 'package:eteatar_mobile/screens/karta_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -128,8 +129,8 @@ class _KarteScreenState extends State<KarteScreen> with SingleTickerProviderStat
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Cijena: ${karta.cijena} KM'),
-                Text('Datum: ${termin?.datum?.toLocal().toString() ?? 'Nema datuma'}'),
+                Text('Cijena: ${formatCurrency(karta.cijena)} KM'),
+                Text('Datum: ${termin?.datum == null ? 'Nema datuma' : formatDateTime(termin!.datum!.toString())}'),
                 Text('Sjediste: Red ${karta.red}, Kolona ${karta.kolona}'),
               ],
             ),

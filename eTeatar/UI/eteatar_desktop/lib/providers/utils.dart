@@ -22,3 +22,8 @@ String formatDate(DateTime date) {
 String formatDateTime(String date) {
   return DateFormat('dd.MM.yyyy HH:mm').format(DateTime.parse(date).toLocal());
 }
+
+String formatCurrency(num? value) {
+  if (value == null) return '';
+  return NumberFormat('#,##0.00', 'bs_BA').format(value);
+}

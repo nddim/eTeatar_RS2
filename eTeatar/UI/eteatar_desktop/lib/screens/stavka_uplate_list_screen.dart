@@ -8,6 +8,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:eteatar_desktop/providers/utils.dart';
 
 class StavkaUplateListScreen extends StatefulWidget {
   const StavkaUplateListScreen({super.key});
@@ -138,7 +139,7 @@ class StavkaUplateDataSource extends AdvancedDataTableSource<StavkaUplate> {
 
     return DataRow(cells: [
       DataCell(Text(e.kolicina.toString())),
-      DataCell(Text(e.cijena.toString())),
+      DataCell(Text("${formatCurrency(e.cijena)} KM")),
       DataCell(
         IconButton(
           icon: const Icon(Icons.delete, color: Colors.red),

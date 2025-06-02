@@ -11,6 +11,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:eteatar_desktop/providers/utils.dart';
 
 class UplataListScreen extends StatefulWidget {
   const UplataListScreen({super.key});
@@ -229,8 +230,8 @@ class UplataDataSource extends AdvancedDataTableSource<Uplata> {
       DataCell(Text(e.transakcijaId.toString())),
       DataCell(Text(e.nacinPlacanja ?? "")),
       DataCell(Text(e.status ?? "")),
-      DataCell(Text(e.iznos.toString())),
-      DataCell(Text(e.datum.toString())),
+      DataCell(Text("${formatCurrency(e.iznos)} KM")),
+      DataCell(Text(formatDateTime(e.datum.toString()))),
       DataCell(
         FutureBuilder(
           future: fetchKorisnikSafe(e.korisnikId!),

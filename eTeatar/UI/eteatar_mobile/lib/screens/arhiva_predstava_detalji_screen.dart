@@ -40,10 +40,11 @@ class _PredstavaDetaljiScreenState extends State<PredstavaDetaljiScreen> {
   Future<void> fetchAverageRating() async {
   try {
     final result = await ocjenaProvider.getProsjecnaOcjena(widget.predstava!.predstavaId!);
-      setState(() {
-        _prosjekOcjena = result.toDouble(); // očekuješ double
-        _isRatingLoading = false;
-      });
+    if (!mounted) return;
+    setState(() {
+      _prosjekOcjena = result.toDouble();
+      _isRatingLoading = false;
+    });
     } catch (e) {
       setState(() {
         _isRatingLoading = false;

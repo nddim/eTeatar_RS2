@@ -152,64 +152,81 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
 
                             return Card(
                               margin: const EdgeInsets.only(bottom: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              elevation: 4,
                               child: Padding(
-                                padding: const EdgeInsets.all(12),
+                                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      rez.termin?.predstava?.naziv ?? 'Predstava',
-                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      child: Text(
+                                        rez.termin?.predstava?.naziv ?? 'Predstava',
+                                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                      ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text('Datum: $datum'),
-                                            Text('Vrijeme: $vrijeme'),
-                                            Text('Broj sjedišta: ${brojSjedistaPoRezervaciji[rez.rezervacijaId] ?? 0}'),
-                                            Text('Status: $status'),
-                                          ],
-                                        ),
-                                        ElevatedButton(
+                                    const SizedBox(height: 12),
+
+                                    ListTile(
+                                      leading: const Icon(Icons.date_range, color: Colors.blue, size: 20),
+                                      title: const Text("Datum", style: TextStyle(fontSize: 13)),
+                                      subtitle: Text(datum, style: const TextStyle(fontSize: 14)),
+                                      visualDensity: VisualDensity.compact,
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                                      dense: true,
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(Icons.access_time, color: Colors.green, size: 20),
+                                      title: const Text("Vrijeme", style: TextStyle(fontSize: 13)),
+                                      subtitle: Text(vrijeme, style: const TextStyle(fontSize: 14)),
+                                      visualDensity: VisualDensity.compact,
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                                      dense: true,
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(Icons.event_seat, color: Colors.deepPurple, size: 20),
+                                      title: const Text("Broj sjedišta", style: TextStyle(fontSize: 13)),
+                                      subtitle: Text("${brojSjedistaPoRezervaciji[rez.rezervacijaId] ?? 0}", style: const TextStyle(fontSize: 14)),
+                                      visualDensity: VisualDensity.compact,
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                                      dense: true,
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(Icons.info_outline, color: Colors.orange, size: 20),
+                                      title: const Text("Status", style: TextStyle(fontSize: 13)),
+                                      subtitle: Text(status!, style: const TextStyle(fontSize: 14)),
+                                      visualDensity: VisualDensity.compact,
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                                      dense: true,
+                                    ),
+
+                                    const SizedBox(height: 8),
+                                    if (rez.stateMachine != "Ponisteno" && rez.stateMachine != "Zavrseno")
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: ElevatedButton.icon(
                                           onPressed: () {
-                                            if (rez.stateMachine == "Zavrseno"){
+                                            if (rez.stateMachine != "Odobreno") {
                                               QuickAlert.show(
                                                 context: context,
-                                                type: QuickAlertType.error,
-                                                title: "Greška",
-                                                text: "Rezervacija je zavrsena!",
-                                              );
-                                              return;
-                                            }
-                                            if (rez.stateMachine == "Ponisteno"){
-                                              QuickAlert.show(
-                                                context: context,
-                                                type: QuickAlertType.error,
-                                                title: "Greška",
-                                                text: "Rezervacija je ponistena!",
-                                              );
-                                              return;
-                                            }
-                                            if (rez.stateMachine != "Odobreno"){
-                                              QuickAlert.show(
-                                                context: context,
-                                                type: QuickAlertType.error,
-                                                title: "Greška",
+                                                type: QuickAlertType.warning,
+                                                title: "Upozorenje",
                                                 text: "Rezervacija nije odobrena!",
                                               );
                                               return;
-                                            } else {
-                                              makePayment(rez);
                                             }
+                                            makePayment(rez);
                                           },
-                                          child: const Text('Plati'),
+                                          icon: const Icon(Icons.payment),
+                                          label: const Text('Plati'),
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                          ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
                                   ],
                                 ),
                               ),
@@ -314,6 +331,10 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                 type: QuickAlertType.success,
                 title: "Uspješno plaćanje!",
                 text: "Uplata je uspjesno izvršena!",
+                 onConfirmBtnTap: () {
+                  Navigator.of(context).pop(); // zatvara alert
+                  Navigator.of(context).pop(); // vraća se s PayPal checkout ekrana
+                },
               );
             },
             onError: (error) {

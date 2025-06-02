@@ -222,7 +222,7 @@ class KartaDataSource extends AdvancedDataTableSource<Karta> {
     final e = data[index];
 
     return DataRow(cells: [
-      DataCell(Text(e.cijena.toString())),
+      DataCell(Text("${formatCurrency(e.cijena)} KM")),
       DataCell(
         FutureBuilder(
           future: fetchSjediste(e.sjedisteId!),

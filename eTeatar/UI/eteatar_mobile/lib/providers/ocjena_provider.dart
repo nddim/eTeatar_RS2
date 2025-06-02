@@ -34,7 +34,7 @@ class OcjenaProvider extends BaseProvider<Ocjena> {
 
     Future<bool> jelKorisnikOcjenio(int korisnikId, int predstavaId) async {
 
-    var url = "${BaseProvider.baseUrl}Ocjena/posotjiOcjena?korisnikId=${korisnikId}&predstavaId=${predstavaId}";
+    var url = "${BaseProvider.baseUrl}Ocjena/jelKorisnikOcjenio?korisnikId=${korisnikId}&predstavaId=${predstavaId}";
     var uri = Uri.parse(url);
     var headers = createHeaders();
 
