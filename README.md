@@ -2,7 +2,7 @@
 Seminarski rad iz predmeta Razvoj softvera 2 na Fakultetu informacijskih tehnologija u Mostaru
 
 # Upute za pokretanje
-- **Extractovati arhivu fit-build-05-16-env u folderu (eTeatar_RS2/eTeatar) **
+- **Extractovati arhivu fit-build-05-16-env u folderu (eTeatar_RS2/eTeatar)**
 - **Otvoriti /eTeatar_RS2/eTeatar u terminalu i pokrenuti komandu docker compose up --build, te sačekati da se sve uspješno build-a.**
 - **Extractovati arhivu fit-build-05-16-desktop (eTeatar_RS2/eTeatar), te otvoriti eteatar_desktop.exe iz foldera Release.**
 - **Extractovati arhivu fit-build-05-19-mobile (eTeatar_RS2/eTeatar), te locirati app-release.apk.**
