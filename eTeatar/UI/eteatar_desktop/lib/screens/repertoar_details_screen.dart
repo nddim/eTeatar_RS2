@@ -101,7 +101,7 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
     ) ;
   }
 
-  final DateTime _maxDate = DateTime.now().add(const Duration(days: 365));
+  final DateTime _maxDate = DateTime.now().add(const Duration(days: 365 * 2));
 
   Widget _buildForm() {
     return FormBuilder(
@@ -138,83 +138,79 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                 ),
               ]
             ),
-            Row(children: [
-              Expanded(
-                child: FormBuilderDateTimePicker(
-                  name: "DatumPocetka",
-                  decoration: InputDecoration(labelText: "Datum pocetka"),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    (value) {
-                      if (value == null) return null;
-                      if (value.isBefore(DateTime.now())) {
-                        return "Ne možete izabrati datum u prošlosti!";
-                      }
-                      return null;
-                    }
-                  ]),
-                  inputType: InputType.date,
-                  format: DateFormat("yyyy-MM-dd"),
-                  firstDate: DateTime.now(), 
-                  lastDate: _maxDate,        
-                  onChanged: (pocetniDatum) {
-                    setState(() {
-                      var datumKrajaField = _formKey.currentState?.fields["DatumKraja"];
-                      var datumKraja = datumKrajaField?.value;
-
-                      if (datumKraja != null && pocetniDatum != null && datumKraja.isBefore(pocetniDatum)) {
-                        datumKrajaField?.didChange(null);
-                      }
-                    });
-                  },
-                ),
-              ),
-              const SizedBox(width: 10,),
-              Expanded(
-                child: FormBuilderDateTimePicker(
-                  name: "DatumKraja",
-                  decoration: InputDecoration(labelText: "Datum kraja"),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Obavezno polje"),
-                    (value) {
-                      if (value == null) return null;
-                      final datumPocetka = _formKey.currentState?.fields["DatumPocetka"]?.value;
-                      if (datumPocetka != null && value.isBefore(datumPocetka)) {
-                        return "Datum kraja ne može biti prije datuma početka!";
-                      }
-                      if (value.isBefore(DateTime.now())) {
-                        return "Ne možete izabrati datum u prošlosti!";
-                      }
-                      return null;
-                    }
-                  ]),
-                  inputType: InputType.date,
-                  format: DateFormat("yyyy-MM-dd"),
-                  firstDate: _formKey.currentState?.fields["DatumPocetka"]?.value ?? DateTime.now(),
-                  lastDate: _maxDate,
-                  initialDate: () {
-                    final datumPocetka = _formKey.currentState?.fields["DatumPocetka"]?.value ?? DateTime.now();
-                    final krajnji = _formKey.currentState?.fields["DatumKraja"]?.value;
-
-                    if (krajnji != null && krajnji.isAfter(datumPocetka)) {
-                      return krajnji;
-                    }
-                    return datumPocetka.add(Duration(days: 1));
-                  }(),
-                ),
-              ),
-            ],
-            ),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: 
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FormBuilderField<DateTime>(
+                        name: "DatumPocetka",
+                        builder: (field) => const SizedBox.shrink(),
+                      ),
+                      FormBuilderField<DateTime>(
+                        name: "DatumKraja",
+                        builder: (field) => const SizedBox.shrink(),
+                      ),
+                      const SizedBox(height: 10),
+                      InputDecorator(
+                        decoration: const InputDecoration(
+                          labelText: "Odaberi period repertoara",
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.all(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ElevatedButton.icon(
+                              icon: const Icon(Icons.date_range),
+                              label: const Text("Odaberi datum početka i kraja"),
+                              onPressed: () async {
+                                final selectedStart = _formKey.currentState?.fields['DatumPocetka']?.value ?? DateTime.now();
+                                final selectedEnd = _formKey.currentState?.fields['DatumKraja']?.value ?? DateTime.now().add(const Duration(days: 1));
+
+                                final DateTimeRange? picked = await showDateRangePicker(
+                                  context: context,
+                                  firstDate: DateTime.now(),
+                                  lastDate: _maxDate,
+                                  initialDateRange: DateTimeRange(start: selectedStart, end: selectedEnd),
+                                );
+
+                                if (picked != null) {
+                                  _formKey.currentState?.fields['DatumPocetka']?.didChange(picked.start);
+                                  _formKey.currentState?.fields['DatumKraja']?.didChange(picked.end);
+                                  setState(() {});
+                                }
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            Builder(builder: (context) {
+                              final start = _formKey.currentState?.fields['DatumPocetka']?.value;
+                              final end = _formKey.currentState?.fields['DatumKraja']?.value;
+                              if (start == null || end == null) {
+                                return const Text("Nije odabran period.");
+                              }
+                              return Text(
+                                "Odabrano: ${DateFormat('yyyy-MM-dd').format(start)} do ${DateFormat('yyyy-MM-dd').format(end)}",
+                                style: TextStyle(color: Colors.grey[700]),
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 28.0), // radi poravnanja s gornjim dugmetom
                     child: MultiSelectDialogField<int>(
                       items: predstavaResult?.resultList
-                          .map((e) => MultiSelectItem<int>(e.predstavaId!, e.naziv ?? ""))
-                          .toList() ?? [],
+                              .map((e) => MultiSelectItem<int>(e.predstavaId!, e.naziv ?? ""))
+                              .toList() ??
+                          [],
                       initialValue: _selectedPredstave,
                       title: Text("Odaberi predstave"),
                       selectedColor: Colors.blue,
@@ -236,10 +232,10 @@ class _RepertoarDetailsScreenState extends State<RepertoarDetailsScreen> {
                         return null;
                       },
                     ),
-                  )
+                  ),
                 ),
-              ]
-            )
+              ],
+            ),
           ],
         ),
       ),

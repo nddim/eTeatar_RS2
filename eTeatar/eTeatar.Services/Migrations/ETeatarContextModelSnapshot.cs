@@ -1425,8 +1425,8 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             RepertoarId = 1,
-                            DatumKraja = new DateTime(2025, 6, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DatumPocetka = new DateTime(2025, 5, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumKraja = new DateTime(2026, 6, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumPocetka = new DateTime(2026, 5, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Naziv = "Repertoar 1",
                             Opis = "Repertoar 1"
@@ -1434,8 +1434,8 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             RepertoarId = 2,
-                            DatumKraja = new DateTime(2025, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DatumPocetka = new DateTime(2025, 6, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumKraja = new DateTime(2026, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumPocetka = new DateTime(2026, 6, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Naziv = "Repertoar 2",
                             Opis = "Repertoar 2"
@@ -1443,8 +1443,8 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             RepertoarId = 3,
-                            DatumKraja = new DateTime(2025, 8, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DatumPocetka = new DateTime(2025, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumKraja = new DateTime(2026, 8, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DatumPocetka = new DateTime(2026, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Naziv = "Repertoar 3",
                             Opis = "Repertoar 3"
@@ -2822,7 +2822,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 1,
-                            Datum = new DateTime(2025, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 1,
@@ -2831,7 +2831,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 2,
-                            Datum = new DateTime(2025, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 1,
@@ -2840,7 +2840,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 3,
-                            Datum = new DateTime(2025, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 1,
@@ -2849,7 +2849,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 4,
-                            Datum = new DateTime(2025, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 1,
@@ -2858,7 +2858,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 5,
-                            Datum = new DateTime(2025, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 1,
@@ -2867,7 +2867,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 6,
-                            Datum = new DateTime(2025, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 1,
@@ -2876,7 +2876,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 7,
-                            Datum = new DateTime(2025, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 2,
@@ -2885,7 +2885,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 8,
-                            Datum = new DateTime(2025, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 2,
@@ -2894,7 +2894,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 9,
-                            Datum = new DateTime(2025, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 2,
@@ -2903,7 +2903,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 10,
-                            Datum = new DateTime(2025, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 2,
@@ -2912,7 +2912,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 11,
-                            Datum = new DateTime(2025, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 2,
@@ -2921,7 +2921,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 12,
-                            Datum = new DateTime(2025, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 2,
@@ -2930,7 +2930,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 13,
-                            Datum = new DateTime(2025, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 3,
@@ -2939,7 +2939,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 14,
-                            Datum = new DateTime(2025, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 3,
@@ -2948,7 +2948,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 15,
-                            Datum = new DateTime(2025, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 3,
@@ -2957,7 +2957,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 16,
-                            Datum = new DateTime(2025, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 3,
@@ -2966,7 +2966,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 17,
-                            Datum = new DateTime(2025, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 3,
@@ -2975,7 +2975,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 18,
-                            Datum = new DateTime(2025, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 3,
@@ -2984,7 +2984,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 19,
-                            Datum = new DateTime(2025, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 4,
@@ -2993,7 +2993,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 20,
-                            Datum = new DateTime(2025, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 4,
@@ -3002,7 +3002,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 21,
-                            Datum = new DateTime(2025, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 4,
@@ -3011,7 +3011,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 22,
-                            Datum = new DateTime(2025, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 4,
@@ -3020,7 +3020,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 23,
-                            Datum = new DateTime(2025, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 4,
@@ -3029,7 +3029,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 24,
-                            Datum = new DateTime(2025, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 4,
@@ -3038,7 +3038,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 25,
-                            Datum = new DateTime(2025, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 5,
@@ -3047,7 +3047,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 26,
-                            Datum = new DateTime(2025, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 5,
@@ -3056,7 +3056,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 27,
-                            Datum = new DateTime(2025, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 5,
@@ -3065,7 +3065,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 28,
-                            Datum = new DateTime(2025, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 5,
@@ -3074,7 +3074,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 29,
-                            Datum = new DateTime(2025, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 5,
@@ -3083,7 +3083,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 30,
-                            Datum = new DateTime(2025, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 5,
@@ -3092,7 +3092,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 31,
-                            Datum = new DateTime(2025, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 6,
@@ -3101,7 +3101,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 32,
-                            Datum = new DateTime(2025, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 6,
@@ -3110,7 +3110,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 33,
-                            Datum = new DateTime(2025, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 6,
@@ -3119,7 +3119,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 34,
-                            Datum = new DateTime(2025, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 6,
@@ -3128,7 +3128,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 35,
-                            Datum = new DateTime(2025, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 6,
@@ -3137,7 +3137,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 36,
-                            Datum = new DateTime(2025, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 6,
@@ -3146,7 +3146,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 37,
-                            Datum = new DateTime(2025, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 7,
@@ -3155,7 +3155,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 38,
-                            Datum = new DateTime(2025, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 7,
@@ -3164,7 +3164,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 39,
-                            Datum = new DateTime(2025, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 7,
@@ -3173,7 +3173,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 40,
-                            Datum = new DateTime(2025, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 7,
@@ -3182,7 +3182,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 41,
-                            Datum = new DateTime(2025, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 7,
@@ -3191,7 +3191,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 42,
-                            Datum = new DateTime(2025, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 7,
@@ -3200,7 +3200,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 43,
-                            Datum = new DateTime(2025, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 8,
@@ -3209,7 +3209,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 44,
-                            Datum = new DateTime(2025, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 8,
@@ -3218,7 +3218,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 45,
-                            Datum = new DateTime(2025, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 8,
@@ -3227,7 +3227,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 46,
-                            Datum = new DateTime(2025, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 8,
@@ -3236,7 +3236,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 47,
-                            Datum = new DateTime(2025, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 8,
@@ -3245,7 +3245,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 48,
-                            Datum = new DateTime(2025, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 8,
@@ -3254,7 +3254,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 49,
-                            Datum = new DateTime(2025, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 9,
@@ -3263,7 +3263,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 50,
-                            Datum = new DateTime(2025, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 9,
@@ -3272,7 +3272,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 51,
-                            Datum = new DateTime(2025, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 9,
@@ -3281,7 +3281,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 52,
-                            Datum = new DateTime(2025, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 9,
@@ -3290,7 +3290,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 53,
-                            Datum = new DateTime(2025, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 9,
@@ -3299,7 +3299,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 54,
-                            Datum = new DateTime(2025, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 9,
@@ -3308,7 +3308,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 55,
-                            Datum = new DateTime(2025, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 10,
@@ -3317,7 +3317,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 56,
-                            Datum = new DateTime(2025, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 10,
@@ -3326,7 +3326,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 57,
-                            Datum = new DateTime(2025, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 1, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 10,
@@ -3335,7 +3335,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 58,
-                            Datum = new DateTime(2025, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 1,
                             IsDeleted = false,
                             PredstavaId = 10,
@@ -3344,7 +3344,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 59,
-                            Datum = new DateTime(2025, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 20, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 2,
                             IsDeleted = false,
                             PredstavaId = 10,
@@ -3353,7 +3353,7 @@ namespace eTeatar.Services.Migrations
                         new
                         {
                             TerminId = 60,
-                            Datum = new DateTime(2025, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            Datum = new DateTime(2026, 6, 2, 22, 0, 0, 0, DateTimeKind.Unspecified),
                             DvoranaId = 3,
                             IsDeleted = false,
                             PredstavaId = 10,
