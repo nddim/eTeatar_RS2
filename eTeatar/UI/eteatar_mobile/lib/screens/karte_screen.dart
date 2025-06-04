@@ -103,14 +103,14 @@ class _KarteScreenState extends State<KarteScreen> with SingleTickerProviderStat
       itemBuilder: (context, index) {
         final karta = karteZaPrikaz[index];
         final termin = terminiMap[karta.terminId];
+        final datum = termin?.datum;
+        final datumString = datum != null ? "${datum.day}.${datum.month}.${datum.year}" : "Bez datuma";
+        final vrijemeString = datum != null ? TimeOfDay.fromDateTime(datum).format(context) : "Vrijeme nepoznato";
 
         return Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           elevation: 4,
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          child: ListTile(
+          child: InkWell(
             onTap: allowTap
                 ? () {
                     Navigator.push(
@@ -121,18 +121,74 @@ class _KarteScreenState extends State<KarteScreen> with SingleTickerProviderStat
                     );
                   }
                 : null,
-            contentPadding: const EdgeInsets.all(12),
-            title: Text(
-              karta.nazivPredstave,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Cijena: ${formatCurrency(karta.cijena)} KM'),
-                Text('Datum: ${termin?.datum == null ? 'Nema datuma' : formatDateTime(termin!.datum!.toString())}'),
-                Text('Sjediste: Red ${karta.red}, Kolona ${karta.kolona}'),
-              ],
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      karta.nazivPredstave,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Row: Datum i Vrijeme
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          leading: const Icon(Icons.date_range, color: Colors.blue, size: 20),
+                          title: const Text("Datum", style: TextStyle(fontSize: 13)),
+                          subtitle: Text(datumString, style: const TextStyle(fontSize: 14)),
+                          visualDensity: VisualDensity.compact,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                          dense: true,
+                        ),
+                      ),
+                      Expanded(
+                        child: ListTile(
+                          leading: const Icon(Icons.access_time, color: Colors.green, size: 20),
+                          title: const Text("Vrijeme", style: TextStyle(fontSize: 13)),
+                          subtitle: Text(vrijemeString, style: const TextStyle(fontSize: 14)),
+                          visualDensity: VisualDensity.compact,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                          dense: true,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Row: Sjediste i Cijena
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          leading: const Icon(Icons.event_seat, color: Colors.deepPurple, size: 20),
+                          title: const Text("Sjediste", style: TextStyle(fontSize: 13)),
+                          subtitle: Text("Red ${karta.red}, Kolona ${karta.kolona}", style: const TextStyle(fontSize: 14)),
+                          visualDensity: VisualDensity.compact,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                          dense: true,
+                        ),
+                      ),
+                      Expanded(
+                        child: ListTile(
+                          leading: const Icon(Icons.attach_money, color: Colors.orange, size: 20),
+                          title: const Text("Cijena", style: TextStyle(fontSize: 13)),
+                          subtitle: Text("${formatCurrency(karta.cijena)} KM", style: const TextStyle(fontSize: 14)),
+                          visualDensity: VisualDensity.compact,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                          dense: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

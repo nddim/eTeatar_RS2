@@ -1,6 +1,7 @@
 import 'package:eteatar_mobile/models/uplata.dart';
 import 'package:eteatar_mobile/providers/auth_provider.dart';
 import 'package:eteatar_mobile/providers/uplata_provider.dart';
+import 'package:eteatar_mobile/providers/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
@@ -65,14 +66,40 @@ class _UplateScreenState extends State<UplateScreen> {
                     itemBuilder: (context, index) {
                       final uplata = uplate[index];
                       final datum = uplata.datum != null
-                          ? "${uplata.datum!.day}.${uplata.datum!.month}.${uplata.datum!.year}"
+                          ? "${uplata.datum!.day.toString().padLeft(2, '0')}.${uplata.datum!.month.toString().padLeft(2, '0')}.${uplata.datum!.year}"
                           : "Nepoznat datum";
 
                       return Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 4,
                         margin: const EdgeInsets.only(bottom: 12),
-                        child: ListTile(
-                          title: Text('Uplata - ${uplata.iznos} KM'),
-                          subtitle: Text(datum),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {}, 
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Uplata',
+                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.attach_money, size: 18, color: Colors.green),
+                                    const SizedBox(width: 4),
+                                    Text('${formatCurrency(uplata.iznos)} KM', style: const TextStyle(fontSize: 14)),
+                                    const SizedBox(width: 16),
+                                    const Icon(Icons.calendar_today, size: 18, color: Colors.blueGrey),
+                                    const SizedBox(width: 4),
+                                    Text(datum, style: const TextStyle(fontSize: 14)),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     },

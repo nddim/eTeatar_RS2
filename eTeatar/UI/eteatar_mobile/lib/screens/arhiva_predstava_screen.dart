@@ -60,18 +60,16 @@ class _ArhivaPredstavaScreenState extends State<ArhivaPredstavaScreen> {
                     itemCount: arhiva.length,
                     itemBuilder: (context, index) {
                       final predstava = arhiva[index];
+                      final opisPreview = predstava.opis != null
+                          ? (predstava.opis!.length > 60 ? '${predstava.opis!.substring(0, 50)}...' : predstava.opis!)
+                          : 'Bez opisa';
+
                       return Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 4,
                         margin: const EdgeInsets.only(bottom: 12),
-                        child: ListTile(
-                          title: Text(predstava.naziv ?? 'Bez naziva'),
-                          subtitle: Text(
-                            predstava.opis != null
-                                ? (predstava.opis!.length > 40
-                                    ? '${predstava.opis!.substring(0, 40)}...'
-                                    : predstava.opis!)
-                                : 'Bez opisa',
-                          ),
-                          trailing: Text('${predstava.trajanje} min'),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
@@ -79,6 +77,36 @@ class _ArhivaPredstavaScreenState extends State<ArhivaPredstavaScreen> {
                               ),
                             );
                           },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Naslov
+                                Text(
+                                  predstava.naziv ?? "Bez naziva",
+                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+
+                                // Opis
+                                Text(
+                                  opisPreview,
+                                  style: const TextStyle(fontSize: 14, color: Colors.black87),
+                                ),
+                                const SizedBox(height: 8),
+
+                                // Trajanje
+                                Row(
+                                  children: [
+                                    const Icon(Icons.schedule, color: Colors.blueGrey, size: 18),
+                                    const SizedBox(width: 4),
+                                    Text('${predstava.trajanje} min', style: const TextStyle(fontSize: 14)),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     },

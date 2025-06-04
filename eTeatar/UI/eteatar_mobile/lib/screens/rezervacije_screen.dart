@@ -168,37 +168,53 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                                     ),
                                     const SizedBox(height: 12),
 
-                                    ListTile(
-                                      leading: const Icon(Icons.date_range, color: Colors.blue, size: 20),
-                                      title: const Text("Datum", style: TextStyle(fontSize: 13)),
-                                      subtitle: Text(datum, style: const TextStyle(fontSize: 14)),
-                                      visualDensity: VisualDensity.compact,
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                                      dense: true,
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: ListTile(
+                                            leading: const Icon(Icons.date_range, color: Colors.blue, size: 20),
+                                            title: const Text("Datum", style: TextStyle(fontSize: 13)),
+                                            subtitle: Text(datum, style: const TextStyle(fontSize: 14)),
+                                            visualDensity: VisualDensity.compact,
+                                            contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                                            dense: true,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: ListTile(
+                                            leading: const Icon(Icons.access_time, color: Colors.lightBlue, size: 20),
+                                            title: const Text("Vrijeme", style: TextStyle(fontSize: 13)),
+                                            subtitle: Text(vrijeme, style: const TextStyle(fontSize: 14)),
+                                            visualDensity: VisualDensity.compact,
+                                            contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                                            dense: true,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    ListTile(
-                                      leading: const Icon(Icons.access_time, color: Colors.green, size: 20),
-                                      title: const Text("Vrijeme", style: TextStyle(fontSize: 13)),
-                                      subtitle: Text(vrijeme, style: const TextStyle(fontSize: 14)),
-                                      visualDensity: VisualDensity.compact,
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                                      dense: true,
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.event_seat, color: Colors.deepPurple, size: 20),
-                                      title: const Text("Broj sjedišta", style: TextStyle(fontSize: 13)),
-                                      subtitle: Text("${brojSjedistaPoRezervaciji[rez.rezervacijaId] ?? 0}", style: const TextStyle(fontSize: 14)),
-                                      visualDensity: VisualDensity.compact,
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                                      dense: true,
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.info_outline, color: Colors.orange, size: 20),
-                                      title: const Text("Status", style: TextStyle(fontSize: 13)),
-                                      subtitle: Text(status!, style: const TextStyle(fontSize: 14)),
-                                      visualDensity: VisualDensity.compact,
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                                      dense: true,
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: ListTile(
+                                            leading: const Icon(Icons.event_seat, color: Colors.deepPurple, size: 20),
+                                            title: const Text("Broj sjedišta", style: TextStyle(fontSize: 13)),
+                                            subtitle: Text("${brojSjedistaPoRezervaciji[rez.rezervacijaId] ?? 0}", style: const TextStyle(fontSize: 14)),
+                                            visualDensity: VisualDensity.compact,
+                                            contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                                            dense: true,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: ListTile(
+                                            leading: const Icon(Icons.info_outline, color: Colors.orange, size: 20),
+                                            title: const Text("Status", style: TextStyle(fontSize: 13)),
+                                            subtitle: Text(status!, style: const TextStyle(fontSize: 14)),
+                                            visualDensity: VisualDensity.compact,
+                                            contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                                            dense: true,
+                                          ),
+                                        ),
+                                      ],
                                     ),
 
                                     const SizedBox(height: 8),

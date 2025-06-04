@@ -323,7 +323,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
               onPressed: () {
                 Navigator.pop(dialogContext);
               },
-              child: const Text('Poništi'),
+              child: const Text('Odustani'),
             ),
             TextButton(
               onPressed: () async {
@@ -366,7 +366,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
                 Navigator.pop(context);
               }, 
               child: const Text(
-                'Poništi akciju',
+                'Odustani',
                 style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
               ),
             ),
@@ -420,7 +420,7 @@ class RezervacijaDataSource extends AdvancedDataTableSource<Rezervacija> {
                 Navigator.pop(context);
               }, 
               child: const Text(
-                'Poništi akciju',
+                'Odustani',
                 style: TextStyle(color: Color.fromRGBO(72, 142, 255, 1)),
               ),
             ),

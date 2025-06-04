@@ -267,6 +267,10 @@ class _KorisnickiProfilState extends State<KorisnickiProfil> {
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(
                             errorText: "Obavezno polje"),
+                        FormBuilderValidators.minLength(4,
+                            errorText: "Lozinka mora da sadrži najmanje 4 znaka"),
+                        FormBuilderValidators.maxLength(30,
+                            errorText: "Lozinka može da sadrži najviše 30 znakova"),
                       ]),
                     )),
                     const SizedBox(
@@ -291,6 +295,10 @@ class _KorisnickiProfilState extends State<KorisnickiProfil> {
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(
                             errorText: "Obavezno polje"),
+                        FormBuilderValidators.minLength(4,
+                            errorText: "Lozinka mora da sadrži najmanje 4 znaka"),
+                        FormBuilderValidators.maxLength(30,
+                            errorText: "Lozinka može da sadrži najviše 30 znakova"),
                       ]),
                     )),
                     const SizedBox(

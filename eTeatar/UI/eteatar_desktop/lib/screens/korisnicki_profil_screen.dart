@@ -163,6 +163,10 @@ Widget buildProfil() {
                     obscureText: true,
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.minLength(4,
+                        errorText: "Lozinka mora sadržavati najmanje 4 karaktera"),
+                      FormBuilderValidators.maxLength(30,
+                        errorText: "Lozinka može sadržavati najviše 30 karaktera"),
                     ]),
                   ),
                 ),
@@ -174,6 +178,10 @@ Widget buildProfil() {
                     obscureText: true,
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(errorText: "Obavezno polje"),
+                      FormBuilderValidators.minLength(4,
+                        errorText: "Lozinka mora sadržavati najmanje 4 karaktera"),
+                      FormBuilderValidators.maxLength(30,
+                        errorText: "Lozinka može sadržavati najviše 30 karaktera"),
                     ]),
                   ),
                 ),

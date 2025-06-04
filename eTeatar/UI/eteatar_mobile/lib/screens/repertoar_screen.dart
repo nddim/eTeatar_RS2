@@ -58,14 +58,17 @@ class _RepertoarScreenState extends State<RepertoarScreen> {
                     itemCount: repertoarList.length,
                     itemBuilder: (context, index) {
                       final rep = repertoarList[index];
-                      final datumOd = "${rep.datumPocetka!.day}.${rep.datumPocetka!.month}.${rep.datumPocetka!.year}";
-                      final datumDo = "${rep.datumKraja!.day}.${rep.datumKraja!.month}.${rep.datumKraja!.year}";
+                      final datumOd = rep.datumPocetka;
+                      final datumDo = rep.datumKraja;
+                      final datumOdStr = datumOd != null ? "${datumOd.day}.${datumOd.month}.${datumOd.year}" : "Nepoznato";
+                      final datumDoStr = datumDo != null ? "${datumDo.day}.${datumDo.month}.${datumDo.year}" : "Nepoznato";
 
                       return Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 4,
                         margin: const EdgeInsets.only(bottom: 12),
-                        child: ListTile(
-                          title: Text(rep.naziv ?? 'Bez naziva'),
-                          subtitle: Text('Od $datumOd do $datumDo'),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
@@ -73,6 +76,46 @@ class _RepertoarScreenState extends State<RepertoarScreen> {
                               ),
                             );
                           },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Naziv Repertoara
+                                Text(
+                                  rep.naziv ?? "Bez naziva",
+                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 12),
+
+                                // Datum prikazivanja
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: ListTile(
+                                        leading: const Icon(Icons.calendar_today, color: Colors.blue, size: 20),
+                                        title: const Text("Početak", style: TextStyle(fontSize: 13)),
+                                        subtitle: Text(datumOdStr, style: const TextStyle(fontSize: 14)),
+                                        visualDensity: VisualDensity.compact,
+                                        dense: true,
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: ListTile(
+                                        leading: const Icon(Icons.calendar_month, color: Colors.green, size: 20),
+                                        title: const Text("Kraj", style: TextStyle(fontSize: 13)),
+                                        subtitle: Text(datumDoStr, style: const TextStyle(fontSize: 14)),
+                                        visualDensity: VisualDensity.compact,
+                                        dense: true,
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     },
