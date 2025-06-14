@@ -33,7 +33,6 @@ class _UplateScreenState extends State<UplateScreen> {
           'isDeleted': false
           }
       );
-
       setState(() {
         uplate = result.resultList;
         _isLoading = false;
@@ -68,7 +67,6 @@ class _UplateScreenState extends State<UplateScreen> {
                       final datum = uplata.datum != null
                           ? "${uplata.datum!.day.toString().padLeft(2, '0')}.${uplata.datum!.month.toString().padLeft(2, '0')}.${uplata.datum!.year}"
                           : "Nepoznat datum";
-
                       return Card(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         elevation: 4,

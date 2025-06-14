@@ -137,17 +137,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               const SizedBox(width: 8),
-              Expanded( // <-- Omogućava dugmetu da se raširi
+              Expanded(
                 child: TextButton(
                   onPressed: () {
-                    MasterScreen.of(context)?.changeTab(1); // Ide na predstave
+                    MasterScreen.of(context)?.changeTab(1);
                   },
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.lightBlue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 16), // Povećano za bolji izgled
+                    padding: const EdgeInsets.symmetric(vertical: 16), 
                   ),
                   child: const Text(
                     "Pogledaj sve predstave →",

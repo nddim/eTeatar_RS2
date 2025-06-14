@@ -113,7 +113,6 @@ class _PredstaveRepertoaraScreenState extends State<PredstaveRepertoaraScreen> {
                                 ? 'Trajanje: ${item.trajanje} min'
                                 : 'Bez trajanja'),
                             onTap: () {
-                              // Navigacija na ekran detalja predstave
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

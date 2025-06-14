@@ -98,8 +98,6 @@ class _KorisnickiProfilState extends State<KorisnickiProfil> {
                 ),
               ],
             ),
-            // const SizedBox(height: 10),
-            // const Text("Dodirnite sliku za promjenu", style: TextStyle(fontSize: 12, color: Colors.grey)),
             const SizedBox(height: 5),
             Row(
               children: [

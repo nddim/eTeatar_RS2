@@ -81,14 +81,11 @@ class _RepertoarScreenState extends State<RepertoarScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Naziv Repertoara
                                 Text(
                                   rep.naziv ?? "Bez naziva",
                                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 12),
-
-                                // Datum prikazivanja
                                 Row(
                                   children: [
                                     Expanded(

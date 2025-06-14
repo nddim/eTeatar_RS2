@@ -167,7 +167,6 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                                       ),
                                     ),
                                     const SizedBox(height: 12),
-
                                     Row(
                                       children: [
                                         Expanded(
@@ -206,7 +205,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                                         ),
                                         Expanded(
                                           child: ListTile(
-                                            leading: const Icon(Icons.info_outline, color: Colors.orange, size: 20),
+                                            leading: Icon(Icons.info_outline, color: getStatusColor(status!), size: 20),
                                             title: const Text("Status", style: TextStyle(fontSize: 13)),
                                             subtitle: Text(status!, style: const TextStyle(fontSize: 14)),
                                             visualDensity: VisualDensity.compact,
@@ -216,7 +215,6 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                                         ),
                                       ],
                                     ),
-
                                     const SizedBox(height: 8),
                                     if (rez.stateMachine != "Ponisteno" && rez.stateMachine != "Zavrseno")
                                       Align(
@@ -228,7 +226,7 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                                                 context: context,
                                                 type: QuickAlertType.warning,
                                                 title: "Upozorenje",
-                                                text: "Rezervacija nije odobrena!",
+                                                text: "Rezervacija još nije odobrena!",
                                               );
                                               return;
                                             }
@@ -256,6 +254,21 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
     );
   }
 
+  Color getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'kreirano':
+        return Colors.lightBlue;
+      case 'odobreno':
+        return Colors.green;
+      case 'zavrseno':
+        return Colors.red;
+      case 'ponisteno':
+        return Colors.black;
+      default:
+        return Colors.lightBlue;
+    }
+  }
+
   Future<void> makePayment(Rezervacija rezervacija) async {
     final secret = dotenv.env['_paypalSecret'];
     final public = dotenv.env['_paypalPublic'];
@@ -275,10 +288,8 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
     }
 
     try {
-      // Osiguraj da je predstava učitana (ako nije, dohvati ručno)
       final predstava = await predstavaProvider.getById(rezervacija.termin!.predstavaId!);
       if (predstava == null || predstava.cijena == null) {
-        // Ovdje ubaci dohvat predstave byId ako već nisi
         QuickAlert.show(
           context: context,
           type: QuickAlertType.error,
@@ -348,8 +359,8 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
                 title: "Uspješno plaćanje!",
                 text: "Uplata je uspjesno izvršena!",
                  onConfirmBtnTap: () {
-                  Navigator.of(context).pop(); // zatvara alert
-                  Navigator.of(context).pop(); // vraća se s PayPal checkout ekrana
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
               );
             },
@@ -380,5 +391,4 @@ class _RezervacijeScreenState extends State<RezervacijeScreen> {
       );
     }
   }
-
 }

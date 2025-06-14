@@ -50,7 +50,7 @@ class _RezervacijaDetailsScreen2State extends State<RezervacijaDetailsScreen2> {
     for (var s in svi) {
       if (zauzetaSjedistaIds.contains(s.sjedisteId)) {
         s.status = "Rezervisano";
-        s.isZauzeto = true; // samo ako koristiš to interno
+        s.isZauzeto = true; 
       }
     }
 
@@ -182,7 +182,7 @@ class _RezervacijaDetailsScreen2State extends State<RezervacijaDetailsScreen2> {
                           predstava: widget.predstava!,
                           dvoranaId: widget.dvoranaId!,
                           odabranaSjedista: odabrana.toList(),
-                          termin: widget.termin, // sada je List<Sjediste>
+                          termin: widget.termin,
                         ),
                       ),
                     );

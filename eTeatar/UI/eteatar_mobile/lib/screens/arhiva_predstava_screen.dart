@@ -82,21 +82,16 @@ class _ArhivaPredstavaScreenState extends State<ArhivaPredstavaScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Naslov
                                 Text(
                                   predstava.naziv ?? "Bez naziva",
                                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 8),
-
-                                // Opis
                                 Text(
                                   opisPreview,
                                   style: const TextStyle(fontSize: 14, color: Colors.black87),
                                 ),
                                 const SizedBox(height: 8),
-
-                                // Trajanje
                                 Row(
                                   children: [
                                     const Icon(Icons.schedule, color: Colors.blueGrey, size: 18),

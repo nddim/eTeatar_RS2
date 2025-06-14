@@ -26,7 +26,6 @@ class _PredstavaDetaljiScreen2State extends State<PredstavaDetaljiScreen2> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Kartica s cijelim sadržajem
             _buildDetailsCard(context, p),
           ],
         ),
@@ -65,16 +64,16 @@ class _PredstavaDetaljiScreen2State extends State<PredstavaDetaljiScreen2> {
             
             Text(p?.naziv ?? '', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            
+
             Text(p?.opis ?? '', style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 16),
-            
-            Text("Produkcija: ${p?.produkcija ?? 'Nepoznato'}"),
-            Text("Koreografija: ${p?.koreografija ?? 'Nepoznato'}"),
-            Text("Scenografija: ${p?.scenografija ?? 'Nepoznato'}"),
-            Text("Trajanje: ${p?.trajanje ?? 'Nepoznato'} min"),
+
+            detailRow(Icons.movie_creation_outlined, "Produkcija", p?.produkcija ?? "Nepoznato"),
+            detailRow(Icons.directions_run, "Koreografija", p?.koreografija ?? "Nepoznato"),
+            detailRow(Icons.brush_outlined, "Scenografija", p?.scenografija ?? "Nepoznato"),
+            detailRow(Icons.schedule, "Trajanje", "${p?.trajanje ?? "Nepoznato"} min"),
             const SizedBox(height: 24),
-            
+
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
@@ -91,5 +90,40 @@ class _PredstavaDetaljiScreen2State extends State<PredstavaDetaljiScreen2> {
       ),
     );
   }
-  
+
+  Widget detailRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.blue, size: 28),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    value,
+                    style: const TextStyle(
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

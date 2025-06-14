@@ -76,7 +76,6 @@ class _KartaDetailsScreenState extends State<KartaDetailsScreen> {
                     detailRow(Icons.date_range, 'Datum', formatDateTime(widget.karta!.datumVrijeme.toLocal().toString())),
                     detailRow(Icons.event_seat, 'Sjediste', 'Red ${widget.karta!.red}, Kolona ${widget.karta!.kolona}'),
                     const SizedBox(height: 10),
-                    // ✅ Novi red za "Uključena hrana"
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Row(

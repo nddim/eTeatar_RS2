@@ -84,8 +84,8 @@ class _KarteScreenState extends State<KarteScreen> with SingleTickerProviderStat
           : TabBarView(
               controller: _tabController,
               children: [
-                _buildKarteList(karte, allowTap: true),         // Aktivne — klik omogućeno
-                _buildKarteList(archivedKarte, allowTap: false), // Prošle — klik onemogućen
+                _buildKarteList(karte, allowTap: true), 
+                _buildKarteList(archivedKarte, allowTap: false), 
               ],
             ),
     );
@@ -135,8 +135,6 @@ class _KarteScreenState extends State<KarteScreen> with SingleTickerProviderStat
                     ),
                   ),
                   const SizedBox(height: 12),
-
-                  // Row: Datum i Vrijeme
                   Row(
                     children: [
                       Expanded(
@@ -161,8 +159,6 @@ class _KarteScreenState extends State<KarteScreen> with SingleTickerProviderStat
                       ),
                     ],
                   ),
-
-                  // Row: Sjediste i Cijena
                   Row(
                     children: [
                       Expanded(
